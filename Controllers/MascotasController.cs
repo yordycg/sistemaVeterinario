@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -49,7 +49,7 @@ namespace sistemaVeterinario.Controllers
         // GET: Mascotas/Create
         public IActionResult Create()
         {
-            ViewData["IdCliente"] = new SelectList(_context.Clientes, "IdCliente", "Email");
+            ViewData["IdCliente"] = new SelectList(_context.Clientes, "IdCliente", "RunYNombre");
             ViewData["IdEspecie"] = new SelectList(_context.Especies, "IdEspecie", "IdEspecie");
             ViewData["IdRaza"] = new SelectList(_context.Razas, "IdRaza", "IdRaza");
             return View();
@@ -68,7 +68,7 @@ namespace sistemaVeterinario.Controllers
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["IdCliente"] = new SelectList(_context.Clientes, "IdCliente", "Email", mascota.IdCliente);
+            ViewData["IdCliente"] = new SelectList(_context.Clientes, "IdCliente", "RunYNombre", mascota.IdCliente);
             ViewData["IdEspecie"] = new SelectList(_context.Especies, "IdEspecie", "IdEspecie", mascota.IdEspecie);
             ViewData["IdRaza"] = new SelectList(_context.Razas, "IdRaza", "IdRaza", mascota.IdRaza);
             return View(mascota);
@@ -87,7 +87,7 @@ namespace sistemaVeterinario.Controllers
             {
                 return NotFound();
             }
-            ViewData["IdCliente"] = new SelectList(_context.Clientes, "IdCliente", "Email", mascota.IdCliente);
+            ViewData["IdCliente"] = new SelectList(_context.Clientes, "IdCliente", "RunYNombre", mascota.IdCliente);
             ViewData["IdEspecie"] = new SelectList(_context.Especies, "IdEspecie", "IdEspecie", mascota.IdEspecie);
             ViewData["IdRaza"] = new SelectList(_context.Razas, "IdRaza", "IdRaza", mascota.IdRaza);
             return View(mascota);
@@ -125,7 +125,7 @@ namespace sistemaVeterinario.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["IdCliente"] = new SelectList(_context.Clientes, "IdCliente", "Email", mascota.IdCliente);
+            ViewData["IdCliente"] = new SelectList(_context.Clientes, "IdCliente", "RunYNombre", mascota.IdCliente);
             ViewData["IdEspecie"] = new SelectList(_context.Especies, "IdEspecie", "IdEspecie", mascota.IdEspecie);
             ViewData["IdRaza"] = new SelectList(_context.Razas, "IdRaza", "IdRaza", mascota.IdRaza);
             return View(mascota);
