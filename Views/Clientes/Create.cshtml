@@ -10,32 +10,37 @@
 <hr />
 <div class="row">
     <div class="col-md-4">
-        <form asp-action="Create">
+        <form asp-action="Create" id="formCliente""">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <div class="form-group">
                 <label asp-for="Run" class="control-label"></label>
                 <input asp-for="Run" class="form-control" />
-                <span asp-validation-for="Run" class="text-danger"></span>
+                @* <span asp-validation-for="Run" class="text-danger"></span> *@
+                <span id="e-Run" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <label asp-for="Nombre" class="control-label"></label>
                 <input asp-for="Nombre" class="form-control" />
-                <span asp-validation-for="Nombre" class="text-danger"></span>
+                @* <span asp-validation-for="Nombre" class="text-danger"></span> *@
+                <span id="e-Nombre" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <label asp-for="Telefono" class="control-label"></label>
-                <input asp-for="Telefono" class="form-control" />
-                <span asp-validation-for="Telefono" class="text-danger"></span>
+                <input asp-for="Telefono" class="form-control" onkeypress="return Validaciones.soloNumeros(event)" />
+                @* <span asp-validation-for="Telefono" class="text-danger"></span> *@
+                <span id="e-Telefono" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <label asp-for="Email" class="control-label"></label>
                 <input asp-for="Email" class="form-control" />
-                <span asp-validation-for="Email" class="text-danger"></span>
+                @* <span asp-validation-for="Email" class="text-danger"></span> *@
+                <span id="e-Email" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <label asp-for="Direccion" class="control-label"></label>
                 <input asp-for="Direccion" class="form-control" />
-                <span asp-validation-for="Direccion" class="text-danger"></span>
+                @* <span asp-validation-for="Direccion" class="text-danger"></span> *@
+                <span id="e-Direccion" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <input type="submit" value="Create" class="btn btn-primary" />
@@ -49,5 +54,73 @@
 </div>
 
 @section Scripts {
-    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    @* @{await Html.RenderPartialAsync("_ValidationScriptsPartial");} *@
+    <script src="~/js/validaciones.js"></script>
+
+    <script>
+        const verificarRunDB = async (run) => {
+            const url = `@Url.Action("ClienteRunExists", "Clientes")?run=${run}`;
+            const response = await fetch(url);
+            return await response.json(); // retorna promesa con true o false.
+        }
+
+        const verificarEmailDB = async (email) => {
+            const url = `@Url.Action("ClienteEmailExists", "Clientes")?email=${email}`;
+            const response = await fetch(url);
+            return await response.json(); // retorna promesa con true o false.
+        }
+
+        const formCliente = document.getElementById('formCliente');
+        formCliente.addEventListener('submit', async (event) => {
+            await validarFormCliente(event);
+        });
+
+        const validarFormCliente = async (evt) => {
+
+            const inputs = document.querySelectorAll('#formCliente .form-control');
+
+            for (const item of inputs){
+                if(item.value.trim() === ''){
+                    item.classList.add('is-invalid');
+                    document.getElementById(`e-${item.id}`).innerHTML = '<span class="badge bg-danger">Campo Obligatorio</span>';
+                } else {
+                    item.classList.remove('is-invalid');
+                    document.getElementById(`e-${item.id}`).innerHTML = '';
+
+                    if(item.id === "Email"){
+                        if(!Validaciones.validarEmail(item.value))
+                        {
+                            item.classList.add('is-invalid');
+                            document.getElementById(`e-${item.id}`).innerHTML = '<span class="badge bg-danger">Formato Email incorrecto!</span>';
+                        }
+                        if(await verificarEmailDB(item.value)) 
+                        {
+                            item.classList.add('is-invalid');
+                            document.getElementById(`e-${item.id}`).innerHTML = '<span class="badge bg-danger">El Email ya se encuentra registrado!</span>';
+                        }
+                    }
+                    if(item.id === "Run"){
+                        if(!Validaciones.validarRun(item.value))
+                        {
+                            item.classList.add('is-invalid');
+                            document.getElementById(`e-${item.id}`).innerHTML = '<span class="badge bg-danger">El Run no es valido!</span>';
+                        }
+                        if(await verificarRunDB(item.value)) 
+                        {
+                            item.classList.add('is-invalid');
+                            document.getElementById(`e-${item.id}`).innerHTML = '<span class="badge bg-danger">El Run ya se encuentra registrado!</span>';
+                        }
+                    }
+
+                    item.classList.add('is-valid');
+                }
+            }
+
+            if(document.querySelectorAll('.is-invalid').length > 0 ) 
+            {
+                evt.preventDefault();
+            }
+        }
+
+    </script>
 }
