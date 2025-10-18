@@ -152,5 +152,22 @@ namespace sistemaVeterinario.Controllers
         {
             return _context.Clientes.Any(e => e.IdCliente == id);
         }
+
+        /**
+         * Metodos para buscar la existencia de un RUN o Email en la DB.
+         */
+        [HttpGet]
+        public async Task<JsonResult> ClienteRunExists(string run)
+        {
+            var exists = await _context.Clientes.AnyAsync(c => c.Run == run);
+            return Json(exists);
+        }
+
+        [HttpGet]
+        public async Task<JsonResult> ClienteEmailExists(string email)
+        {
+            var exists = await _context.Clientes.AnyAsync(c => c.Email == email);
+            return Json(exists);
+        }
     }
 }
