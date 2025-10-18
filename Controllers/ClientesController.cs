@@ -164,10 +164,19 @@ namespace sistemaVeterinario.Controllers
         }
 
         [HttpGet]
-        public async Task<JsonResult> ClienteEmailExists(string email)
+        public async Task<JsonResult> ClienteEmailExists(string email, int? id)
         {
-            var exists = await _context.Clientes.AnyAsync(c => c.Email == email);
-            return Json(exists);
+            bool exists;
+
+            if (id.HasValue) 
+            { 
+                exists = await _context.Clientes.AnyAsync(c => c.Email == email && c.IdCliente != id.Value);
+            } else 
+            {
+                exists = await _context.Clientes.AnyAsync(c => c.Email == email);
+            }
+
+                return Json(exists);
         }
     }
 }
