@@ -1,16 +1,16 @@
-﻿@model IEnumerable<sistemaVeterinario.Models.Mascota>
+@model IEnumerable<sistemaVeterinario.Models.Mascota>
 
 @{
-    ViewData["Title"] = "Index";
+    ViewData["Title"] = "Mascotas";
 }
 
-<h1>Index</h1>
+<h1>Gestión de Mascotas</h1>
 
 <p>
-    <a asp-action="Create">Create New</a>
+    <a asp-action="Create" class="btn btn-primary">Registrar Nueva Mascota</a>
 </p>
-<table class="table">
-    <thead>
+<table class="table table-bordered table-hover">
+    <thead class="table-dark">
         <tr>
             <th>
                 @Html.DisplayNameFor(model => model.Nombre)
@@ -22,15 +22,15 @@
                 @Html.DisplayNameFor(model => model.Edad)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.IdClienteNavigation)
+                Dueño (Cliente)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.IdEspecieNavigation)
+                Especie
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.IdRazaNavigation)
+                Raza
             </th>
-            <th></th>
+            <th>Acciones</th>
         </tr>
     </thead>
     <tbody>
@@ -54,12 +54,48 @@
             <td>
                 @Html.DisplayFor(modelItem => item.IdRazaNavigation.IdRaza)
             </td>
-            <td>
-                <a asp-action="Edit" asp-route-id="@item.IdMascota">Edit</a> |
-                <a asp-action="Details" asp-route-id="@item.IdMascota">Details</a> |
-                <a asp-action="Delete" asp-route-id="@item.IdMascota">Delete</a>
+            <td class="text-center">
+                <a asp-action="Edit" asp-route-id="@item.IdMascota" class="btn btn-warning">Editar</a>
+                <button class="btn btn-danger" onclick="eliminarMascota(@item.IdMascota)">Eliminar</button>
             </td>
         </tr>
 }
     </tbody>
 </table>
+
+@section Scripts {
+    <script>
+        const eliminarMascota = async (id) => {
+            const { isConfirmed } = await Swal.fire({
+                title: '¿Está seguro de eliminar?',
+                text: "No podrá revertir esta acción.",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                confirmButtonText: 'Sí, ¡eliminar!',
+                cancelButtonText: 'Cancelar'
+            });
+
+            if (isConfirmed) {
+                const response = await fetch(`@Url.Action("Delete", "Mascotas")/${id}`);
+                const result = await response.json();
+
+                if (result === 'ok') {
+                    await Swal.fire(
+                        '¡Eliminada!',
+                        'La mascota ha sido eliminada.',
+                        'success'
+                    );
+                    location.reload();
+                } else {
+                    await Swal.fire(
+                        'Error',
+                        'Ocurrió un error al eliminar la mascota.',
+                        'error'
+                    );
+                }
+            }
+        }
+    </script>
+}
