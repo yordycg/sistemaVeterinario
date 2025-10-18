@@ -10,33 +10,33 @@
 <hr />
 <div class="row">
     <div class="col-md-4">
-        <form asp-action="Edit">
+        <form asp-action="Edit" id="formClienteEdit">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <input type="hidden" asp-for="IdCliente" />
             <div class="form-group">
                 <label asp-for="Run" class="control-label"></label>
-                <input asp-for="Run" class="form-control" />
-                <span asp-validation-for="Run" class="text-danger"></span>
+                <input asp-for="Run" class="form-control" readonly />
+                <span id="e-Run" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <label asp-for="Nombre" class="control-label"></label>
                 <input asp-for="Nombre" class="form-control" />
-                <span asp-validation-for="Nombre" class="text-danger"></span>
+                <span id="e-Nombre" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <label asp-for="Telefono" class="control-label"></label>
-                <input asp-for="Telefono" class="form-control" />
-                <span asp-validation-for="Telefono" class="text-danger"></span>
+                <input asp-for="Telefono" class="form-control" onkeypress="return Validaciones.soloNumeros(event)" />
+                <span id="e-Telefono" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <label asp-for="Email" class="control-label"></label>
                 <input asp-for="Email" class="form-control" />
-                <span asp-validation-for="Email" class="text-danger"></span>
+                <span id="e-Email" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <label asp-for="Direccion" class="control-label"></label>
                 <input asp-for="Direccion" class="form-control" />
-                <span asp-validation-for="Direccion" class="text-danger"></span>
+                <span id="e-Direccion" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <input type="submit" value="Save" class="btn btn-primary" />
@@ -50,5 +50,54 @@
 </div>
 
 @section Scripts {
+    <script src="~/js/validaciones.js"></script>
+    <script>
+        const verificarEmailDB = async (email, id) => {
+            const url = `@Url.Action("ClienteEmailExists", "Clientes")?email=${email}&id=${id}`;
+            const response = await fetch(url);
+            return await response.json();
+        }
+
+        const formClienteEdit = document.getElementById('formClienteEdit');
+        formClienteEdit.addEventListener('submit', async (event) => {
+            await validarFormularioEdit(event);
+        });
+
+        const validarFormularioEdit = async (evt) => {
+
+            const inputs = document.querySelectorAll('#formClienteEdit .form-control');
+
+            for (const item of inputs) {
+                if (item.value.trim() === '') {
+                    item.classList.add('is-invalid');
+                    document.getElementById(`e-${item.id}`).innerHTML = '<span class="badge bg-danger">Campo Obligatorio</span>';
+                } else {
+                    item.classList.remove('is-invalid');
+                    document.getElementById(`e-${item.id}`).innerHTML = '';
+
+                    if (item.id === "Email") {
+                        const clienteId = @Model.IdCliente;
+
+                        if (!Validaciones.validarEmail(item.value)) 
+                        {
+                            item.classList.add('is-invalid');
+                            document.getElementById(`e-${item.id}`).innerHTML = '<span class="badge bg-danger">Formato Email incorrecto!</span>';
+                        }
+                        if (await verificarEmailDB(item.value, clienteId))
+                        {
+                            document.getElementById(`e-${item.id}`).innerHTML = '<span class="badge bg-danger">El Email ya se encuentra registrado!</span>';
+                            item.classList.add('is-invalid');
+                        }
+                    }
+
+                    item.classList.remove('is-valid');
+                }
+            }
+
+            if (document.querySelectorAll('#formClienteEdit .is-invalid').length > 0){
+                evt.preventDefault();
+            }
+        };
+    </script>
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
 }
