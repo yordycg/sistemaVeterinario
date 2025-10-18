@@ -26,5 +26,7 @@ public partial class Cliente
     [StringLength(100, ErrorMessage = "El nombre no puede tener más de 100 caracteres.")]
     public string? Direccion { get; set; }
 
+    public string RunYNombre => $"{Run} | {Nombre}";
+
     public virtual ICollection<Mascota> Mascota { get; set; } = new List<Mascota>();
 }
