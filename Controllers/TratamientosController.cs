@@ -9,7 +9,7 @@ using sistemaVeterinario.Models;
 
 namespace sistemaVeterinario.Controllers
 {
-    public class TratamientoesController : Controller
+    public class TratamientosController : Controller
     {
         private readonly SistemaVeterinarioContext _context;
 

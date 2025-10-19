@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
+using System.ComponentModel.DataAnnotations.Schema;
 using Microsoft.AspNetCore.Mvc.ModelBinding.Validation;
 using System.ComponentModel.DataAnnotations;
 
@@ -27,6 +28,9 @@ public partial class Consulta
     public string? Motivo { get; set; }
 
     public string? Diagnostico { get; set; }
+
+    [NotMapped]
+    public string MascotaYFecha => $"{IdMascotaNavigation?.Nombre} - {FechaConsulta.ToString("d")}";
 
     [ValidateNever]
     public virtual EstadoConsulta IdEstadoConsultaNavigation { get; set; } = null!;
