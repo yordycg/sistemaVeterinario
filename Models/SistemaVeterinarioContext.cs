@@ -294,6 +294,12 @@ public partial class SistemaVeterinarioContext : DbContext
             new Raza { IdRaza = 7, NombreRaza = "Canario" }
         );
 
+        modelBuilder.Entity<EstadoConsulta>().HasData(
+            new EstadoConsulta { IdEstadoConsulta = 1, NombreEstado = "Pendiente" },
+            new EstadoConsulta { IdEstadoConsulta = 2, NombreEstado = "En Progreso" },
+            new EstadoConsulta { IdEstadoConsulta = 3, NombreEstado = "Finalizada" }
+        );
+
         OnModelCreatingPartial(modelBuilder);
     }
 
