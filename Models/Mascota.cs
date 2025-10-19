@@ -3,6 +3,8 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 
+using System.ComponentModel.DataAnnotations.Schema;
+
 namespace sistemaVeterinario.Models;
 
 public partial class Mascota
@@ -27,6 +29,9 @@ public partial class Mascota
 
     [Range(0, 50, ErrorMessage = "La edad debe ser un número entre 0 y 50.")]
     public int? Edad { get; set; }
+
+    [NotMapped]
+    public string NombreDueño => IdClienteNavigation != null ? $"{Nombre} - {IdClienteNavigation.Run}" : Nombre;
 
     [ValidateNever]
     public virtual ICollection<Consulta> Consulta { get; set; } = new List<Consulta>();

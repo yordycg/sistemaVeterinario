@@ -50,7 +50,7 @@ namespace sistemaVeterinario.Controllers
         public IActionResult Create()
         {
             ViewData["IdEstadoConsulta"] = new SelectList(_context.EstadoConsultas, "IdEstadoConsulta", "NombreEstado");
-            ViewData["IdMascota"] = new SelectList(_context.Mascotas, "IdMascota", "Nombre");
+            ViewData["IdMascota"] = new SelectList(_context.Mascotas, "IdMascota", "NombreDueño");
             ViewData["IdUsuario"] = new SelectList(_context.Usuarios, "IdUsuario", "Nombre");
             return View();
         }
@@ -67,7 +67,7 @@ namespace sistemaVeterinario.Controllers
                 return RedirectToAction(nameof(Index));
             }
             ViewData["IdEstadoConsulta"] = new SelectList(_context.EstadoConsultas, "IdEstadoConsulta", "NombreEstado", consulta.IdEstadoConsulta);
-            ViewData["IdMascota"] = new SelectList(_context.Mascotas, "IdMascota", "Nombre", consulta.IdMascota);
+            ViewData["IdMascota"] = new SelectList(_context.Mascotas, "IdMascota", "NombreDueño", consulta.IdMascota);
             ViewData["IdUsuario"] = new SelectList(_context.Usuarios, "IdUsuario", "Nombre", consulta.IdUsuario);
             return View(consulta);
         }
@@ -86,7 +86,7 @@ namespace sistemaVeterinario.Controllers
                 return NotFound();
             }
             ViewData["IdEstadoConsulta"] = new SelectList(_context.EstadoConsultas, "IdEstadoConsulta", "NombreEstado", consulta.IdEstadoConsulta);
-            ViewData["IdMascota"] = new SelectList(_context.Mascotas, "IdMascota", "Nombre", consulta.IdMascota);
+            ViewData["IdMascota"] = new SelectList(_context.Mascotas, "IdMascota", "NombreDueño", consulta.IdMascota);
             ViewData["IdUsuario"] = new SelectList(_context.Usuarios, "IdUsuario", "Nombre", consulta.IdUsuario);
             return View(consulta);
         }
@@ -122,7 +122,7 @@ namespace sistemaVeterinario.Controllers
                 return RedirectToAction(nameof(Index));
             }
             ViewData["IdEstadoConsulta"] = new SelectList(_context.EstadoConsultas, "IdEstadoConsulta", "NombreEstado", consulta.IdEstadoConsulta);
-            ViewData["IdMascota"] = new SelectList(_context.Mascotas, "IdMascota", "Nombre", consulta.IdMascota);
+            ViewData["IdMascota"] = new SelectList(_context.Mascotas, "IdMascota", "NombreDueño", consulta.IdMascota);
             ViewData["IdUsuario"] = new SelectList(_context.Usuarios, "IdUsuario", "Nombre", consulta.IdUsuario);
             return View(consulta);
         }
