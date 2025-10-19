@@ -282,6 +282,24 @@ public partial class SistemaVeterinarioContext : DbContext
             new EstadoUsuario { IdEstadoUsuario = 2, NombreEstado = "Inactivo" }
         );
 
+        modelBuilder.Entity<Especy>().HasData(
+            new Especy { IdEspecie = 1, NombreEspecie = "Perro" },
+            new Especy { IdEspecie = 2, NombreEspecie = "Gato" },
+            new Especy { IdEspecie = 3, NombreEspecie = "Hámster" },
+            new Especy { IdEspecie = 4, NombreEspecie = "Conejo" },
+            new Especy { IdEspecie = 5, NombreEspecie = "Ave" }
+        );
+
+        modelBuilder.Entity<Raza>().HasData(
+            new Raza { IdRaza = 1, NombreRaza = "Labrador" },
+            new Raza { IdRaza = 2, NombreRaza = "Poodle" },
+            new Raza { IdRaza = 3, NombreRaza = "Siamés" },
+            new Raza { IdRaza = 4, NombreRaza = "Persa" },
+            new Raza { IdRaza = 5, NombreRaza = "Dorado" },
+            new Raza { IdRaza = 6, NombreRaza = "Cabeza de León" },
+            new Raza { IdRaza = 7, NombreRaza = "Canario" }
+        );
+
         OnModelCreatingPartial(modelBuilder);
     }
 
