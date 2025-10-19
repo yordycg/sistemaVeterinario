@@ -126,30 +126,8 @@ namespace sistemaVeterinario.Controllers
             return View(usuario);
         }
 
-        // GET: Usuarios/Delete/5
-        public async Task<IActionResult> Delete(int? id)
-        {
-            if (id == null)
-            {
-                return NotFound();
-            }
 
-            var usuario = await _context.Usuarios
-                .Include(u => u.IdEstadoUsuarioNavigation)
-                .Include(u => u.IdRolNavigation)
-                .FirstOrDefaultAsync(m => m.IdUsuario == id);
-            if (usuario == null)
-            {
-                return NotFound();
-            }
-
-            return View(usuario);
-        }
-
-        // POST: Usuarios/Delete/5
-        [HttpPost, ActionName("Delete")]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteConfirmed(int id)
+        public async Task<IActionResult> Delete(int id)
         {
             var usuario = await _context.Usuarios.FindAsync(id);
             if (usuario != null)
@@ -158,7 +136,7 @@ namespace sistemaVeterinario.Controllers
             }
 
             await _context.SaveChangesAsync();
-            return RedirectToAction(nameof(Index));
+            return Json("ok");
         }
 
         private bool UsuarioExists(int id)
