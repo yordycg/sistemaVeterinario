@@ -120,30 +120,7 @@ namespace sistemaVeterinario.Controllers
             ViewData["IdConsulta"] = new SelectList(_context.Consultas, "IdConsulta", "Motivo", tratamiento.IdConsulta);
             return View(tratamiento);
         }
-
-        // GET: Tratamientoes/Delete/5
-        public async Task<IActionResult> Delete(int? id)
-        {
-            if (id == null)
-            {
-                return NotFound();
-            }
-
-            var tratamiento = await _context.Tratamientos
-                .Include(t => t.IdConsultaNavigation)
-                .FirstOrDefaultAsync(m => m.IdTratamiento == id);
-            if (tratamiento == null)
-            {
-                return NotFound();
-            }
-
-            return View(tratamiento);
-        }
-
-        // POST: Tratamientoes/Delete/5
-        [HttpPost, ActionName("Delete")]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteConfirmed(int id)
+                public async Task<IActionResult> Delete(int id)
         {
             var tratamiento = await _context.Tratamientos.FindAsync(id);
             if (tratamiento != null)
@@ -152,7 +129,7 @@ namespace sistemaVeterinario.Controllers
             }
 
             await _context.SaveChangesAsync();
-            return RedirectToAction(nameof(Index));
+            return Json("ok");
         }
 
         private bool TratamientoExists(int id)
