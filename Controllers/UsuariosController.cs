@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -54,8 +54,6 @@ namespace sistemaVeterinario.Controllers
         }
 
         // POST: Usuarios/Create
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("IdUsuario,IdRol,IdEstadoUsuario,Nombre,Email,Password")] Usuario usuario)
@@ -84,14 +82,12 @@ namespace sistemaVeterinario.Controllers
             {
                 return NotFound();
             }
-            ViewData["IdEstadoUsuario"] = new SelectList(_context.EstadoUsuarios, "IdEstadoUsuario", "IdEstadoUsuario", usuario.IdEstadoUsuario);
-            ViewData["IdRol"] = new SelectList(_context.Roles, "IdRol", "IdRol", usuario.IdRol);
+            ViewData["IdEstadoUsuario"] = new SelectList(_context.EstadoUsuarios, "IdEstadoUsuario", "NombreEstado", usuario.IdEstadoUsuario);
+            ViewData["IdRol"] = new SelectList(_context.Roles, "IdRol", "NombreRol", usuario.IdRol);
             return View(usuario);
         }
 
         // POST: Usuarios/Edit/5
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, [Bind("IdUsuario,IdRol,IdEstadoUsuario,Nombre,Email,Password")] Usuario usuario)
@@ -121,8 +117,8 @@ namespace sistemaVeterinario.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["IdEstadoUsuario"] = new SelectList(_context.EstadoUsuarios, "IdEstadoUsuario", "IdEstadoUsuario", usuario.IdEstadoUsuario);
-            ViewData["IdRol"] = new SelectList(_context.Roles, "IdRol", "IdRol", usuario.IdRol);
+            ViewData["IdEstadoUsuario"] = new SelectList(_context.EstadoUsuarios, "IdEstadoUsuario", "NombreEstado", usuario.IdEstadoUsuario);
+            ViewData["IdRol"] = new SelectList(_context.Roles, "IdRol", "NombreRol", usuario.IdRol);
             return View(usuario);
         }
 
