@@ -1,59 +1,85 @@
-﻿@model sistemaVeterinario.Models.Consulta
+@model sistemaVeterinario.Models.Consulta
 
 @{
-    ViewData["Title"] = "Edit";
+    ViewData["Title"] = "Editar Consulta";
 }
 
-<h1>Edit</h1>
+<h1>Editar Consulta</h1>
 
 <h4>Consulta</h4>
 <hr />
 <div class="row">
     <div class="col-md-4">
-        <form asp-action="Edit">
+        <form asp-action="Edit" id="formConsultaEdit">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <input type="hidden" asp-for="IdConsulta" />
             <div class="form-group">
-                <label asp-for="IdMascota" class="control-label"></label>
-                <select asp-for="IdMascota" class="form-control" asp-items="ViewBag.IdMascota"></select>
-                <span asp-validation-for="IdMascota" class="text-danger"></span>
+                <label asp-for="IdMascota" class="control-label">Mascota</label>
+                <select asp-for="IdMascota" class="form-select" asp-items="ViewBag.IdMascota"></select>
+                <span id="e-IdMascota" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="IdUsuario" class="control-label"></label>
-                <select asp-for="IdUsuario" class="form-control" asp-items="ViewBag.IdUsuario"></select>
-                <span asp-validation-for="IdUsuario" class="text-danger"></span>
+                <label asp-for="IdUsuario" class="control-label">Veterinario</label>
+                <select asp-for="IdUsuario" class="form-select" asp-items="ViewBag.IdUsuario"></select>
+                <span id="e-IdUsuario" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="IdEstadoConsulta" class="control-label"></label>
-                <select asp-for="IdEstadoConsulta" class="form-control" asp-items="ViewBag.IdEstadoConsulta"></select>
-                <span asp-validation-for="IdEstadoConsulta" class="text-danger"></span>
+                <label asp-for="IdEstadoConsulta" class="control-label">Estado</label>
+                <select asp-for="IdEstadoConsulta" class="form-select" asp-items="ViewBag.IdEstadoConsulta"></select>
+                <span id="e-IdEstadoConsulta" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="FechaConsulta" class="control-label"></label>
-                <input asp-for="FechaConsulta" class="form-control" />
-                <span asp-validation-for="FechaConsulta" class="text-danger"></span>
+                <label asp-for="FechaConsulta" class="control-label">Fecha</label>
+                <input asp-for="FechaConsulta" class="form-control" type="date" />
+                <span id="e-FechaConsulta" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <label asp-for="Motivo" class="control-label"></label>
-                <input asp-for="Motivo" class="form-control" />
-                <span asp-validation-for="Motivo" class="text-danger"></span>
+                <textarea asp-for="Motivo" class="form-control"></textarea>
+                <span id="e-Motivo" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <label asp-for="Diagnostico" class="control-label"></label>
-                <input asp-for="Diagnostico" class="form-control" />
-                <span asp-validation-for="Diagnostico" class="text-danger"></span>
+                <textarea asp-for="Diagnostico" class="form-control"></textarea>
+                <span id="e-Diagnostico" class="text-danger"></span>
             </div>
-            <div class="form-group">
-                <input type="submit" value="Save" class="btn btn-primary" />
+            <div class="form-group mt-3">
+                <input type="submit" value="Guardar" class="btn btn-primary" />
             </div>
         </form>
     </div>
 </div>
 
 <div>
-    <a asp-action="Index">Back to List</a>
+    <a asp-action="Index">Volver a la lista</a>
 </div>
 
 @section Scripts {
-    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    <script>
+        document.getElementById('formConsultaEdit').addEventListener('submit', function (event) {
+            event.preventDefault();
+
+            document.querySelectorAll('#formConsultaEdit .form-control').forEach((item) => {
+
+                if (item.value.trim() === ''){
+                    item.classList.add('is-invalid');
+                    document.getElementById(`e-${item.id}`).innerHTML = '<span class="badge bg-danger">Campo Obligatorio!</span>';
+
+                    // Diagnostico puede estar vacio...
+                    if(item.id === 'Diagnostico'){
+                        item.classList.remove('is-invalid');
+                        document.getElementById(`e-${item.id}`).innerHTML = '';
+                    }
+                } else {
+                    item.classList.remove('is-invalid');
+                    document.getElementById(`e-${item.id}`).innerHTML = '';
+                    item.classList.add('is-valid');
+                }
+            });
+
+            if (document.querySelectorAll('.is-invalid').length === 0){
+                event.target.submit();
+            }
+        });
+    </script>
 }
