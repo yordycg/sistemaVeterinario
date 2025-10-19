@@ -12,20 +12,20 @@ namespace sistemaVeterinario.Migrations
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.DeleteData(
-                table: "roles",
-                keyColumn: "id_rol",
-                keyValue: 1);
+            // migrationBuilder.DeleteData(
+            //     table: "roles",
+            //     keyColumn: "id_rol",
+            //     keyValue: 1);
 
-            migrationBuilder.DeleteData(
-                table: "roles",
-                keyColumn: "id_rol",
-                keyValue: 2);
+            // migrationBuilder.DeleteData(
+            //     table: "roles",
+            //     keyColumn: "id_rol",
+            //     keyValue: 2);
 
-            migrationBuilder.DeleteData(
-                table: "roles",
-                keyColumn: "id_rol",
-                keyValue: 3);
+            // migrationBuilder.DeleteData(
+            //     table: "roles",
+            //     keyColumn: "id_rol",
+            //     keyValue: 3);
         }
 
         /// <inheritdoc />
