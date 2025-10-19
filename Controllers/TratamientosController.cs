@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -13,19 +13,19 @@ namespace sistemaVeterinario.Controllers
     {
         private readonly SistemaVeterinarioContext _context;
 
-        public TratamientoesController(SistemaVeterinarioContext context)
+        public TratamientosController(SistemaVeterinarioContext context)
         {
             _context = context;
         }
 
-        // GET: Tratamientoes
+        // GET: Tratamientos
         public async Task<IActionResult> Index()
         {
             var sistemaVeterinarioContext = _context.Tratamientos.Include(t => t.IdConsultaNavigation);
             return View(await sistemaVeterinarioContext.ToListAsync());
         }
 
-        // GET: Tratamientoes/Details/5
+        // GET: Tratamientos/Details/5
         public async Task<IActionResult> Details(int? id)
         {
             if (id == null)
@@ -44,16 +44,15 @@ namespace sistemaVeterinario.Controllers
             return View(tratamiento);
         }
 
-        // GET: Tratamientoes/Create
+        // GET: Tratamientos/Create
         public IActionResult Create()
         {
-            ViewData["IdConsulta"] = new SelectList(_context.Consultas, "IdConsulta", "Motivo");
+            var consultas = _context.Consultas.Include(c => c.IdMascotaNavigation);
+            ViewData["IdConsulta"] = new SelectList(consultas, "IdConsulta", "MascotaYFecha");
             return View();
         }
 
-        // POST: Tratamientoes/Create
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
+        // POST: Tratamientos/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("IdTratamiento,IdConsulta,Descripcion,Medicamento")] Tratamiento tratamiento)
@@ -64,11 +63,12 @@ namespace sistemaVeterinario.Controllers
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["IdConsulta"] = new SelectList(_context.Consultas, "IdConsulta", "Motivo", tratamiento.IdConsulta);
+            var consultas = _context.Consultas.Include(c => c.IdMascotaNavigation);
+            ViewData["IdConsulta"] = new SelectList(consultas, "IdConsulta", "MascotaYFecha", tratamiento.IdConsulta);
             return View(tratamiento);
         }
 
-        // GET: Tratamientoes/Edit/5
+        // GET: Tratamientos/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)
@@ -81,13 +81,12 @@ namespace sistemaVeterinario.Controllers
             {
                 return NotFound();
             }
-            ViewData["IdConsulta"] = new SelectList(_context.Consultas, "IdConsulta", "Motivo", tratamiento.IdConsulta);
+            var consultas = _context.Consultas.Include(c => c.IdMascotaNavigation);
+            ViewData["IdConsulta"] = new SelectList(consultas, "IdConsulta", "MascotaYFecha", tratamiento.IdConsulta);
             return View(tratamiento);
         }
 
-        // POST: Tratamientoes/Edit/5
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
+        // POST: Tratamientos/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, [Bind("IdTratamiento,IdConsulta,Descripcion,Medicamento")] Tratamiento tratamiento)
@@ -117,10 +116,12 @@ namespace sistemaVeterinario.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["IdConsulta"] = new SelectList(_context.Consultas, "IdConsulta", "Motivo", tratamiento.IdConsulta);
+            var consultas = _context.Consultas.Include(c => c.IdMascotaNavigation);
+            ViewData["IdConsulta"] = new SelectList(consultas, "IdConsulta", "MascotaYFecha", tratamiento.IdConsulta);
             return View(tratamiento);
         }
-                public async Task<IActionResult> Delete(int id)
+
+        public async Task<IActionResult> Delete(int id)
         {
             var tratamiento = await _context.Tratamientos.FindAsync(id);
             if (tratamiento != null)
