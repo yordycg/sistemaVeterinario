@@ -48,8 +48,8 @@ namespace sistemaVeterinario.Controllers
         // GET: Usuarios/Create
         public IActionResult Create()
         {
-            ViewData["IdEstadoUsuario"] = new SelectList(_context.EstadoUsuarios, "IdEstadoUsuario", "IdEstadoUsuario");
-            ViewData["IdRol"] = new SelectList(_context.Roles, "IdRol", "IdRol");
+            ViewData["IdEstadoUsuario"] = new SelectList(_context.EstadoUsuarios, "IdEstadoUsuario", "NombreEstado");
+            ViewData["IdRol"] = new SelectList(_context.Roles, "IdRol", "NombreRol");
             return View();
         }
 
@@ -66,8 +66,8 @@ namespace sistemaVeterinario.Controllers
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["IdEstadoUsuario"] = new SelectList(_context.EstadoUsuarios, "IdEstadoUsuario", "IdEstadoUsuario", usuario.IdEstadoUsuario);
-            ViewData["IdRol"] = new SelectList(_context.Roles, "IdRol", "IdRol", usuario.IdRol);
+            ViewData["IdEstadoUsuario"] = new SelectList(_context.EstadoUsuarios, "IdEstadoUsuario", "NombreEstado", usuario.IdEstadoUsuario);
+            ViewData["IdRol"] = new SelectList(_context.Roles, "IdRol", "NombreRol", usuario.IdRol);
             return View(usuario);
         }
 
@@ -137,6 +137,23 @@ namespace sistemaVeterinario.Controllers
 
             await _context.SaveChangesAsync();
             return Json("ok");
+        }
+
+        [HttpGet]
+        public async Task<JsonResult> UsuarioEmailExists(string email, int? id)
+        {
+            bool exists;
+
+            if (id.HasValue)
+            {
+                exists = await _context.Usuarios.AnyAsync(u => u.Email == email && u.IdUsuario != id.Value);
+            }
+            else
+            {
+                exists = await _context.Usuarios.AnyAsync(u => u.Email == email);
+            }
+
+            return Json(exists);
         }
 
         private bool UsuarioExists(int id)
