@@ -1,65 +1,108 @@
-﻿@model IEnumerable<sistemaVeterinario.Models.Consulta>
+@model IEnumerable<sistemaVeterinario.Models.Consulta>
 
 @{
-    ViewData["Title"] = "Index";
+    ViewData["Title"] = "Consultas";
 }
 
-<h1>Index</h1>
+<h1>Consultas</h1>
 
 <p>
-    <a asp-action="Create">Create New</a>
+    <a asp-action="Create" class="btn btn-success">Crear Nueva Consulta</a>
 </p>
 <table class="table">
     <thead>
         <tr>
             <th>
-                @Html.DisplayNameFor(model => model.FechaConsulta)
+                Fecha Consulta
+            </th>
+            <th>
+                Mascota
+            </th>
+            <th>
+                Veterinario
             </th>
             <th>
                 @Html.DisplayNameFor(model => model.Motivo)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Diagnostico)
+                Estado
             </th>
-            <th>
-                @Html.DisplayNameFor(model => model.IdEstadoConsultaNavigation)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.IdMascotaNavigation)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.IdUsuarioNavigation)
-            </th>
-            <th></th>
+            <th>Acciones</th>
         </tr>
     </thead>
-    <tbody>
+    <tbody id="consultas-table-body">
 @foreach (var item in Model) {
-        <tr>
+        <tr id="consulta-@item.IdConsulta">
             <td>
                 @Html.DisplayFor(modelItem => item.FechaConsulta)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Motivo)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Diagnostico)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.IdEstadoConsultaNavigation.IdEstadoConsulta)
             </td>
             <td>
                 @Html.DisplayFor(modelItem => item.IdMascotaNavigation.Nombre)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.IdUsuarioNavigation.Email)
+                @Html.DisplayFor(modelItem => item.IdUsuarioNavigation.Nombre)
             </td>
             <td>
-                <a asp-action="Edit" asp-route-id="@item.IdConsulta">Edit</a> |
-                <a asp-action="Details" asp-route-id="@item.IdConsulta">Details</a> |
-                <a asp-action="Delete" asp-route-id="@item.IdConsulta">Delete</a>
+                @Html.DisplayFor(modelItem => item.Motivo)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.IdEstadoConsultaNavigation.NombreEstado)
+            </td>
+            <td>
+                <a asp-action="Edit" asp-route-id="@item.IdConsulta" class="btn btn-warning btn-sm">Editar</a> |
+                <button class="btn btn-danger btn-sm btn-delete" data-id="@item.IdConsulta" data-name="Consulta del @item.FechaConsulta para @item.IdMascotaNavigation.Nombre">Eliminar</button>
             </td>
         </tr>
 }
     </tbody>
 </table>
+
+@section Scripts {
+    <script>
+        document.getElementById('consultas-table-body').addEventListener('click', function (event) {
+            if (event.target && event.target.classList.contains('btn-delete')) {
+                const consultaId = event.target.getAttribute('data-id');
+                const consultaName = event.target.getAttribute('data-name');
+
+                Swal.fire({
+                    title: `¿Estás seguro de que quieres eliminar la ${consultaName}?`,
+                    text: "¡No podrás revertir esto!",
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#3085d6',
+                    cancelButtonColor: '#d33',
+                    confirmButtonText: 'Sí, ¡bórrala!',
+                    cancelButtonText: 'Cancelar'
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        fetch(`/Consultas/Delete/${consultaId}`, {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json'
+                            }
+                        })
+                        .then(response => response.json())
+                        .then(data => {
+                            if (data === "ok") {
+                                Swal.fire(
+                                    '¡Borrada!',
+                                    `La ${consultaName} ha sido eliminada.`,
+                                    'success'
+                                ).then(() => {
+                                    const row = document.getElementById(`consulta-${consultaId}`);
+                                    row.remove();
+                                });
+                            } else {
+                                Swal.fire(
+                                    'Error',
+                                    'Ocurrió un error al eliminar la consulta.',
+                                    'error'
+                                );
+                            }
+                        });
+                    }
+                });
+            }
+        });
+    </script>
+}
