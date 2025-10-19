@@ -62,6 +62,15 @@ namespace sistemaVeterinario.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("IdMascota,IdCliente,IdEspecie,IdRaza,Nombre,Sexo,Edad")] Mascota mascota)
         {
+            //if (!ModelState.IsValid) 
+            //{
+            //    var errors = ModelState.Values.SelectMany(v => v.Errors);
+            //    foreach (var error in errors)
+            //    {
+            //        System.Diagnostics.Debug.WriteLine($"ERROR: {error.ErrorMessage}");
+            //    }
+            //}
+
             if (ModelState.IsValid)
             {
                 _context.Add(mascota);
