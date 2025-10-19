@@ -1,43 +1,56 @@
 ﻿@model sistemaVeterinario.Models.Mascota
 
 @{
-    ViewData["Title"] = "Create";
+    ViewData["Title"] = "Registrar Mascota";
 }
 
-<h1>Create</h1>
+<h1>Registrar Mascota</h1>
 
 <h4>Mascota</h4>
 <hr />
 <div class="row">
     <div class="col-md-4">
-        <form asp-action="Create">
+        <form asp-action="Create" id="formMascota">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <div class="form-group">
-                <label asp-for="IdCliente" class="control-label"></label>
-                <select asp-for="IdCliente" class ="form-control" asp-items="ViewBag.IdCliente"></select>
+                <label asp-for="IdCliente" class="control-label">Dueño</label>
+                <select asp-for="IdCliente" class ="form-control" asp-items="ViewBag.IdCliente">
+                    <option value="">-- Seleccionar Dueño --</option>
+                </select>
+                <span id="e-IdCliente" class="text-danger"></span>
+            </div>
+            @* TODO: implementar que al seleccionar una especie, el select de raza me muestre sus razas respectivas .*@
+            <div class="form-group">
+                <label asp-for="IdEspecie" class="control-label">Especie</label>
+                <select asp-for="IdEspecie" class ="form-control" asp-items="ViewBag.IdEspecie">
+                    <option value="">-- Seleccionar Especie --</option>
+                </select>
+                <span id="e-IdEspecie" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="IdEspecie" class="control-label"></label>
-                <select asp-for="IdEspecie" class ="form-control" asp-items="ViewBag.IdEspecie"></select>
-            </div>
-            <div class="form-group">
-                <label asp-for="IdRaza" class="control-label"></label>
-                <select asp-for="IdRaza" class ="form-control" asp-items="ViewBag.IdRaza"></select>
+                <label asp-for="IdRaza" class="control-label">Raza</label>
+                <select asp-for="IdRaza" class ="form-control" asp-items="ViewBag.IdRaza">
+                    <option value="">-- Seleccionar Raza --</option>
+                </select>
+                <span id="e-IdRaza" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <label asp-for="Nombre" class="control-label"></label>
                 <input asp-for="Nombre" class="form-control" />
-                <span asp-validation-for="Nombre" class="text-danger"></span>
+                @* <span asp-validation-for="Nombre" class="text-danger"></span> *@
+                <span id="e-Nombre" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <label asp-for="Sexo" class="control-label"></label>
                 <input asp-for="Sexo" class="form-control" />
-                <span asp-validation-for="Sexo" class="text-danger"></span>
+                @* <span asp-validation-for="Sexo" class="text-danger"></span> *@
+                <span id="e-Sexo" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <label asp-for="Edad" class="control-label"></label>
-                <input asp-for="Edad" class="form-control" />
-                <span asp-validation-for="Edad" class="text-danger"></span>
+                <input asp-for="Edad" class="form-control" onkeypress="return Validaciones.soloNumeros(event)" />
+                @* <span asp-validation-for="Edad" class="text-danger"></span> *@
+                <span id="e-Edad" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <input type="submit" value="Create" class="btn btn-primary" />
@@ -51,5 +64,35 @@
 </div>
 
 @section Scripts {
-    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    @* @{await Html.RenderPartialAsync("_ValidationScriptsPartial");} *@
+
+    <script src="~/js/validaciones.js"></script>
+
+    <script>
+        const formCreateMascota = document.getElementById('formMascota');
+        formCreateMascota.addEventListener('submit', (e) => {
+            validarFormMascota(e);
+        });
+
+        const validarFormMascota = async (evt) => {
+            const inputs = document.querySelectorAll('#formMascota .form-control');
+
+            for (const item of inputs){
+                if (item.value.trim() === ''){
+                    item.classList.add('is-invalid');
+                    document.getElementById(`e-${item.id}`).innerHTML= '<span class="badge bg-danger">Campo Obligatorio!</span>';
+                } else {
+                    item.classList.remove('is-invalid');
+                    document.getElementById(`e-${item.id}`).innerHTML= '';
+
+                    item.classList.add('is-valid');
+                }
+            }
+
+            if (document.querySelectorAll('.is-invalid').length > 0){
+                evt.preventDefault();
+            }
+        };
+
+    </script>
 }
