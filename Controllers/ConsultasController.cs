@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -49,15 +49,13 @@ namespace sistemaVeterinario.Controllers
         // GET: Consultas/Create
         public IActionResult Create()
         {
-            ViewData["IdEstadoConsulta"] = new SelectList(_context.EstadoConsultas, "IdEstadoConsulta", "IdEstadoConsulta");
+            ViewData["IdEstadoConsulta"] = new SelectList(_context.EstadoConsultas, "IdEstadoConsulta", "NombreEstado");
             ViewData["IdMascota"] = new SelectList(_context.Mascotas, "IdMascota", "Nombre");
-            ViewData["IdUsuario"] = new SelectList(_context.Usuarios, "IdUsuario", "Email");
+            ViewData["IdUsuario"] = new SelectList(_context.Usuarios, "IdUsuario", "Nombre");
             return View();
         }
 
         // POST: Consultas/Create
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("IdConsulta,IdMascota,IdUsuario,IdEstadoConsulta,FechaConsulta,Motivo,Diagnostico")] Consulta consulta)
@@ -68,9 +66,9 @@ namespace sistemaVeterinario.Controllers
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["IdEstadoConsulta"] = new SelectList(_context.EstadoConsultas, "IdEstadoConsulta", "IdEstadoConsulta", consulta.IdEstadoConsulta);
+            ViewData["IdEstadoConsulta"] = new SelectList(_context.EstadoConsultas, "IdEstadoConsulta", "NombreEstado", consulta.IdEstadoConsulta);
             ViewData["IdMascota"] = new SelectList(_context.Mascotas, "IdMascota", "Nombre", consulta.IdMascota);
-            ViewData["IdUsuario"] = new SelectList(_context.Usuarios, "IdUsuario", "Email", consulta.IdUsuario);
+            ViewData["IdUsuario"] = new SelectList(_context.Usuarios, "IdUsuario", "Nombre", consulta.IdUsuario);
             return View(consulta);
         }
 
@@ -87,15 +85,13 @@ namespace sistemaVeterinario.Controllers
             {
                 return NotFound();
             }
-            ViewData["IdEstadoConsulta"] = new SelectList(_context.EstadoConsultas, "IdEstadoConsulta", "IdEstadoConsulta", consulta.IdEstadoConsulta);
+            ViewData["IdEstadoConsulta"] = new SelectList(_context.EstadoConsultas, "IdEstadoConsulta", "NombreEstado", consulta.IdEstadoConsulta);
             ViewData["IdMascota"] = new SelectList(_context.Mascotas, "IdMascota", "Nombre", consulta.IdMascota);
-            ViewData["IdUsuario"] = new SelectList(_context.Usuarios, "IdUsuario", "Email", consulta.IdUsuario);
+            ViewData["IdUsuario"] = new SelectList(_context.Usuarios, "IdUsuario", "Nombre", consulta.IdUsuario);
             return View(consulta);
         }
 
         // POST: Consultas/Edit/5
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, [Bind("IdConsulta,IdMascota,IdUsuario,IdEstadoConsulta,FechaConsulta,Motivo,Diagnostico")] Consulta consulta)
@@ -125,9 +121,9 @@ namespace sistemaVeterinario.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["IdEstadoConsulta"] = new SelectList(_context.EstadoConsultas, "IdEstadoConsulta", "IdEstadoConsulta", consulta.IdEstadoConsulta);
+            ViewData["IdEstadoConsulta"] = new SelectList(_context.EstadoConsultas, "IdEstadoConsulta", "NombreEstado", consulta.IdEstadoConsulta);
             ViewData["IdMascota"] = new SelectList(_context.Mascotas, "IdMascota", "Nombre", consulta.IdMascota);
-            ViewData["IdUsuario"] = new SelectList(_context.Usuarios, "IdUsuario", "Email", consulta.IdUsuario);
+            ViewData["IdUsuario"] = new SelectList(_context.Usuarios, "IdUsuario", "Nombre", consulta.IdUsuario);
             return View(consulta);
         }
 
