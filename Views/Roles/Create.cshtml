@@ -1,33 +1,53 @@
-﻿@model sistemaVeterinario.Models.Role
+@model sistemaVeterinario.Models.Role
 
 @{
-    ViewData["Title"] = "Create";
+    ViewData["Title"] = "Crear Rol";
 }
 
-<h1>Create</h1>
+<h1>Crear Rol</h1>
 
-<h4>Role</h4>
+<h4>Rol</h4>
 <hr />
 <div class="row">
     <div class="col-md-4">
-        <form asp-action="Create">
+        <form asp-action="Create" id="formRolCreate">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <div class="form-group">
-                <label asp-for="NombreRol" class="control-label"></label>
+                <label asp-for="NombreRol" class="control-label">Nombre del Rol</label>
                 <input asp-for="NombreRol" class="form-control" />
-                <span asp-validation-for="NombreRol" class="text-danger"></span>
+                <span id="e-NombreRol" class="text-danger"></span>
             </div>
-            <div class="form-group">
-                <input type="submit" value="Create" class="btn btn-primary" />
+            <div class="form-group mt-3">
+                <input type="submit" value="Crear" class="btn btn-primary" />
             </div>
         </form>
     </div>
 </div>
 
 <div>
-    <a asp-action="Index">Back to List</a>
+    <a asp-action="Index">Volver a la lista</a>
 </div>
 
 @section Scripts {
-    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    <script>
+        document.getElementById('formRolCreate').addEventListener('submit', (event) => {
+            event.preventDefault();
+
+            document.querySelectorAll('#formRolCreate .form-control').forEach((item) => {
+
+                if (item.value.trim() === ''){
+                    item.classList.add('is-invalid');
+                    document.getElementById(`e-${item.id}`).innerHTML = '<span class="badge bg-danger">Campo Obligatorio!</span>';
+                } else {
+                    item.classList.remove('is-invalid');
+                    document.getElementById(`e-${item.id}`).innerHTML = '';
+                    item.classList.add('is-valid');
+                }
+            })
+
+            if (document.querySelectorAll('.is-invalid').length === 0) {
+                event.target.submit();
+            }
+        });
+    </script>
 }
