@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.AspNetCore.Mvc.ModelBinding.Validation;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 
@@ -27,11 +28,15 @@ public partial class Mascota
     [Range(0, 50, ErrorMessage = "La edad debe ser un número entre 0 y 50.")]
     public int? Edad { get; set; }
 
+    [ValidateNever]
     public virtual ICollection<Consulta> Consulta { get; set; } = new List<Consulta>();
 
+    [ValidateNever]
     public virtual Cliente IdClienteNavigation { get; set; } = null!;
 
+    [ValidateNever]
     public virtual Especy IdEspecieNavigation { get; set; } = null!;
 
+    [ValidateNever]
     public virtual Raza IdRazaNavigation { get; set; } = null!;
 }
