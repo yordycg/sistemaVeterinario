@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
+using Microsoft.AspNetCore.Mvc.ModelBinding.Validation;
 using System.ComponentModel.DataAnnotations;
 
 namespace sistemaVeterinario.Models;
@@ -25,14 +26,15 @@ public partial class Consulta
     [StringLength(500, ErrorMessage = "El motivo no puede tener más de 500 caracteres.")]
     public string? Motivo { get; set; }
 
-    [Required(ErrorMessage = "El diagnóstico es obligatorio.")]
-    [StringLength(1000, ErrorMessage = "El diagnóstico no puede tener más de 1000 caracteres.")]
     public string? Diagnostico { get; set; }
 
+    [ValidateNever]
     public virtual EstadoConsulta IdEstadoConsultaNavigation { get; set; } = null!;
 
+    [ValidateNever]
     public virtual Mascota IdMascotaNavigation { get; set; } = null!;
 
+    [ValidateNever]
     public virtual Usuario IdUsuarioNavigation { get; set; } = null!;
 
     public virtual ICollection<Tratamiento> Tratamientos { get; set; } = new List<Tratamiento>();
