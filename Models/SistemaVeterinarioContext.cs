@@ -268,6 +268,20 @@ public partial class SistemaVeterinarioContext : DbContext
                 .HasConstraintName("FK__usuarios__id_rol__46E78A0C");
         });
 
+        // TODO: Migrar los datos iniciales del archivo database/data.sql a este método de siembra.
+        // Por ejemplo: Especies, Razas, etc.
+
+        modelBuilder.Entity<Role>().HasData(
+            new Role { IdRol = 1, NombreRol = "Administrador" },
+            new Role { IdRol = 2, NombreRol = "Veterinario" },
+            new Role { IdRol = 3, NombreRol = "Recepcionista" }
+        );
+
+        modelBuilder.Entity<EstadoUsuario>().HasData(
+            new EstadoUsuario { IdEstadoUsuario = 1, NombreEstado = "Activo" },
+            new EstadoUsuario { IdEstadoUsuario = 2, NombreEstado = "Inactivo" }
+        );
+
         OnModelCreatingPartial(modelBuilder);
     }
 
