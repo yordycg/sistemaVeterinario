@@ -131,31 +131,7 @@ namespace sistemaVeterinario.Controllers
             return View(consulta);
         }
 
-        // GET: Consultas/Delete/5
-        public async Task<IActionResult> Delete(int? id)
-        {
-            if (id == null)
-            {
-                return NotFound();
-            }
-
-            var consulta = await _context.Consultas
-                .Include(c => c.IdEstadoConsultaNavigation)
-                .Include(c => c.IdMascotaNavigation)
-                .Include(c => c.IdUsuarioNavigation)
-                .FirstOrDefaultAsync(m => m.IdConsulta == id);
-            if (consulta == null)
-            {
-                return NotFound();
-            }
-
-            return View(consulta);
-        }
-
-        // POST: Consultas/Delete/5
-        [HttpPost, ActionName("Delete")]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteConfirmed(int id)
+        public async Task<IActionResult> Delete(int id)
         {
             var consulta = await _context.Consultas.FindAsync(id);
             if (consulta != null)
@@ -164,7 +140,7 @@ namespace sistemaVeterinario.Controllers
             }
 
             await _context.SaveChangesAsync();
-            return RedirectToAction(nameof(Index));
+            return Json("ok");
         }
 
         private bool ConsultaExists(int id)
