@@ -4,65 +4,73 @@
     ViewData["Title"] = "Consultas";
 }
 
-<h1>Consultas</h1>
-
-<p>
-    <a asp-action="Create" class="btn btn-success">Crear Nueva Consulta</a>
-</p>
-<table class="table">
-    <thead>
-        <tr>
-            <th>
-                Fecha Consulta
-            </th>
-            <th>
-                Mascota
-            </th>
-            <th>
-                Veterinario
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Motivo)
-            </th>
-            <th>
-                Estado
-            </th>
-            <th>Acciones</th>
-        </tr>
-    </thead>
-    <tbody id="consultas-table-body">
+<div class="card shadow mb-4">
+    <div class="card-header py-3 d-flex align-items-center">
+        <h1 class="h3 m-0 font-weight-bold text-primary text-center flex-grow-1">Gestión de Consultas</h1>
+        <div class="ms-auto">
+            <a asp-action="Create" class="btn btn-success btn-sm"><i class="bi bi-plus-lg me-2"></i>Agregar Consulta</a>
+        </div>
+    </div>
+    <div class="card-body">
+        <div class="table-responsive">
+            <table class="table table-bordered table-hover" id="dataTable" width="100%" cellspacing="0">
+                <thead class="table-dark text-center">
+                    <tr>
+                        <th>
+                            Fecha Consulta
+                        </th>
+                        <th>
+                            Estado
+                        </th>
+                        <th>
+                            Mascota
+                        </th>
+                        <th>
+                            Veterinario
+                        </th>
+                        <th>
+                            @Html.DisplayNameFor(model => model.Motivo)
+                        </th>
+                        <th>Acciones</th>
+                    </tr>
+                </thead>
+                <tbody id="consultas-table-body">
 @foreach (var item in Model) {
-        <tr id="consulta-@item.IdConsulta">
-            <td>
-                @Html.DisplayFor(modelItem => item.FechaConsulta)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.IdMascotaNavigation.Nombre)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.IdUsuarioNavigation.Nombre)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Motivo)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.IdEstadoConsultaNavigation.NombreEstado)
-            </td>
-            <td>
-                <a asp-action="Edit" asp-route-id="@item.IdConsulta" class="btn btn-warning btn-sm">Editar</a> |
-                <button class="btn btn-danger btn-sm btn-delete" data-id="@item.IdConsulta" data-name="Consulta del @item.FechaConsulta para @item.IdMascotaNavigation.Nombre">Eliminar</button>
-            </td>
-        </tr>
+                    <tr id="consulta-@item.IdConsulta">
+                        <td>
+                            @Html.DisplayFor(modelItem => item.FechaConsulta)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.IdEstadoConsultaNavigation.NombreEstado)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.IdMascotaNavigation.Nombre)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.IdUsuarioNavigation.Nombre)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.Motivo)
+                        </td>
+                        <td class="text-center">
+                            <a asp-action="Edit" asp-route-id="@item.IdConsulta" class="btn btn-icon-action btn-outline-warning btn-sm"><i class="bi bi-pencil me-0"></i></a>
+                            <button class="btn btn-icon-action btn-outline-danger btn-sm btn-delete" data-id="@item.IdConsulta" data-name="Consulta del @item.FechaConsulta para @item.IdMascotaNavigation.Nombre"><i class="bi bi-trash me-0"></i></button>
+                        </td>
+                    </tr>
 }
-    </tbody>
-</table>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
 
 @section Scripts {
     <script>
         document.getElementById('consultas-table-body').addEventListener('click', function (event) {
-            if (event.target && event.target.classList.contains('btn-delete')) {
-                const consultaId = event.target.getAttribute('data-id');
-                const consultaName = event.target.getAttribute('data-name');
+            const deleteButton = event.target.closest('.btn-delete');
+            if (deleteButton) {
+                const consultaId = deleteButton.getAttribute('data-id');
+                const consultaName = deleteButton.getAttribute('data-name');
 
                 Swal.fire({
                     title: `¿Estás seguro de que quieres eliminar la ${consultaName}?`,
@@ -86,16 +94,34 @@
                             if (data === "ok") {
                                 Swal.fire(
                                     '¡Borrada!',
-                                    `La ${consultaName} ha sido eliminada.`,
+                                    `La ${consultaName} ha sido eliminada.`, 
                                     'success'
                                 ).then(() => {
                                     const row = document.getElementById(`consulta-${consultaId}`);
                                     row.remove();
                                 });
+                            } else if (data === "has_children") {
+                                Swal.fire(
+                                    'No se puede eliminar',
+                                    `La ${consultaName} no puede ser eliminada porque tiene tratamientos asociados.`, 
+                                    'error'
+                                );
+                            } else if (data === "notfound") {
+                                Swal.fire(
+                                    'Error',
+                                    'La consulta no fue encontrada.',
+                                    'error'
+                                );
+                            } else if (data === "error_db_constraint") {
+                                Swal.fire(
+                                    'Error de Base de Datos',
+                                    `La ${consultaName} no puede ser eliminada debido a una restricción de la base de datos (posiblemente tiene registros asociados).`,
+                                    'error'
+                                );
                             } else {
                                 Swal.fire(
                                     'Error',
-                                    'Ocurrió un error al eliminar la consulta.',
+                                    'Ocurrió un error inesperado al eliminar la consulta.',
                                     'error'
                                 );
                             }

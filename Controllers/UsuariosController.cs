@@ -126,13 +126,34 @@ namespace sistemaVeterinario.Controllers
         public async Task<IActionResult> Delete(int id)
         {
             var usuario = await _context.Usuarios.FindAsync(id);
-            if (usuario != null)
+            if (usuario == null)
             {
-                _context.Usuarios.Remove(usuario);
+                return Json("notfound"); // Usuario no encontrado
             }
 
-            await _context.SaveChangesAsync();
-            return Json("ok");
+            // Verificar si hay consultas asociadas a este usuario
+            var hasAssociatedConsultas = await _context.Consultas.AnyAsync(c => c.IdUsuario == id);
+            if (hasAssociatedConsultas)
+            {
+                return Json("has_children"); // El usuario tiene consultas asociadas
+            }
+
+            try
+            {
+                _context.Usuarios.Remove(usuario);
+                await _context.SaveChangesAsync();
+                return Json("ok");
+            }
+            catch (DbUpdateException ex)
+            {
+                // Log the exception
+                return Json("error_db_constraint");
+            }
+            catch (Exception ex)
+            {
+                // Log the exception
+                return Json("error_unexpected");
+            }
         }
 
         [HttpGet]

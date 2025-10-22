@@ -118,13 +118,34 @@ namespace sistemaVeterinario.Controllers
         public async Task<IActionResult> Delete(int id)
         {
             var cliente = await _context.Clientes.FindAsync(id);
-            if (cliente != null)
+            if (cliente == null)
             {
-                _context.Clientes.Remove(cliente);
+                return Json("notfound"); // Cliente no encontrado
             }
 
-            await _context.SaveChangesAsync();
-            return Json("ok");
+            // Verificar si hay mascotas asociadas a este cliente
+            var hasAssociatedMascotas = await _context.Mascotas.AnyAsync(m => m.IdCliente == id);
+            if (hasAssociatedMascotas)
+            {
+                return Json("has_children"); // El cliente tiene mascotas asociadas
+            }
+
+            try
+            {
+                _context.Clientes.Remove(cliente);
+                await _context.SaveChangesAsync();
+                return Json("ok");
+            }
+            catch (DbUpdateException ex)
+            {
+                // Log the exception
+                return Json("error_db_constraint");
+            }
+            catch (Exception ex)
+            {
+                // Log the exception
+                return Json("error_unexpected");
+            }
         }
 
         private bool ClienteExists(int id)

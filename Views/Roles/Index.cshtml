@@ -4,41 +4,47 @@
     ViewData["Title"] = "Roles";
 }
 
-<h1>Roles</h1>
-
-<p>
-    <a asp-action="Create">Crear Nuevo Rol</a>
-</p>
-<table class="table">
-    <thead>
-        <tr>
-            <th>
-                @Html.DisplayNameFor(model => model.NombreRol)
-            </th>
-            <th></th>
-        </tr>
-    </thead>
-    <tbody id="roles-table-body">
-@foreach (var item in Model) {
-        <tr id="rol-@item.IdRol">
-            <td>
-                @Html.DisplayFor(modelItem => item.NombreRol)
-            </td>
-            <td>
-                <a asp-action="Edit" asp-route-id="@item.IdRol" class="btn btn-warning btn-sm">Editar</a> |
-                <button class="btn btn-danger btn-sm btn-delete" data-id="@item.IdRol" data-name="@item.NombreRol">Eliminar</button>
-            </td>
-        </tr>
-}
-    </tbody>
-</table>
+<div class="card shadow mb-4">
+    <div class="card-header py-3 d-flex align-items-center">
+        <h1 class="h3 m-0 font-weight-bold text-primary text-center flex-grow-1">Gestión de Roles</h1>
+        <div class="ms-auto">
+            <a asp-action="Create" class="btn btn-success btn-sm"><i class="bi bi-plus-lg me-2"></i>Agregar Rol</a>
+        </div>
+    </div>
+    <div class="card-body">
+        <div class="table-responsive">
+            <table class="table table-bordered table-hover" id="dataTable" width="100%" cellspacing="0">
+                <thead class="table-dark text-center">
+                    <tr>
+                        <th>Nombre</th>
+                        <th>Acciones</th>
+                    </tr>
+                </thead>
+                <tbody id="roles-table-body">
+                    @foreach (var item in Model) {
+                        <tr id="rol-@item.IdRol">
+                            <td>
+                                @Html.DisplayFor(modelItem => item.NombreRol)
+                            </td>
+                            <td class="text-center">
+                                <a asp-action="Edit" asp-route-id="@item.IdRol" class="btn btn-icon-action btn-outline-warning btn-sm"><i class="bi bi-pencil me-0"></i></a>
+                                <button class="btn btn-icon-action btn-outline-danger btn-sm btn-delete" data-id="@item.IdRol" data-name="@item.NombreRol"><i class="bi bi-trash me-0"></i></button>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
 
 @section Scripts {
     <script>
         document.getElementById('roles-table-body').addEventListener('click', function (event) {
-            if (event.target && event.target.classList.contains('btn-delete')) {
-                const rolId = event.target.getAttribute('data-id');
-                const rolName = event.target.getAttribute('data-name');
+            const deleteButton = event.target.closest('.btn-delete');
+            if (deleteButton) {
+                const rolId = deleteButton.getAttribute('data-id');
+                const rolName = deleteButton.getAttribute('data-name');
 
                 Swal.fire({
                     title: `¿Estás seguro de que quieres eliminar el rol "${rolName}"?`,
@@ -62,17 +68,34 @@
                             if (data === "ok") {
                                 Swal.fire(
                                     '¡Borrado!',
-                                    `El rol "${rolName}" ha sido eliminado.`,
+                                    `El rol "${rolName}" ha sido eliminado.`, 
                                     'success'
                                 ).then(() => {
-                                    // Eliminar la fila de la tabla
                                     const row = document.getElementById(`rol-${rolId}`);
                                     row.remove();
                                 });
+                            } else if (data === "has_users") {
+                                Swal.fire(
+                                    'No se puede eliminar',
+                                    `El rol "${rolName}" no puede ser eliminado porque tiene usuarios asociados.`, 
+                                    'error'
+                                );
+                            } else if (data === "notfound") {
+                                Swal.fire(
+                                    'Error',
+                                    'El rol no fue encontrado.',
+                                    'error'
+                                );
+                            } else if (data === "error_db_constraint") {
+                                Swal.fire(
+                                    'Error de Base de Datos',
+                                    `El rol "${rolName}" no puede ser eliminado debido a una restricción de la base de datos (posiblemente tiene registros asociados).`,
+                                    'error'
+                                );
                             } else {
                                 Swal.fire(
                                     'Error',
-                                    'Ocurrió un error al eliminar el rol.',
+                                    'Ocurrió un error inesperado al eliminar el rol.',
                                     'error'
                                 );
                             }

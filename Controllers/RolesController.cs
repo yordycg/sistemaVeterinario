@@ -118,13 +118,34 @@ namespace sistemaVeterinario.Controllers
         public async Task<IActionResult> Delete(int id)
         {
             var role = await _context.Roles.FindAsync(id);
-            if (role != null)
+            if (role == null)
             {
-                _context.Roles.Remove(role);
+                return Json("notfound"); // Rol no encontrado
             }
 
-            await _context.SaveChangesAsync();
-            return Json("ok");
+            // Verificar si hay usuarios asociados a este rol
+            var hasAssociatedUsers = await _context.Usuarios.AnyAsync(u => u.IdRol == id);
+            if (hasAssociatedUsers)
+            {
+                return Json("has_users"); // El rol tiene usuarios asociados
+            }
+
+            try
+            {
+                _context.Roles.Remove(role);
+                await _context.SaveChangesAsync();
+                return Json("ok");
+            }
+            catch (DbUpdateException ex) // Captura excepciones de la base de datos (ej. restricción de clave foránea)
+            {
+                // Aquí podrías loggear 'ex' para depuración
+                return Json("error_db_constraint"); // Indica un error de restricción de base de datos
+            }
+            catch (Exception ex) // Captura cualquier otra excepción inesperada
+            {
+                // Aquí podrías loggear 'ex' para depuración
+                return Json("error_unexpected"); // Indica un error inesperado
+            }
         }
 
         private bool RoleExists(int id)

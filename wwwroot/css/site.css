@@ -1,3 +1,75 @@
+/* ==========================================================================
+   Paleta de Colores para Modo Claro (Light Mode)
+   ========================================================================== */
+:root, [data-bs-theme="light"] {
+  /* Fondos */
+  --bs-body-bg: #F8F9F9; /* Fondo Principal (Lienzo) */
+  --bs-body-bg-rgb: 248, 249, 249;
+
+  --bs-secondary-bg: #FFFFFF; /* Fondo Secundario (Cards/Contenedores) */
+  --bs-secondary-bg-rgb: 255, 255, 255;
+  --bs-card-bg: var(--bs-secondary-bg); /* Aplicar a tarjetas */
+  --bs-modal-bg: var(--bs-secondary-bg); /* Aplicar a modales */
+
+  /* Tipografía */
+  --bs-body-color: #34495E; /* Tipografía / Texto Primario */
+  --bs-body-color-rgb: 52, 73, 94;
+
+  --bs-secondary-color: #6C757D; /* Tipografía Secundaria / Muted */
+  --bs-secondary-color-rgb: 108, 117, 125;
+  --bs-text-muted: var(--bs-secondary-color); /* Para textos muted */
+
+  /* Colores de Interacción y Estado */
+  --bs-primary: #5DADE2; /* Primario (Acciones/Botones) */
+  --bs-primary-rgb: 93, 173, 226;
+
+  --bs-success: #82E0AA; /* Secundario / Accent (Éxito) */
+  --bs-success-rgb: 130, 224, 170;
+
+  --bs-danger: #E74C3C; /* Alerta / Peligro */
+  --bs-danger-rgb: 231, 76, 60;
+
+  --bs-warning: #F5B041; /* Advertencia */
+  --bs-warning-rgb: 245, 176, 65;
+
+  /* Otros ajustes para el tema claro si es necesario */
+  --bs-border-color: rgba(0, 0, 0, 0.175); /* Bordes estándar */
+  --bs-border-color-rgb: 0, 0, 0;
+}
+
+/* Ajustes específicos para el sidebar en modo claro si no se adapta bien con las variables generales */
+[data-bs-theme="light"] .admin-sidebar {
+    background-color: var(--bs-secondary-bg) !important; /* Usar el fondo secundario para el sidebar */
+    color: var(--bs-body-color);
+}
+
+/* Ajustes para el header en modo claro */
+[data-bs-theme="light"] .admin-header {
+    background-color: var(--bs-secondary-bg) !important; /* Usar el fondo secundario para el header */
+    border-bottom-color: var(--bs-border-color) !important;
+}
+
+/* Ajustes para el footer en modo claro */
+[data-bs-theme="light"] .admin-footer {
+    background-color: var(--bs-secondary-bg) !important; /* Usar el fondo secundario para el footer */
+    border-top-color: var(--bs-border-color) !important;
+}
+
+/* Ajustes para el texto del navbar-brand en modo claro */
+[data-bs-theme="light"] .navbar-brand .text-primary {
+    color: var(--bs-primary) !important;
+}
+
+/* Ajustes para los botones outline en modo claro */
+[data-bs-theme="light"] .btn-outline-secondary {
+    color: var(--bs-body-color);
+    border-color: var(--bs-border-color);
+}
+[data-bs-theme="light"] .btn-outline-secondary:hover {
+    background-color: rgba(var(--bs-body-color-rgb), 0.1);
+    color: var(--bs-body-color);
+}
+
 html {
   font-size: 14px;
 }
@@ -28,4 +100,119 @@ body {
 
 .form-floating > .form-control-plaintext:focus::placeholder, .form-floating > .form-control:focus::placeholder {
   text-align: start;
+}
+
+/* ==========================================================================
+   Paleta de Colores para Modo Oscuro (Dark Mode)
+   ========================================================================== */
+[data-bs-theme="dark"] {
+  /* Fondos */
+  --bs-body-bg: #1E2833; /* Fondo Principal (BG Dark) */
+  --bs-body-bg-rgb: 30, 40, 51;
+
+  --bs-secondary-bg: #293440; /* Fondo Secundario (Cards/Contenedores) */
+  --bs-secondary-bg-rgb: 41, 52, 64;
+  --bs-card-bg: var(--bs-secondary-bg); /* Aplicar a tarjetas */
+  --bs-modal-bg: var(--bs-secondary-bg); /* Aplicar a modales */
+
+  /* Tipografía */
+  --bs-body-color: #ECF0F1; /* Tipografía / Texto Primario */
+  --bs-body-color-rgb: 236, 240, 241;
+
+  --bs-secondary-color: #AAB7B8; /* Tipografía Secundaria / Muted */
+  --bs-secondary-color-rgb: 170, 183, 184;
+  --bs-text-muted: var(--bs-secondary-color); /* Para textos muted */
+
+  /* Colores de Interacción y Estado */
+  --bs-primary: #79B4E3; /* Primario (Acciones/Botones) */
+  --bs-primary-rgb: 121, 180, 227;
+
+  --bs-success: #A2E8BC; /* Secundario / Accent (Éxito) */
+  --bs-success-rgb: 162, 232, 188;
+
+  --bs-danger: #EB7B70; /* Alerta / Peligro */
+  --bs-danger-rgb: 235, 123, 112;
+
+  --bs-warning: #FFD28E; /* Advertencia */
+  --bs-warning-rgb: 255, 210, 142;
+
+  /* Otros ajustes para el tema oscuro si es necesario */
+  --bs-border-color: rgba(255, 255, 255, 0.15); /* Bordes más suaves en oscuro */
+  --bs-border-color-rgb: 255, 255, 255;
+}
+
+/* Ajustes específicos para el sidebar en modo oscuro si no se adapta bien con las variables generales */
+[data-bs-theme="dark"] .admin-sidebar {
+    background-color: var(--bs-secondary-bg) !important; /* Usar el fondo secundario para el sidebar */
+    color: var(--bs-body-color);
+}
+
+/* Ajustes para el header en modo oscuro */
+[data-bs-theme="dark"] .admin-header {
+    background-color: var(--bs-secondary-bg) !important; /* Usar el fondo secundario para el header */
+    border-bottom-color: var(--bs-border-color) !important;
+}
+
+/* Ajustes para el footer en modo oscuro */
+[data-bs-theme="dark"] .admin-footer {
+    background-color: var(--bs-secondary-bg) !important; /* Usar el fondo secundario para el footer */
+    border-top-color: var(--bs-border-color) !important;
+}
+
+/* Ajustes para el texto del navbar-brand en modo oscuro */
+[data-bs-theme="dark"] .navbar-brand .text-primary {
+    color: var(--bs-primary) !important;
+}
+
+/* Ajustes para los botones outline en modo oscuro */
+[data-bs-theme="dark"] .btn-outline-secondary {
+    color: var(--bs-body-color);
+    border-color: var(--bs-border-color);
+}
+[data-bs-theme="dark"] .btn-outline-secondary:hover {
+    background-color: rgba(var(--bs-body-color-rgb), 0.1);
+    color: var(--bs-body-color);
+}
+
+/* Ajuste para el color del texto en thead.table-dark en modo light */
+[data-bs-theme="light"] .table-dark th {
+    color: #FFFFFF !important; /* Blanco explícito para contraste */
+}
+
+/* Custom styles for icon action buttons */
+.btn-icon-action.btn-outline-warning,
+.btn-icon-action.btn-outline-danger {
+    background-color: transparent !important;
+    border-color: transparent !important; /* No border normally */
+    padding: 0.25rem 0.5rem; /* Adjust padding for icon-only */
+    transition: all 0.2s ease-in-out;
+}
+
+.btn-icon-action.btn-outline-warning:hover,
+.btn-icon-action.btn-outline-warning:focus {
+    border-color: var(--bs-warning) !important; /* Show warning border on hover/focus */
+    color: var(--bs-warning) !important; /* Ensure icon color is warning */
+}
+
+.btn-icon-action.btn-outline-danger:hover,
+.btn-icon-action.btn-outline-danger:focus {
+    border-color: var(--bs-danger) !important; /* Show danger border on hover/focus */
+    color: var(--bs-danger) !important; /* Ensure icon color is danger */
+}
+
+/* For the "fill on click" (active state), Bootstrap's btn-outline-* already handles this.
+   We just need to ensure the colors are correct.
+*/
+.btn-icon-action.btn-outline-warning:active,
+.btn-icon-action.btn-outline-warning.active {
+    background-color: var(--bs-warning) !important;
+    border-color: var(--bs-warning) !important;
+    color: var(--bs-btn-active-color) !important; /* Usually white for dark text */
+}
+
+.btn-icon-action.btn-outline-danger:active,
+.btn-icon-action.btn-outline-danger.active {
+    background-color: var(--bs-danger) !important;
+    border-color: var(--bs-danger) !important;
+    color: var(--bs-btn-active-color) !important;
 }

@@ -124,13 +124,29 @@ namespace sistemaVeterinario.Controllers
         public async Task<IActionResult> Delete(int id)
         {
             var tratamiento = await _context.Tratamientos.FindAsync(id);
-            if (tratamiento != null)
+            if (tratamiento == null)
             {
-                _context.Tratamientos.Remove(tratamiento);
+                return Json("notfound"); // Tratamiento no encontrado
             }
 
-            await _context.SaveChangesAsync();
-            return Json("ok");
+            // No hay tablas que referencien a Tratamientos, por lo que no se necesita has_children check.
+
+            try
+            {
+                _context.Tratamientos.Remove(tratamiento);
+                await _context.SaveChangesAsync();
+                return Json("ok");
+            }
+            catch (DbUpdateException ex)
+            {
+                // Log the exception
+                return Json("error_db_constraint"); // Podría ocurrir si hay alguna restricción inesperada
+            }
+            catch (Exception ex)
+            {
+                // Log the exception
+                return Json("error_unexpected");
+            }
         }
 
         private bool TratamientoExists(int id)

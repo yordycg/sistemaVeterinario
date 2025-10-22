@@ -4,98 +4,141 @@
     ViewData["Title"] = "Mascotas";
 }
 
-<h1>Gestión de Mascotas</h1>
-
-<p>
-    <a asp-action="Create" class="btn btn-primary">Registrar Nueva Mascota</a>
-</p>
-<table class="table table-bordered table-hover">
-    <thead class="table-dark">
-        <tr>
-            <th>
-                @Html.DisplayNameFor(model => model.Nombre)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Sexo)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Edad)
-            </th>
-            <th>
-                Dueño (Cliente)
-            </th>
-            <th>
-                Especie
-            </th>
-            <th>
-                Raza
-            </th>
-            <th>Acciones</th>
-        </tr>
-    </thead>
-    <tbody>
+<div class="card shadow mb-4">
+    <div class="card-header py-3 d-flex align-items-center">
+        <h1 class="h3 m-0 font-weight-bold text-primary text-center flex-grow-1">Gestión de Mascotas</h1>
+        <div class="ms-auto">
+            <a asp-action="Create" class="btn btn-success btn-sm"><i class="bi bi-plus-lg me-2"></i>Registrar Mascota</a>
+        </div>
+    </div>
+    <div class="card-body">
+        <div class="table-responsive">
+            <table class="table table-bordered table-hover" id="dataTable" width="100%" cellspacing="0">
+                <thead class="table-dark text-center">
+                    <tr>
+                        <th>
+                            @Html.DisplayNameFor(model => model.Nombre)
+                        </th>
+                        <th>
+                            @Html.DisplayNameFor(model => model.Sexo)
+                        </th>
+                        <th>
+                            @Html.DisplayNameFor(model => model.Edad)
+                        </th>
+                        <th>
+                            Dueño (Cliente)
+                        </th>
+                        <th>
+                            Especie
+                        </th>
+                        <th>
+                            Raza
+                        </th>
+                        <th>Acciones</th>
+                    </tr>
+                </thead>
+                <tbody id="mascotas-table-body">
 @foreach (var item in Model) {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.Nombre)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Sexo)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Edad)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.IdClienteNavigation.Email)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.IdEspecieNavigation.IdEspecie)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.IdRazaNavigation.IdRaza)
-            </td>
-            <td class="text-center">
-                <a asp-action="Edit" asp-route-id="@item.IdMascota" class="btn btn-warning">Editar</a>
-                <button class="btn btn-danger" onclick="eliminarMascota(@item.IdMascota)">Eliminar</button>
-            </td>
-        </tr>
+                    <tr>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.Nombre)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.Sexo)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.Edad)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.IdClienteNavigation.Email)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.IdEspecieNavigation.IdEspecie)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.IdRazaNavigation.IdRaza)
+                        </td>
+                        <td class="text-center">
+                            <a asp-action="Edit" asp-route-id="@item.IdMascota" class="btn btn-icon-action btn-outline-warning btn-sm"><i class="bi bi-pencil me-0"></i></a>
+                            <button class="btn btn-icon-action btn-outline-danger btn-sm btn-delete" data-id="@item.IdMascota" data-name="@item.Nombre"><i class="bi bi-trash me-0"></i></button>
+                        </td>
+                    </tr>
 }
-    </tbody>
-</table>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
 
 @section Scripts {
     <script>
-        const eliminarMascota = async (id) => {
-            const { isConfirmed } = await Swal.fire({
-                title: '¿Está seguro de eliminar?',
-                text: "No podrá revertir esta acción.",
-                icon: 'warning',
-                showCancelButton: true,
-                confirmButtonColor: '#3085d6',
-                cancelButtonColor: '#d33',
-                confirmButtonText: 'Sí, ¡eliminar!',
-                cancelButtonText: 'Cancelar'
-            });
+        document.addEventListener('DOMContentLoaded', function() {
+            const tbody = document.getElementById('mascotas-table-body');
+            if (tbody) {
+                tbody.addEventListener('click', function (event) {
+                    const deleteButton = event.target.closest('.btn-delete');
+                    if (deleteButton) {
+                        const mascotaId = deleteButton.getAttribute('data-id');
+                        const mascotaName = deleteButton.getAttribute('data-name');
 
-            if (isConfirmed) {
-                const response = await fetch(`@Url.Action("Delete", "Mascotas")/${id}`);
-                const result = await response.json();
-
-                if (result === 'ok') {
-                    await Swal.fire(
-                        '¡Eliminada!',
-                        'La mascota ha sido eliminada.',
-                        'success'
-                    );
-                    location.reload();
-                } else {
-                    await Swal.fire(
-                        'Error',
-                        'Ocurrió un error al eliminar la mascota.',
-                        'error'
-                    );
-                }
+                        Swal.fire({
+                            title: `¿Estás seguro de que quieres eliminar a ${mascotaName}?`,
+                            text: "¡No podrás revertir esta acción!",
+                            icon: 'warning',
+                            showCancelButton: true,
+                            confirmButtonColor: '#3085d6',
+                            cancelButtonColor: '#d33',
+                            confirmButtonText: 'Sí, ¡eliminar!',
+                            cancelButtonText: 'Cancelar'
+                        }).then((result) => {
+                            if (result.isConfirmed) {
+                                fetch(`@Url.Action("Delete", "Mascotas")/${mascotaId}`, {
+                                    method: 'POST',
+                                    headers: {
+                                        'Content-Type': 'application/json'
+                                    }
+                                })
+                                .then(response => response.json())
+                                .then(data => {
+                                    if (data === "ok") {
+                                        Swal.fire(
+                                            '¡Eliminada!',
+                                            `La mascota ${mascotaName} ha sido eliminada.`, 
+                                            'success'
+                                        ).then(() => {
+                                            location.reload(); // Recargar la página para reflejar el cambio
+                                        });
+                                    } else if (data === "has_children") {
+                                        Swal.fire(
+                                            'No se puede eliminar',
+                                            `La mascota ${mascotaName} no puede ser eliminada porque tiene consultas asociadas.`, 
+                                            'error'
+                                        );
+                                    } else if (data === "notfound") {
+                                        Swal.fire(
+                                            'Error',
+                                            'La mascota no fue encontrada.',
+                                            'error'
+                                        );
+                                    } else if (data === "error_db_constraint") {
+                                        Swal.fire(
+                                            'Error de Base de Datos',
+                                            `La mascota ${mascotaName} no puede ser eliminada debido a una restricción de la base de datos (posiblemente tiene registros asociados).`,
+                                            'error'
+                                        );
+                                    } else {
+                                        Swal.fire(
+                                            'Error',
+                                            'Ocurrió un error inesperado al eliminar la mascota.',
+                                            'error'
+                                        );
+                                    }
+                                });
+                            }
+                        });
+                    }
+                });
             }
-        }
+        });
     </script>
 }

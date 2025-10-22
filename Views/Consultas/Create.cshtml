@@ -4,59 +4,56 @@
     ViewData["Title"] = "Crear Consulta";
 }
 
-<h1>Crear Consulta</h1>
-
-<h4>Consulta</h4>
-<hr />
-<div class="row">
-    <div class="col-md-4">
-        <form asp-action="Create" id="formConsultaCreate">
-            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <div class="form-group">
-                <label asp-for="IdMascota" class="control-label">Mascota</label>
-                <select asp-for="IdMascota" class ="form-control" asp-items="ViewBag.IdMascota">
-                    <option value="">-- Seleccionar Mascota --</option>
-                </select>
-                <span id="e-IdMascota" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="IdUsuario" class="control-label">Veterinario</label>
-                <select asp-for="IdUsuario" class ="form-control" asp-items="ViewBag.IdUsuario">
-                    <option value="">-- Seleccionar Veterinario --</option>
-                </select>
-                <span id="e-IdUsuario" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="IdEstadoConsulta" class="control-label">Estado</label>
-                <select asp-for="IdEstadoConsulta" class ="form-control" asp-items="ViewBag.IdEstadoConsulta">
-                    <option value="">-- Seleccionar Estado --</option>
-                </select>
-                <span id="e-IdEstadoConsulta" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="FechaConsulta" class="control-label">Fecha</label>
-                <input asp-for="FechaConsulta" class="form-control" type="date" />
-                <span id="e-FechaConsulta" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="Motivo" class="control-label"></label>
-                <textarea asp-for="Motivo" class="form-control"></textarea>
-                <span id="e-Motivo" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="Diagnostico" class="control-label"></label>
-                <textarea asp-for="Diagnostico" class="form-control"></textarea>
-                <span id="e-Diagnostico" class="text-danger"></span>
-            </div>
-            <div class="form-group mt-3">
-                <input type="submit" value="Crear" class="btn btn-primary" />
-            </div>
-        </form>
+<div class="card shadow mb-4">
+    <div class="card-header py-3">
+        <h1 class="h3 m-0 font-weight-bold text-primary text-center">Registrar Consulta</h1>
     </div>
-</div>
-
-<div>
-    <a asp-action="Index">Volver a la lista</a>
+    <div class="card-body">
+        <div class="row">
+            <div class="col-md-5 mx-auto">
+                <form asp-action="Create">
+                    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                    <div class="form-group mb-3">
+                        <label asp-for="FechaConsulta" class="control-label"></label>
+                        <input asp-for="FechaConsulta" type="date" class="form-control" />
+                        <span asp-validation-for="FechaConsulta" class="text-danger"></span>
+                    </div>
+                    <div class="form-group mb-3">
+                        <label asp-for="Motivo" class="control-label"></label>
+                        <input asp-for="Motivo" class="form-control" />
+                        <span asp-validation-for="Motivo" class="text-danger"></span>
+                    </div>
+                    <div class="form-group mb-3">
+                        <label asp-for="Diagnostico" class="control-label"></label>
+                        <input asp-for="Diagnostico" class="form-control" />
+                        <span asp-validation-for="Diagnostico" class="text-danger"></span>
+                    </div>
+                    <div class="form-group mb-3">
+                        <label asp-for="IdMascota" class="control-label">Mascota</label>
+                        <select asp-for="IdMascota" class ="form-control" asp-items="ViewBag.IdMascota">
+                            <option value="" disabled selected>-- Selecciona una Mascota --</option>
+                        </select>
+                    </div>
+                    <div class="form-group mb-3">
+                        <label asp-for="IdUsuario" class="control-label">Veterinari@@</label>
+                        <select asp-for="IdUsuario" class ="form-control" asp-items="ViewBag.IdUsuario">
+                            <option value="" disabled selected>-- Selecciona un Veterinari@@ --</option>
+                        </select>
+                    </div>
+                    <div class="form-group mb-3">
+                        <label asp-for="IdEstadoConsulta" class="control-label">Estado Consulta</label>
+                        <select asp-for="IdEstadoConsulta" class ="form-control" asp-items="ViewBag.IdEstadoConsulta">
+                            <option value="" disabled selected>-- Selecciona un Estado --</option>
+                        </select>
+                    </div>
+                    <div class="form-group mt-4 text-center">
+                        <input type="submit" value="Crear" class="btn btn-success" />
+                        <a asp-action="Index" class="btn btn-secondary ms-2">Volver a la lista</a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
 </div>
 
 @section Scripts {
