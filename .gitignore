@@ -1,4 +1,3 @@
-
 # User-specific files
 *.suo
 *.user
@@ -69,3 +68,6 @@ _ReSharper*/
 
 # Fody
 FodyWeavers.xml
+
+# Environment-specific settings
+appsettings.Development.json
