@@ -57,9 +57,34 @@ namespace sistemaVeterinario.Controllers
         {
             if (ModelState.IsValid)
             {
-                _context.Add(cliente);
-                await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
+                try
+                {
+                    _context.Add(cliente);
+                    await _context.SaveChangesAsync();
+                    return RedirectToAction(nameof(Index));
+                }
+                catch (DbUpdateException ex)
+                {
+                    // Comprueba si la excepción interna está relacionada con una violación de la restricción UNIQUE.
+                    if (ex.InnerException != null && ex.InnerException.Message.Contains("Duplicate entry"))
+                    {
+                        // Comprueba específicamente si el error es sobre la columna 'Run'.
+                        if (ex.InnerException.Message.Contains("for key 'clientes.Run'"))
+                        {
+                            ModelState.AddModelError("Run", "El RUN ingresado ya existe.");
+                        }
+                        else
+                        {
+                            // Manejar otras violaciones de unicidad si es necesario.
+                            ModelState.AddModelError(string.Empty, "Ha ocurrido un error al guardar los datos. Uno de los valores únicos ya existe.");
+                        }
+                    }
+                    else
+                    {
+                        // Manejar otras excepciones de base de datos si es necesario.
+                        ModelState.AddModelError(string.Empty, "Ha ocurrido un error inesperado al guardar en la base de datos.");
+                    }
+                }
             }
             return View(cliente);
         }
