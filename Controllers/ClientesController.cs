@@ -65,23 +65,26 @@ namespace sistemaVeterinario.Controllers
                 }
                 catch (DbUpdateException ex)
                 {
-                    // Comprueba si la excepción interna está relacionada con una violación de la restricción UNIQUE.
+                    /**
+                     * Manejo de excepciones:
+                     * - Comprobar si tiene relacion con la columna PK (Run).
+                     * - Comprobar si es otro atributo que sea UNIQUE.
+                     */
                     if (ex.InnerException != null && ex.InnerException.Message.Contains("Duplicate entry"))
                     {
-                        // Comprueba específicamente si el error es sobre la columna 'Run'.
                         if (ex.InnerException.Message.Contains("for key 'clientes.Run'"))
                         {
                             ModelState.AddModelError("Run", "El RUN ingresado ya existe.");
                         }
                         else
                         {
-                            // Manejar otras violaciones de unicidad si es necesario.
+                            // Comprobar UNIQUE.
                             ModelState.AddModelError(string.Empty, "Ha ocurrido un error al guardar los datos. Uno de los valores únicos ya existe.");
                         }
                     }
                     else
                     {
-                        // Manejar otras excepciones de base de datos si es necesario.
+                        // Otro tipo de error.
                         ModelState.AddModelError(string.Empty, "Ha ocurrido un error inesperado al guardar en la base de datos.");
                     }
                 }
@@ -152,7 +155,7 @@ namespace sistemaVeterinario.Controllers
             var hasAssociatedMascotas = await _context.Mascotas.AnyAsync(m => m.IdCliente == id);
             if (hasAssociatedMascotas)
             {
-                return Json("has_children"); // El cliente tiene mascotas asociadas
+                return Json("has_children");
             }
 
             try
@@ -163,12 +166,10 @@ namespace sistemaVeterinario.Controllers
             }
             catch (DbUpdateException ex)
             {
-                // Log the exception
                 return Json("error_db_constraint");
             }
             catch (Exception ex)
             {
-                // Log the exception
                 return Json("error_unexpected");
             }
         }
@@ -193,15 +194,16 @@ namespace sistemaVeterinario.Controllers
         {
             bool exists;
 
-            if (id.HasValue) 
-            { 
+            if (id.HasValue)
+            {
                 exists = await _context.Clientes.AnyAsync(c => c.Email == email && c.IdCliente != id.Value);
-            } else 
+            }
+            else
             {
                 exists = await _context.Clientes.AnyAsync(c => c.Email == email);
             }
 
-                return Json(exists);
+            return Json(exists);
         }
     }
 }
