@@ -28,5 +28,13 @@ namespace sistemaVeterinario.Controllers
         {
             return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
         }
+
+        /**
+         * Metodo que nos permite crear nuestro LOGIN.
+         */
+        public IActionResult Login()
+        {
+            return View();
+        }
     }
 }
