@@ -2,52 +2,64 @@
     var currentController = ViewContext.RouteData.Values["Controller"] as string;
 }
 <aside class="admin-sidebar" id="admin-sidebar">
-    <div class="sidebar-content">
-        <nav class="sidebar-nav">
-            <ul class="nav flex-column">
-                <li class="nav-item">
-                    <a class="nav-link @(currentController == "Home" ? "active" : "")" asp-controller="Home" asp-action="Index">
-                        <i class="bi bi-speedometer2"></i>
-                        <span>Inicio</span>
-                    </a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link @(currentController == "Clientes" ? "active" : "")" asp-controller="Clientes" asp-action="Index">
-                        <i class="bi bi-people"></i>
-                        <span>Clientes</span>
-                    </a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link @(currentController == "Mascotas" ? "active" : "")" asp-controller="Mascotas" asp-action="Index">
-                        <i class="bi bi-github"></i> <!-- Placeholder icon -->
-                        <span>Mascotas</span>
-                    </a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link @(currentController == "Usuarios" ? "active" : "")" asp-controller="Usuarios" asp-action="Index">
-                        <i class="bi bi-person"></i>
-                        <span>Usuarios</span>
-                    </a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link @(currentController == "Roles" ? "active" : "")" asp-controller="Roles" asp-action="Index">
-                        <i class="bi bi-key"></i>
-                        <span>Roles</span>
-                    </a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link @(currentController == "Consultas" ? "active" : "")" asp-controller="Consultas" asp-action="Index">
-                        <i class="bi bi-chat-dots"></i>
-                        <span>Consultas</span>
-                    </a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link @(currentController == "Tratamientos" ? "active" : "")" asp-controller="Tratamientos" asp-action="Index">
-                        <i class="bi bi-clipboard-plus"></i>
-                        <span>Tratamientos</span>
-                    </a>
-                </li>
-            </ul>
-        </nav>
+    <div class="d-flex flex-column h-100">
+        <div class="sidebar-content flex-grow-1">
+            <nav class="sidebar-nav">
+                <ul class="nav flex-column">
+                    <li class="nav-item">
+                        <a class="nav-link @(currentController == "Home" ? "active" : "")" asp-controller="Home" asp-action="Index">
+                            <i class="bi bi-speedometer2"></i>
+                            <span>Inicio</span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link @(currentController == "Clientes" ? "active" : "")" asp-controller="Clientes" asp-action="Index">
+                            <i class="bi bi-people"></i>
+                            <span>Clientes</span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link @(currentController == "Mascotas" ? "active" : "")" asp-controller="Mascotas" asp-action="Index">
+                            <i class="bi bi-github"></i> <!-- Placeholder icon -->
+                            <span>Mascotas</span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link @(currentController == "Usuarios" ? "active" : "")" asp-controller="Usuarios" asp-action="Index">
+                            <i class="bi bi-person"></i>
+                            <span>Usuarios</span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link @(currentController == "Roles" ? "active" : "")" asp-controller="Roles" asp-action="Index">
+                            <i class="bi bi-key"></i>
+                            <span>Roles</span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link @(currentController == "Consultas" ? "active" : "")" asp-controller="Consultas" asp-action="Index">
+                            <i class="bi bi-chat-dots"></i>
+                            <span>Consultas</span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link @(currentController == "Tratamientos" ? "active" : "")" asp-controller="Tratamientos" asp-action="Index">
+                            <i class="bi bi-clipboard-plus"></i>
+                            <span>Tratamientos</span>
+                        </a>
+                    </li>
+                </ul>
+            </nav>
+        </div>
+        <div class="sidebar-footer p-3">
+            @if (TempData.Peek("nombre") != null)
+            {
+                <div class="text-center">Bienvenido: @TempData.Peek("nombre")</div>
+            }
+            else
+            {
+                Context.Response.Redirect(Url.Action("Login", "Home"));
+            }
+        </div>
     </div>
 </aside>
