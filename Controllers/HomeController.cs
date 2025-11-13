@@ -79,5 +79,14 @@ namespace sistemaVeterinario.Controllers
 
             return RedirectToAction("Index"); // redireccionar al localhost/Home/Index.
         }
+
+        public IActionResult Logout()
+        {
+            // Limpiar las variables TempData y Session.
+            TempData.Clear();
+            HttpContext.Session.Clear();
+
+            return RedirectToAction("Login");
+        }
     }
 }
