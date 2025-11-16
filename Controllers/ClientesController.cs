@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
@@ -143,6 +144,8 @@ namespace sistemaVeterinario.Controllers
             return View(cliente);
         }
 
+        // Permitir que solo el rol 'Admin' pueda eliminar clientes.
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Delete(int id)
         {
             var cliente = await _context.Clientes.FindAsync(id);
