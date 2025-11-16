@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.EntityFrameworkCore;
 using sistemaVeterinario.Models;
 
@@ -7,6 +8,19 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddDbContext<SistemaVeterinarioContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 builder.Services.AddControllersWithViews();
+
+/**
+ * Configurar la Autenticacion con Cookies.
+ * - Se debe hacer ANTES del 'builder.Build()'
+ */
+builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme).AddCookie( options =>
+{
+    options.LoginPath = "/Home/Login"; // ruta a la que se redirige si no esta autenticado.
+    options.LogoutPath = "/"; // ruta a la que se redirige al cerrar sesion.
+    options.ExpireTimeSpan = TimeSpan.FromMinutes(30); // tiempo de expiracion de la cookie.
+    options.SlidingExpiration = true; // renueva la cookie si el usuario esta activo.
+    options.AccessDeniedPath = "/Home/Index"; // ruta a la que se redirige si no tiene permisos.
+});
 
 /**
  * Configurar las Variable Sessions.
@@ -36,7 +50,8 @@ if (!app.Environment.IsDevelopment())
 app.UseHttpsRedirection();
 app.UseRouting();
 
-app.UseAuthorization();
+app.UseAuthentication(); // Habilitar la autenticacion.
+app.UseAuthorization(); // Habilitar la autorizacion.
 
 app.MapStaticAssets();
 
