@@ -20,22 +20,27 @@
                     </li>
                     <li class="nav-item">
                         <a class="nav-link @(currentController == "Mascotas" ? "active" : "")" asp-controller="Mascotas" asp-action="Index">
-                            <i class="bi bi-github"></i> <!-- Placeholder icon -->
+                            <i class="bi bi-github"></i> 
                             <span>Mascotas</span>
                         </a>
                     </li>
-                    <li class="nav-item">
-                        <a class="nav-link @(currentController == "Usuarios" ? "active" : "")" asp-controller="Usuarios" asp-action="Index">
-                            <i class="bi bi-person"></i>
-                            <span>Usuarios</span>
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link @(currentController == "Roles" ? "active" : "")" asp-controller="Roles" asp-action="Index">
-                            <i class="bi bi-key"></i>
-                            <span>Roles</span>
-                        </a>
-                    </li>
+                    @* "Usuarios" y "Roles" solo son accesibles para el ROL "Admin" *@
+                    @* TODO: definir como dejar los botones del sidebar: mostrarlos o ocultarlos... *@
+                    @if (User.IsInRole("Admin"))
+                    {
+                        <li class="nav-item">
+                            <a class="nav-link @(currentController == "Usuarios" ? "active" : "")" asp-controller="Usuarios" asp-action="Index">
+                                <i class="bi bi-person"></i>
+                                <span>Usuarios</span>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link @(currentController == "Roles" ? "active" : "")" asp-controller="Roles" asp-action="Index">
+                                <i class="bi bi-key"></i>
+                                <span>Roles</span>
+                            </a>
+                        </li>
+                    }
                     <li class="nav-item">
                         <a class="nav-link @(currentController == "Consultas" ? "active" : "")" asp-controller="Consultas" asp-action="Index">
                             <i class="bi bi-chat-dots"></i>
@@ -52,6 +57,12 @@
             </nav>
         </div>
         <div class="sidebar-footer p-3">
+            @* Podemos usar ahora los metodos del user, dentro del claims *@
+            @if (User.IsInRole("Admin"))
+            {
+                <p>Hola, usted es el admin...</p>
+            }
+
             @if (TempData.Peek("nombre") != null)
             {
                 <div class="text-center">Bienvenido: @TempData.Peek("nombre")</div>
