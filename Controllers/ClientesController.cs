@@ -10,6 +10,7 @@ using sistemaVeterinario.Models;
 
 namespace sistemaVeterinario.Controllers
 {
+    [Authorize]
     public class ClientesController : Controller
     {
         private readonly SistemaVeterinarioContext _context;
