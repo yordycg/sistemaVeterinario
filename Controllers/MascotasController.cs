@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
@@ -9,6 +10,7 @@ using sistemaVeterinario.Models;
 
 namespace sistemaVeterinario.Controllers
 {
+    [Authorize]
     public class MascotasController : Controller
     {
         private readonly SistemaVeterinarioContext _context;
@@ -140,6 +142,7 @@ namespace sistemaVeterinario.Controllers
             return View(mascota);
         }
 
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Delete(int id)
         {
             var mascota = await _context.Mascotas.FindAsync(id);
