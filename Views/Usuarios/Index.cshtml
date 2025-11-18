@@ -54,7 +54,10 @@
                         </td>
                         <td class="text-center">
                             <a asp-action="Edit" asp-route-id="@item.IdUsuario" class="btn btn-icon-action btn-outline-warning btn-sm"><i class="bi bi-pencil me-0"></i></a>
-                            <button class="btn btn-icon-action btn-outline-danger btn-sm btn-delete" data-id="@item.IdUsuario" data-name="@item.Nombre"><i class="bi bi-trash me-0"></i></button>
+                            @if (User.IsInRole("Admin"))
+                            {
+                                <button class="btn btn-icon-action btn-outline-danger btn-sm btn-delete" data-id="@item.IdUsuario" data-name="@item.Nombre"><i class="bi bi-trash me-0"></i></button>
+                            }
                         </td>
                     </tr>
 }
