@@ -117,6 +117,7 @@ namespace sistemaVeterinario.Controllers
             return View(role);
         }
 
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Delete(int id)
         {
             var role = await _context.Roles.FindAsync(id);
