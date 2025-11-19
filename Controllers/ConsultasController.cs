@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
+using sistemaVeterinario.Helpers;
 using sistemaVeterinario.Models;
 
 namespace sistemaVeterinario.Controllers
@@ -21,10 +22,12 @@ namespace sistemaVeterinario.Controllers
         }
 
         // GET: Consultas
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(int? pagNumber)
         {
-            var sistemaVeterinarioContext = _context.Consultas.Include(c => c.IdEstadoConsultaNavigation).Include(c => c.IdMascotaNavigation).Include(c => c.IdUsuarioNavigation);
-            return View(await sistemaVeterinarioContext.ToListAsync());
+            int pagSize = 1;
+            var consultas = from c in _context.Consultas select c;
+
+            return View(await PaginatedList<Consulta>.CreateAsync(consultas, pagNumber ?? 1, pagSize));
         }
 
         // GET: Consultas/Details/5
