@@ -1,4 +1,5 @@
-@model IEnumerable<sistemaVeterinario.Models.Cliente>
+@using sistemaVeterinario.Helpers
+@model PaginatedList<sistemaVeterinario.Models.Cliente>
 
 @{
     ViewData["Title"] = "Clientes";
@@ -15,27 +16,27 @@
         <div class="table-responsive">
             <table class="table table-bordered table-hover" id="dataTable" width="100%" cellspacing="0">
                 <thead class="table-dark text-center">
-                    <tr>
-                        <th>
-                            @Html.DisplayNameFor(model => model.Run)
-                        </th>
-                        <th>
-                            @Html.DisplayNameFor(model => model.Nombre)
-                        </th>
-                        <th>
-                            @Html.DisplayNameFor(model => model.Telefono)
-                        </th>
-                        <th>
-                            @Html.DisplayNameFor(model => model.Email)
-                        </th>
-                        <th>
-                            @Html.DisplayNameFor(model => model.Direccion)
-                        </th>
-                        <th>Acciones</th>
-                    </tr>
+                <tr>
+                    <th>
+                        Run
+                    </th>
+                    <th>
+                        Nombre
+                    </th>
+                    <th>
+                        Telefono
+                    </th>
+                    <th>
+                        Email
+                    </th>
+                    <th>
+                        Direccion
+                    </th>
+                    <th>Acciones</th>
+                </tr>
                 </thead>
                 <tbody id="clientes-table-body">
-@foreach (var item in Model) {
+                @foreach (var item in Model) {
                     <tr>
                         <td>
                             @Html.DisplayFor(modelItem => item.Run)
@@ -54,15 +55,46 @@
                         </td>
                         <td class="text-center">
                             <a asp-action="Edit" asp-route-id="@item.IdCliente" class="btn btn-icon-action btn-outline-warning btn-sm"><i class="bi bi-pencil me-0"></i></a>
-                                @if (User.IsInRole("Admin"))
-                                {
-                                    <button class="btn btn-icon-action btn-outline-danger btn-sm btn-delete" data-id="@item.IdCliente" data-name="@item.Nombre"><i class="bi bi-trash me-0"></i></button>
-                                }
+                            @if (User.IsInRole("Admin"))
+                            {
+                                <button class="btn btn-icon-action btn-outline-danger btn-sm btn-delete" data-id="@item.IdCliente" data-name="@item.Nombre"><i class="bi bi-trash me-0"></i></button>
+                            }
                         </td>
                     </tr>
-}
+                }
                 </tbody>
             </table>
+            @{
+                // Definir variables necesarias para la paginacion.
+                // prev -> poder ir a la pagina anterior o que deshabilite...
+                // next -> poder ir a la siguiente pagina o que se deshabilite...
+                // total -> poder saber el total de paginas...
+                var prev = !Model.HasPreviuosPage ? "disabled" : "";
+                var next = !Model.HasNextPage ? "disabled" : "";
+                var total = Model.TotalPages;
+            }
+            <nav aria-label="...">
+                <ul class="pagination pagination-circle">
+                    <li class="page-item @prev">
+                        <a class="page-link" asp-action="Index" asp-route-pagNumber="@(Model.PageIndex-1)">Anterior</a>
+                    </li>
+                    @for (int i = 0; i < total; i++)
+                    {
+                        var activo = "";
+
+                        if ((i + 1) == Model.PageIndex)
+                        {
+                            activo = "active";
+                        }
+                        <li class="page-item @activo">
+                            <a class="page-link" asp-action="Index" asp-route-pagNumber="@(i+1)">@(i+1)</a>
+                        </li>
+                    }
+                    <li class="page-item @next">
+                        <a class="page-link" asp-action="Index" asp-route-pagNumber="@(Model.PageIndex+1)">Siguiente</a>
+                    </li>
+                </ul>
+            </nav>
         </div>
     </div>
 </div>
