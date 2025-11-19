@@ -1,0 +1,29 @@
+@using sistemaVeterinario.Helpers
+@model PaginatedList<dynamic>
+
+@{
+    // Obtener el nombre del controlador actual para generar los enlaces correctamente.
+    var controllerName = ViewData["ControllerName"] as string ?? ViewContext.RouteData.Values["controller"].ToString();
+
+    var prevDisabled = !Model.HasPreviuosPage ? "disabled" : "";
+    var nextDisabled = !Model.HasNextPage ? "disabled" : "";
+    var totalPages = Model.TotalPages;
+}
+
+<nav aria-label="Page navigation">
+    <ul class="pagination pagination-circle">
+        <li class="page-item @prevDisabled">
+            <a class="page-link" asp-action="Index" asp-controller="@controllerName" asp-route-pagNumber="@(Model.PageIndex-1)">Anterior</a>
+        </li>
+        @for (int i = 0; i < totalPages; i++)
+        {
+            var activo = (i + 1) == Model.PageIndex ? "active" : "";
+            <li class="page-item @activo">
+                <a class="page-link" asp-action="Index" asp-controller="@controllerName" asp-route-pagNumber="@(i+1)">@(i+1)</a>
+            </li>
+        }
+        <li class="page-item @nextDisabled">
+            <a class="page-link" asp-action="Index" asp-controller="@controllerName" asp-route-pagNumber="@(Model.PageIndex+1)">Siguiente</a>
+        </li>
+    </ul>
+</nav>
