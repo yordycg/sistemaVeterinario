@@ -1,6 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 
-namespace gymProject.Helpers
+namespace sistemaVeterinario.Helpers
 {
     public class PaginatedList<T> : List<T>
     {
