@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using sistemaVeterinario.Helpers;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
@@ -21,9 +22,13 @@ namespace sistemaVeterinario.Controllers
         }
 
         // GET: Clientes
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(int? pagNumber)
         {
-            return View(await _context.Clientes.ToListAsync());
+            int pagSize = 1; // 20 es un numero prudente, datos a mostrar por pagina.
+            var clientes = from c in _context.Clientes select c; // traer lista de clientes.
+
+            // Retornar la paginacion...
+            return View(await PaginatedList<Cliente>.CreateAsync(clientes, pagNumber ?? 1, pagSize));
         }
 
         // GET: Clientes/Details/5
