@@ -22,13 +22,30 @@ namespace sistemaVeterinario.Controllers
         }
 
         // GET: Mascotas
-        public async Task<IActionResult> Index(int? pagNumber)
+        public async Task<IActionResult> Index(int? pagNumber, string search, string filter)
         {
-            int pagSize = 1;
+            if (search == null)
+            {
+                search = filter;
+            }
+            else
+            {
+                pagNumber = 1;
+            }
+
+            ViewData["filtro"] = search;
+
+            int pagSize = 20;
             var mascotas = _context.Mascotas
                 .Include(m => m.IdClienteNavigation)
                 .Include(m => m.IdEspecieNavigation)
-                .Include(m => m.IdRazaNavigation);
+                .Include(m => m.IdRazaNavigation)
+                .AsQueryable();
+
+            if (!string.IsNullOrEmpty(search))
+            {
+                mascotas = mascotas.Where(m => m.Nombre.ToLower().Contains(search.ToLower()));
+            }
 
             return View(await PaginatedList<Mascota>.CreateAsync(mascotas, pagNumber ?? 1, pagSize));
         }
