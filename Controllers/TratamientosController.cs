@@ -22,10 +22,27 @@ namespace sistemaVeterinario.Controllers
         }
 
         // GET: Tratamientos
-        public async Task<IActionResult> Index(int? pagNumber)
+        public async Task<IActionResult> Index(int? pagNumber, string search, string filter)
         {
-            int pagSize = 1;
-            var tratamientos = _context.Tratamientos.Include(t => t.IdConsultaNavigation);
+            if (search == null)
+            {
+                search = filter;
+            }
+            else
+            {
+                pagNumber = 1;
+            }
+
+            ViewData["filtro"] = search;
+
+            int pagSize = 20;
+            var tratamientos = _context.Tratamientos.Include(t => t.IdConsultaNavigation)
+                .AsQueryable();
+
+            if (!string.IsNullOrEmpty(search))
+            {
+                tratamientos = tratamientos.Where(t => t.Descripcion.ToLower().Contains(search.ToLower()));
+            }
 
             return View(await PaginatedList<Tratamiento>.CreateAsync(tratamientos, pagNumber ?? 1, pagSize));
         }
