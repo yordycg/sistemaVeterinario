@@ -1,3 +1,4 @@
+using sistemaVeterinario.Helpers;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,7 +11,7 @@ using sistemaVeterinario.Models;
 
 namespace sistemaVeterinario.Controllers
 {
-    // Podemos definir que el 'Admin' es el único rol que puede acceder a este controlador.
+    // Podemos definir que el 'Admin' es el ï¿½nico rol que puede acceder a este controlador.
     [Authorize(Roles = "Admin")]
     public class UsuariosController : Controller
     {
@@ -22,10 +23,12 @@ namespace sistemaVeterinario.Controllers
         }
 
         // GET: Usuarios
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(int? pagNumber)
         {
-            var sistemaVeterinarioContext = _context.Usuarios.Include(u => u.IdEstadoUsuarioNavigation).Include(u => u.IdRolNavigation);
-            return View(await sistemaVeterinarioContext.ToListAsync());
+            int pagSize = 1;
+            var usuarios = _context.Usuarios.Include(u => u.IdEstadoUsuarioNavigation).Include(u => u.IdRolNavigation);
+
+            return View(await PaginatedList<Usuario>.CreateAsync(usuarios, pagNumber ?? 1, pagSize));
         }
 
         // GET: Usuarios/Details/5
