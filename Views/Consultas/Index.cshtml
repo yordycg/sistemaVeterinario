@@ -1,4 +1,5 @@
-@model IEnumerable<sistemaVeterinario.Models.Consulta>
+@using sistemaVeterinario.Helpers
+@model PaginatedList<sistemaVeterinario.Models.Consulta>
 
 @{
     ViewData["Title"] = "Consultas";
@@ -29,7 +30,7 @@
                             Veterinario
                         </th>
                         <th>
-                            @Html.DisplayNameFor(model => model.Motivo)
+                            Motivo
                         </th>
                         <th>Acciones</th>
                     </tr>
@@ -63,6 +64,33 @@
 }
                 </tbody>
             </table>
+            @{
+                var prev = !Model.HasPreviuosPage ? "disabled" : "";
+                var next = !Model.HasNextPage ? "disabled" : "";
+                var total = Model.TotalPages;
+            }
+            <nav aria-label="...">
+                <ul class="pagination pagination-circle">
+                    <li class="page-item @prev">
+                        <a class="page-link" asp-action="Index" asp-route-pagNumber="@(Model.PageIndex-1)">Anterior</a>
+                    </li>
+                    @for (int i = 0; i < total; i++)
+                    {
+                        var activo = "";
+
+                        if ((i + 1) == Model.PageIndex)
+                        {
+                            activo = "active";
+                        }
+                        <li class="page-item @activo">
+                            <a class="page-link" asp-action="Index" asp-route-pagNumber="@(i+1)">@(i+1)</a>
+                        </li>
+                    }
+                    <li class="page-item @next">
+                        <a class="page-link" asp-action="Index" asp-route-pagNumber="@(Model.PageIndex+1)">Siguiente</a>
+                    </li>
+                </ul>
+            </nav>
         </div>
     </div>
 </div>
