@@ -1,4 +1,5 @@
-﻿using System;
+﻿using sistemaVeterinario.Helpers;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -21,9 +22,12 @@ namespace sistemaVeterinario.Controllers
         }
 
         // GET: Roles
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(int? pagNumber)
         {
-            return View(await _context.Roles.ToListAsync());
+            int pagSize = 1;
+            var roles = from r in _context.Roles select r;
+
+            return View(await PaginatedList<Role>.CreateAsync(roles, pagNumber ?? 1, pagSize));
         }
 
         // GET: Roles/Details/5
