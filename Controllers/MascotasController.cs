@@ -1,3 +1,4 @@
+using sistemaVeterinario.Helpers;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -21,10 +22,15 @@ namespace sistemaVeterinario.Controllers
         }
 
         // GET: Mascotas
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(int? pagNumber)
         {
-            var sistemaVeterinarioContext = _context.Mascotas.Include(m => m.IdClienteNavigation).Include(m => m.IdEspecieNavigation).Include(m => m.IdRazaNavigation);
-            return View(await sistemaVeterinarioContext.ToListAsync());
+            int pagSize = 1;
+            var mascotas = _context.Mascotas
+                .Include(m => m.IdClienteNavigation)
+                .Include(m => m.IdEspecieNavigation)
+                .Include(m => m.IdRazaNavigation);
+
+            return View(await PaginatedList<Mascota>.CreateAsync(mascotas, pagNumber ?? 1, pagSize));
         }
 
         // GET: Mascotas/Details/5
