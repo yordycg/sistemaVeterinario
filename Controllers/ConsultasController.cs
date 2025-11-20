@@ -25,7 +25,10 @@ namespace sistemaVeterinario.Controllers
         public async Task<IActionResult> Index(int? pagNumber)
         {
             int pagSize = 1;
-            var consultas = from c in _context.Consultas select c;
+            var consultas = _context.Consultas
+                .Include(c => c.IdEstadoConsultaNavigation)
+                .Include(c => c.IdMascotaNavigation)
+                .Include(c => c.IdUsuarioNavigation);
 
             return View(await PaginatedList<Consulta>.CreateAsync(consultas, pagNumber ?? 1, pagSize));
         }
