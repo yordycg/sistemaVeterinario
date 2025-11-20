@@ -1,4 +1,5 @@
-﻿@model IEnumerable<sistemaVeterinario.Models.Usuario>
+﻿@using sistemaVeterinario.Helpers
+@model PaginatedList<sistemaVeterinario.Models.Usuario>
 
 @{
     ViewData["Title"] = "Usuarios";
@@ -17,13 +18,13 @@
                 <thead class="table-dark text-center">
                     <tr>
                         <th>
-                            @Html.DisplayNameFor(model => model.Nombre)
+                            Nombre
                         </th>
                         <th>
-                            @Html.DisplayNameFor(model => model.Email)
+                            Email
                         </th>
                         <th>
-                            @Html.DisplayNameFor(model => model.Password)
+                            Password
                         </th>
                         <th>
                             Estado
@@ -63,6 +64,33 @@
 }
                 </tbody>
             </table>
+            @{
+                var prev = !Model.HasPreviuosPage ? "disabled" : "";
+                var next = !Model.HasNextPage ? "disabled" : "";
+                var total = Model.TotalPages;
+            }
+            <nav aria-label="...">
+                <ul class="pagination pagination-circle justify-content-center">
+                    <li class="page-item @prev">
+                        <a class="page-link" asp-action="Index" asp-route-pagNumber="@(Model.PageIndex-1)">Anterior</a>
+                    </li>
+                    @for (int i = 0; i < total; i++)
+                    {
+                        var activo = "";
+
+                        if ((i + 1) == Model.PageIndex)
+                        {
+                            activo = "active";
+                        }
+                        <li class="page-item @activo">
+                            <a class="page-link" asp-action="Index" asp-route-pagNumber="@(i+1)">@(i+1)</a>
+                        </li>
+                    }
+                    <li class="page-item @next">
+                        <a class="page-link" asp-action="Index" asp-route-pagNumber="@(Model.PageIndex+1)">Siguiente</a>
+                    </li>
+                </ul>
+            </nav>
         </div>
     </div>
 </div>
