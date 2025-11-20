@@ -1,3 +1,4 @@
+using sistemaVeterinario.Helpers;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -21,10 +22,12 @@ namespace sistemaVeterinario.Controllers
         }
 
         // GET: Tratamientos
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(int? pagNumber)
         {
-            var sistemaVeterinarioContext = _context.Tratamientos.Include(t => t.IdConsultaNavigation);
-            return View(await sistemaVeterinarioContext.ToListAsync());
+            int pagSize = 1;
+            var tratamientos = _context.Tratamientos.Include(t => t.IdConsultaNavigation);
+
+            return View(await PaginatedList<Tratamiento>.CreateAsync(tratamientos, pagNumber ?? 1, pagSize));
         }
 
         // GET: Tratamientos/Details/5
