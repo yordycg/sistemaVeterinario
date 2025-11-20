@@ -22,10 +22,28 @@ namespace sistemaVeterinario.Controllers
         }
 
         // GET: Clientes
-        public async Task<IActionResult> Index(int? pagNumber)
+        public async Task<IActionResult> Index(int? pagNumber, string search, string filter)
         {
-            int pagSize = 1; // 20 es un numero prudente, datos a mostrar por pagina.
+            if (search == null)
+            {
+                search = filter;
+            }
+            else
+            {
+                pagNumber = 1;
+            }
+
+            // ViewData para capturar la busqueda, y poder filtrar.
+            ViewData["filtro"] = search;
+
+            int pagSize = 20; // 20 es un numero prudente, datos a mostrar por pagina.
             var clientes = from c in _context.Clientes select c; // traer lista de clientes.
+
+            // Verificar que se haya realizado una busqueda, sino no hacer nada.
+            if (!string.IsNullOrEmpty(search))
+            {
+                clientes = clientes.Where(c => c.Nombre.ToLower().Contains(search.ToLower()));
+            }
 
             // Retornar la paginacion...
             return View(await PaginatedList<Cliente>.CreateAsync(clientes, pagNumber ?? 1, pagSize));
