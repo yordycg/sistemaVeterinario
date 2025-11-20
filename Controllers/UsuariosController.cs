@@ -23,10 +23,29 @@ namespace sistemaVeterinario.Controllers
         }
 
         // GET: Usuarios
-        public async Task<IActionResult> Index(int? pagNumber)
+        public async Task<IActionResult> Index(int? pagNumber, string search, string filter)
         {
-            int pagSize = 1;
-            var usuarios = _context.Usuarios.Include(u => u.IdEstadoUsuarioNavigation).Include(u => u.IdRolNavigation);
+            if (search == null)
+            {
+                search = filter;
+            }
+            else
+            {
+                pagNumber = 1;
+            }
+
+            ViewData["filtro"] = search;
+
+            int pagSize = 20;
+            var usuarios = _context.Usuarios
+                .Include(u => u.IdEstadoUsuarioNavigation)
+                .Include(u => u.IdRolNavigation)
+                .AsQueryable();
+
+            if (!string.IsNullOrEmpty(search))
+            {
+                usuarios = usuarios.Where(u => u.Nombre.ToLower().Contains(search.ToLower()));
+            }
 
             return View(await PaginatedList<Usuario>.CreateAsync(usuarios, pagNumber ?? 1, pagSize));
         }
