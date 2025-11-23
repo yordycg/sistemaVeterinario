@@ -190,5 +190,41 @@ namespace sistemaVeterinario.Controllers
         {
             return _context.Consultas.Any(e => e.IdConsulta == id);
         }
+
+        public async Task<IActionResult> ExportToExcel(string search)
+        {
+            var consultasQuery = _context.Consultas
+                .Include(c => c.IdMascotaNavigation) // para obtener el nombre de la mascota
+                .ThenInclude(m => m.IdClienteNavigation) // para obtener el nombre del dueño
+                .Include(c => c.IdUsuarioNavigation) // para obtener el nombre del veterinario
+                .Include(c => c.IdEstadoConsultaNavigation) // para obtener el estado
+                .AsQueryable();
+
+            string nombreArchivo = "Consultas";
+
+            if (!string.IsNullOrEmpty(search))
+            {
+                consultasQuery = consultasQuery.Where(c => c.IdMascotaNavigation.Nombre.ToLower().Contains(search.ToLower()));
+                nombreArchivo += $"_{search}";
+            }
+
+            var exportarData = await consultasQuery.Select(c => new {
+                Fecha = c.FechaConsulta.ToString("dd-MM-yyyy"),
+                Mascota = c.IdMascotaNavigation.Nombre,
+                Dueño = c.IdMascotaNavigation.IdClienteNavigation.Nombre,
+                Veterinario = c.IdUsuarioNavigation.Nombre,
+                Motivo = c.Motivo,
+                Diagnostico = c.Diagnostico,
+                Estado = c.IdEstadoConsultaNavigation.NombreEstado
+            }).ToListAsync();
+
+            var contenidoArchivo = ExcelExporter.GenerarExcel(exportarData, "Consultas");
+
+            return File(
+                contenidoArchivo,
+                "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+                $"{nombreArchivo}.xlsx"
+            );
+        }
     }
 }
