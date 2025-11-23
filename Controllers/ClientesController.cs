@@ -232,5 +232,41 @@ namespace sistemaVeterinario.Controllers
 
             return Json(exists);
         }
+
+        /**
+         * Metodo que nos permite exportar una tabla a excel.
+         */
+        public async Task<IActionResult> ExportToExcel(string search)
+        {
+            var consultaClientes = from c in _context.Clientes select c;
+            string nombreArchivo = "Clientes";
+
+            // Verificar si se realizo una busqueda (filtro), exportar con ese filtro.
+            if (!string.IsNullOrEmpty(search))
+            {
+                consultaClientes = consultaClientes.Where(c => c.Nombre.ToLower().Contains(search.ToLower()));
+                nombreArchivo += $"_{search}"; // agregar el 'filtro' al nombre del archivo.
+            }
+
+            // Con 'Select()' podemos elegir que datos enviar como columnas.
+            // Esperamos hasta que se ejecute la consulta.
+            var exportarData = await consultaClientes.Select(c => new {
+                c.Run,
+                c.Nombre,
+                c.Telefono,
+                c.Email,
+                c.Direccion
+            }).ToListAsync();
+
+            // Utilizamos el helper, le pasamos la lista de datos y el nombre de la hoja.
+            var contenidoArchivo = ExcelExporter.GenerarExcel(exportarData, "Clientes");
+
+            // Retornar el archivo para descargar.
+            return File(
+                    contenidoArchivo,
+                    "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+                    $"{nombreArchivo}.xlsx"
+                );
+        }
     }
 }

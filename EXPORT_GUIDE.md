@@ -110,28 +110,28 @@ Modificar el controlador deseado para añadir una acción `ExportToExcel` que ob
  */
 public async Task<IActionResult> ExportToExcel(string search)
 {
-    var clientesQuery = from c in _context.Clientes select c;
+    var consultaClientes = from c in _context.Clientes select c;
     string nombreArchivo = "Clientes";
 
     // Verificar si se realizo una busqueda (filtro), exportar con ese filtro.
     if (!string.IsNullOrEmpty(search))
     {
-        clientesQuery = clientesQuery.Where(c => c.Nombre.ToLower().Contains(search.ToLower()));
-        nombreArchivo += " - " + search; // agregar el 'filtro' al nombre del archivo.
+        consultaClientes = consultaClientes.Where(c => c.Nombre.ToLower().Contains(search.ToLower()));
+        nombreArchivo += $"_{search}"; // agregar el 'filtro' al nombre del archivo.
     }
 
-    // Proyectar el resultado a un objeto anónimo con 'Select' para elegir columnas.
-    var exportData = clientesQuery.Select(c => new {
+    // Con 'Select()' podemos elegir que datos enviar como columnas.
+    // Esperamos hasta que se ejecute la consulta.
+    var exportarData = await consultaClientes.Select(c => new {
         c.Run,
         c.Nombre,
         c.Telefono,
         c.Email,
         c.Direccion
-        // Al no incluir otras propiedades aquí, no se exportarán.
-    });
+    }).ToListAsync();
 
-    // Ejecutar la consulta y pasarla al helper.
-    var contenidoArchivo = ExcelExporter.GenerarExcel(await exportData.ToListAsync(), "Clientes");
+    // Utilizamos el helper, le pasamos la lista de datos y el nombre de la hoja.
+    var contenidoArchivo = ExcelExporter.GenerarExcel(exportarData, "Clientes");
 
     // Retornar el archivo para descargar.
     return File(
