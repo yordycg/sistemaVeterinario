@@ -202,5 +202,36 @@ namespace sistemaVeterinario.Controllers
         {
             return _context.Usuarios.Any(e => e.IdUsuario == id);
         }
+
+        public async Task<IActionResult> ExportToExcel(string search)
+        {
+            var usuariosQuery = _context.Usuarios
+                .Include(u => u.IdEstadoUsuarioNavigation)
+                .Include(u => u.IdRolNavigation)
+                .AsQueryable();
+
+            string nombreArchivo = "Usuarios";
+
+            if (!string.IsNullOrEmpty(search))
+            {
+                usuariosQuery = usuariosQuery.Where(u => u.Nombre.ToLower().Contains(search.ToLower()));
+                nombreArchivo += $"_{search}";
+            }
+
+            var exportData = await usuariosQuery.Select(u => new {
+                u.Nombre,
+                u.Email,
+                Rol = u.IdRolNavigation.NombreRol,
+                Estado = u.IdEstadoUsuarioNavigation.NombreEstado
+            }).ToListAsync();
+
+            var contenidoArchivo = ExcelExporter.GenerarExcel(exportData, "Usuarios");
+
+            return File(
+                contenidoArchivo,
+                "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+                $"{nombreArchivo}.xlsx"
+            );
+        }
     }
 }
