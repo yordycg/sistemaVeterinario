@@ -176,5 +176,38 @@ namespace sistemaVeterinario.Controllers
         {
             return _context.Tratamientos.Any(e => e.IdTratamiento == id);
         }
+
+        
+
+        public async Task<IActionResult> ExportToExcel(string search)
+        {
+            var tratamientosQuery = _context.Tratamientos
+                .Include(t => t.IdConsultaNavigation)
+                .ThenInclude(c => c.IdMascotaNavigation) // Para obtener la mascota de la consulta
+                .AsQueryable();
+
+            string nombreArchivo = "Tratamientos";
+
+            if (!string.IsNullOrEmpty(search))
+            {
+                tratamientosQuery = tratamientosQuery.Where(t => t.Descripcion.ToLower().Contains(search.ToLower()));
+                nombreArchivo += $"_{search}";
+            }
+
+            var exportData = await tratamientosQuery.Select(t => new {
+                t.Descripcion,
+                t.Medicamento,
+                Mascota = t.IdConsultaNavigation.IdMascotaNavigation.Nombre,
+                FechaConsulta = t.IdConsultaNavigation.FechaConsulta.ToString("dd-MM-yyyy")
+            }).ToListAsync();
+
+            var contenidoArchivo = ExcelExporter.GenerarExcel(exportData, "Tratamientos");
+
+            return File(
+                contenidoArchivo,
+                "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+                $"{nombreArchivo}.xlsx"
+            );
+        }
     }
 }
