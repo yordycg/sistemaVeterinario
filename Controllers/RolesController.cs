@@ -24,7 +24,7 @@ namespace sistemaVeterinario.Controllers
         // GET: Roles
         public async Task<IActionResult> Index(int? pagNumber)
         {
-            int pagSize = 1;
+            int pagSize = 20;
             var roles = from r in _context.Roles select r;
 
             return View(await PaginatedList<Role>.CreateAsync(roles, pagNumber ?? 1, pagSize));
@@ -158,6 +158,23 @@ namespace sistemaVeterinario.Controllers
         private bool RoleExists(int id)
         {
             return _context.Roles.Any(e => e.IdRol == id);
+        }
+
+        public async Task<IActionResult> ExportToExcel()
+        {
+            var roles = await _context.Roles.Select( r => new
+            {
+                r.IdRol,
+                r.NombreRol
+            }).ToListAsync();
+
+            var contenidoArchivo = ExcelExporter.GenerarExcel(roles, "Roles");
+
+            return File(
+                contenidoArchivo,
+                "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+                "roles.xlsx"
+            );
         }
     }
 }
