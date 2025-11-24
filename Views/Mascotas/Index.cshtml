@@ -11,6 +11,7 @@
         <div class="ms-auto">
             <a asp-action="Create" class="btn btn-success btn-sm"><i class="bi bi-plus-lg me-2"></i>Registrar Mascota</a>
             <a asp-action="ExportToExcel" asp-route-search="@ViewData["filtro"]" class="btn btn-info btn-sm"><i class="bi bi-file-earmark-excel me-2"></i>Exportar a Excel</a>
+            <a asp-action="ExportToPdf" asp-route-search="@ViewData["filtro"]" class="btn btn-danger btn-sm"><i class="bi bi-file-earmark-pdf me-2"></i>Exportar a PDF</a>
         </div>
     </div>
     <div class="card-body">
