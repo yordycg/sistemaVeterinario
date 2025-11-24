@@ -27,80 +27,76 @@ A diferencia de Excel, donde simplemente listábamos propiedades, QuestPDF se ba
 using QuestPDF.Fluent;
 using QuestPDF.Helpers;
 using QuestPDF.Infrastructure;
-using System.Reflection; // Todavía útil para leer propiedades de T
 
 namespace sistemaVeterinario.Helpers
 {
     public static class PdfExporter
     {
-        public static byte[] GenerarPdf<T>(IEnumerable<T> data, string title, string worksheetName = "Reporte")
+        public static byte[] GenerarPdf<T>(IEnumerable<T> data, string titulo, string nombreHojaTrabajo = "Lista")
         {
-            // Opcional: Registrar licencia comunitaria si no vas a usar la versión comercial
-            // License.LicenseType = LicenseType.Community; // Descomentar si usas la licencia comunitaria
+            // Activar licencia comunitaria
+            QuestPDF.Settings.License = LicenseType.Community;
 
             var document = Document.Create(container =>
             {
                 container.Page(page =>
                 {
                     page.Size(PageSizes.A4);
-                    page.Margin(2.54f, Unit.Centimetre); // 1 pulgada de margen
-                    page.DefaultTextStyle(x => x.FontSize(10));
+                    page.Margin(2, Unit.Centimetre);
+                    page.DefaultTextStyle(x => x.FontSize(12));
 
                     page.Header()
-                        .Text(title)
+                        // .PaddingBottom(1, Unit.Centimetre)
+                        .Text(titulo)
                         .SemiBold().FontSize(24).FontColor(Colors.Blue.Medium)
-                        .AlignCenter()
-                        .PaddingBottom(1, Unit.Centimetre);
+                        .AlignCenter();
 
                     page.Content()
-                        .PaddingVertical(0.5f, Unit.Centimetre)
+                        .PaddingVertical(1, Unit.Centimetre)
                         .Column(column =>
                         {
                             column.Spacing(5); // Espacio entre elementos de la columna
 
-                            column.Item().Text(text =>
+                            column.Item().AlignRight().Text(text =>
                             {
                                 text.Span("Fecha del Reporte: ").SemiBold();
                                 text.Span(DateTime.Now.ToString("dd-MM-yyyy HH:mm"));
-                            }).FontSize(8).AlignRight();
+                            });
 
-                            column.Item().PaddingTop(10).Table(table =>
+                            column.Item().PaddingTop(5).Table(table =>
                             {
-                                // --- CLAVE: Construcción Dinámica de la Tabla ---
-                                var properties = typeof(T).GetProperties();
+                                // Construcción Dinámica de la Tabla
+                                var propiedades = typeof(T).GetProperties();
 
-                                // Cabecera de la tabla
-                                table.Columns(columns =>
+                                // Header de la tabla
+                                table.ColumnsDefinition(columns =>
                                 {
-                                    foreach (var prop in properties)
+                                    foreach (var prop in propiedades)
                                     {
-                                        columns.RelativeColumn(); // Cada columna tiene un ancho relativo
+                                        columns.RelativeColumn(); // ancho relativo para cada columna.
                                     }
                                 });
 
+                                // Estilos del header
                                 table.Header(header =>
                                 {
-                                    header.DefaultTextStyle(x => x.SemiBold().FontSize(10).FontColor(Colors.White));
-                                    header.Background(Colors.Blue.Medium);
-                                    header.AlignCenter();
-
-                                    foreach (var prop in properties)
+                                    foreach (var prop in propiedades)
                                     {
-                                        header.Cell().Padding(5).Text(prop.Name);
+                                        header.Cell().Padding(5).DefaultTextStyle(x =>
+                                        {
+                                            return x.SemiBold().FontSize(12).FontColor(Colors.White);
+                                        }).Background(Colors.Blue.Medium).AlignCenter().Text(prop.Name);
                                     }
                                 });
 
                                 // Filas de datos
                                 foreach (var item in data)
                                 {
-                                    table.Cell().BorderBottom(1).BorderColor(Colors.Grey.Lighten2).Column(cell =>
+                                    foreach (var prop in propiedades)
                                     {
-                                        foreach (var prop in properties)
-                                        {
-                                            var value = prop.GetValue(item)?.ToString() ?? "";
-                                            cell.Item().Padding(5).Text(value);
-                                        }
-                                    });
+                                        var value = prop.GetValue(item)?.ToString() ?? "";
+                                        table.Cell().BorderBottom(1).BorderColor(Colors.Grey.Lighten2).Padding(5).Text(value);
+                                    }
                                 }
                             });
                         });
@@ -117,7 +113,7 @@ namespace sistemaVeterinario.Helpers
                 });
             });
 
-            return document.GeneratePdf(); // Genera el PDF y lo devuelve como byte[]
+            return document.GeneratePdf(); // genera el PDF y lo retorna como byte[].
         }
     }
 }
