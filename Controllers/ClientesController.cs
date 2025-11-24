@@ -268,5 +268,34 @@ namespace sistemaVeterinario.Controllers
                     $"{nombreArchivo}.xlsx"
                 );
         }
+
+        // GET: Clientes/ExportToPdf
+        public async Task<IActionResult> ExportToPdf(string search)
+        {
+            var consultaClientes = from c in _context.Clientes select c;
+            string nombreArchivo = "Clientes";
+
+            if (!string.IsNullOrEmpty(search))
+            {
+                consultaClientes = consultaClientes.Where(c => c.Nombre.ToLower().Contains(search.ToLower()));
+                nombreArchivo += $"_{search}";
+            }
+
+            var exportarData = await consultaClientes.Select(c => new {
+                c.Run,
+                c.Nombre,
+                c.Telefono,
+                c.Email,
+                c.Direccion
+            }).ToListAsync();
+
+            var contenidoArchivo = PdfExporter.GenerarPdf(exportarData, $"Reporte de {nombreArchivo}");
+
+            return File(
+                contenidoArchivo,
+                "application/pdf", // Tipo para PDF
+                $"{nombreArchivo}.pdf"
+            );
+        }
     }
 }
