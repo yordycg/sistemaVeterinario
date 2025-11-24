@@ -17,7 +17,7 @@ namespace sistemaVeterinario.Helpers
                 {
                     page.Size(PageSizes.A4);
                     page.Margin(2, Unit.Centimetre);
-                    page.DefaultTextStyle(x => x.FontSize(12));
+                    page.DefaultTextStyle(x => x.FontSize(10));
 
                     page.Header()
                         // .PaddingBottom(1, Unit.Centimetre)
@@ -58,7 +58,7 @@ namespace sistemaVeterinario.Helpers
                                     {
                                         header.Cell().Padding(5).DefaultTextStyle(x =>
                                         {
-                                            return x.SemiBold().FontSize(12).FontColor(Colors.White);
+                                            return x.SemiBold().FontSize(11).FontColor(Colors.White);
                                         }).Background(Colors.Blue.Medium).AlignCenter().Text(prop.Name);
                                     }
                                 });
