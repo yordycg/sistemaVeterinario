@@ -176,5 +176,22 @@ namespace sistemaVeterinario.Controllers
                 "roles.xlsx"
             );
         }
+
+        public async Task<IActionResult> ExportToPdf()
+        {
+            var roles = await _context.Roles.Select(r => new
+            {
+                r.IdRol,
+                r.NombreRol
+            }).ToListAsync();
+
+            var contenidoArchivo = PdfExporter.GenerarPdf(roles, "Reporte de Roles");
+
+            return File(
+                contenidoArchivo,
+                "application/pdf",
+                "roles.pdf"
+            );
+        }
     }
 }
