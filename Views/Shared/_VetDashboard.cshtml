@@ -1,0 +1,226 @@
+@*
+    Views/Shared/_VetDashboard.cshtml
+    Vista parcial para el dashboard del Veterinario.
+*@
+
+<!-- Fila para las tarjetas de KPIs -->
+<div class="row">
+
+    <!-- Tarjeta Consultas Pendientes -->
+    <div class="col-xl-6 col-md-6 mb-4">
+        <div class="card border-left-warning shadow h-100 py-2">
+            <div class="card-body">
+                <div class="row no-gutters align-items-center">
+                    <div class="col mr-2">
+                        <div class="text-xs font-weight-bold text-warning text-uppercase mb-1">
+                            Consultas Pendientes (Hoy)</div>
+                        <div id="consultas-pendientes" class="h5 mb-0 font-weight-bold text-gray-800">Cargando...</div>
+                    </div>
+                    <div class="col-auto">
+                        <i class="fas fa-clock fa-2x text-gray-300"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Tarjeta Consultas en Progreso -->
+    <div class="col-xl-6 col-md-6 mb-4">
+        <div class="card border-left-info shadow h-100 py-2">
+            <div class="card-body">
+                <div class="row no-gutters align-items-center">
+                    <div class="col mr-2">
+                        <div class="text-xs font-weight-bold text-info text-uppercase mb-1">
+                            Consultas en Progreso (Hoy)</div>
+                        <div id="consultas-en-progreso" class="h5 mb-0 font-weight-bold text-gray-800">Cargando...</div>
+                    </div>
+                    <div class="col-auto">
+                        <i class="fas fa-spinner fa-2x text-gray-300"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Fila para la Agenda y Pacientes Recientes -->
+<div class="row">
+
+    <!-- Columna para la Agenda del Día -->
+    <div class="col-lg-7 mb-4">
+        <div class="card shadow">
+            <div class="card-header py-3">
+                <h6 class="m-0 font-weight-bold text-primary">Agenda del Día</h6>
+            </div>
+            <div class="card-body">
+                <div id="agenda-hoy" class="list-group">
+                    <!-- Las consultas se cargarán aquí dinámicamente -->
+                    <p class="text-center">Cargando agenda...</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Columna para Pacientes Recientes -->
+    <div class="col-lg-5 mb-4">
+        <div class="card shadow">
+            <div class="card-header py-3">
+                <h6 class="m-0 font-weight-bold text-primary">Últimos Pacientes Atendidos</h6>
+            </div>
+            <div class="card-body">
+                <div id="ultimos-pacientes" class="table-responsive">
+                    <table class="table table-hover">
+                        <thead>
+                            <tr>
+                                <th>Mascota</th>
+                                <th>Fecha Atención</th>
+                                <th>Acción</th>
+                            </tr>
+                        </thead>
+                        <tbody id="ultimos-pacientes-body">
+                            <!-- Los pacientes se cargarán aquí -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+<!-- Fila para el gráfico de Diagnósticos -->
+<div class="row">
+    <div class="col-12">
+        <div class="card shadow mb-4">
+            <div class="card-header py-3">
+                <h6 class="m-0 font-weight-bold text-primary">Mis Diagnósticos Más Comunes (Top 5)</h6>
+            </div>
+            <div class="card-body">
+                <div id="chart-diagnosticos">
+                    <!-- El gráfico de ApexCharts se renderizará aquí -->
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Script para el dashboard del veterinario -->
+<script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        fetch('/Home/ObtenerVetDashboardData')
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('La respuesta del servidor no fue exitosa.');
+                }
+                return response.json();
+            })
+            .then(data => {
+                // 1. Actualizar Tarjetas de KPI
+                document.getElementById('consultas-pendientes').textContent = data.consultasPendientesHoy;
+                document.getElementById('consultas-en-progreso').textContent = data.consultasEnProgresoHoy;
+
+                // 2. Renderizar Agenda del Día
+                renderAgenda(data.consultasHoy);
+
+                // 3. Renderizar Tabla de Últimos Pacientes
+                renderUltimosPacientes(data.ultimosPacientes);
+
+                // 4. Renderizar Gráfico de Diagnósticos
+                renderDiagnosticosChart(data.diagnosticosComunes);
+            })
+            .catch(error => {
+                console.error('Error al obtener los datos para el dashboard del veterinario:', error);
+                // Aquí se podría mostrar un mensaje de error en la interfaz.
+            });
+
+        function renderAgenda(consultas) {
+            const agendaContainer = document.getElementById('agenda-hoy');
+            agendaContainer.innerHTML = ''; // Limpiar el contenido inicial
+
+            if (consultas.length === 0) {
+                agendaContainer.innerHTML = '<p class="text-center">No hay consultas programadas para hoy.</p>';
+                return;
+            }
+
+            consultas.forEach(consulta => {
+                let estadoClass = '';
+                switch (consulta.estado) {
+                    case 'Pendiente':
+                        estadoClass = 'list-group-item-warning';
+                        break;
+                    case 'En Progreso':
+                        estadoClass = 'list-group-item-info';
+                        break;
+                    case 'Finalizada':
+                        estadoClass = 'list-group-item-success';
+                        break;
+                }
+
+                const item = `
+                    <a href="/Consultas/Details/${consulta.idConsulta}" class="list-group-item list-group-item-action ${estadoClass}">
+                        <div class="d-flex w-100 justify-content-between">
+                            <h5 class="mb-1">${consulta.nombreMascota}</h5>
+                            <small>${consulta.estado}</small>
+                        </div>
+                        <p class="mb-1">${consulta.motivo}</p>
+                    </a>
+                `;
+                agendaContainer.innerHTML += item;
+            });
+        }
+
+        function renderUltimosPacientes(pacientes) {
+            const pacientesBody = document.getElementById('ultimos-pacientes-body');
+            pacientesBody.innerHTML = ''; // Limpiar
+
+            if (pacientes.length === 0) {
+                pacientesBody.innerHTML = '<tr><td colspan="3" class="text-center">No hay pacientes atendidos recientemente.</td></tr>';
+                return;
+            }
+
+            pacientes.forEach(paciente => {
+                const row = `
+                    <tr>
+                        <td>${paciente.nombreMascota}</td>
+                        <td>${paciente.fechaAtencion}</td>
+                        <td>
+                            <a href="/Mascotas/Details/${paciente.idMascota}" class="btn btn-sm btn-outline-primary">
+                                Ver Historial
+                            </a>
+                        </td>
+                    </tr>
+                `;
+                pacientesBody.innerHTML += row;
+            });
+        }
+
+        function renderDiagnosticosChart(diagnosticos) {
+            const labels = diagnosticos.map(d => d.diagnostico);
+            const series = diagnosticos.map(d => d.cantidad);
+
+            const options = {
+                chart: {
+                    type: 'donut',
+                    height: 350
+                },
+                series: series,
+                labels: labels,
+                responsive: [{
+                    breakpoint: 480,
+                    options: {
+                        chart: {
+                            width: 200
+                        },
+                        legend: {
+                            position: 'bottom'
+                        }
+                    }
+                }]
+            };
+
+            const chart = new ApexCharts(document.querySelector("#chart-diagnosticos"), options);
+            chart.render();
+        }
+    });
+</script>

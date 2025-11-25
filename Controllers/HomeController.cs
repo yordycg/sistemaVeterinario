@@ -28,7 +28,7 @@ namespace sistemaVeterinario.Controllers
             return View();
         }
 
-        //
+        // Metodo para obtener los datos del dashboard del admin.
         [Authorize(Roles  = "Admin")]
         public async Task<IActionResult> ObtenerAdminDashboardData()
         {
@@ -41,17 +41,6 @@ namespace sistemaVeterinario.Controllers
 
                 // Crear query para obtener las consultas de las ultimos 6 meses.
                 var ultimos6Meses = DateOnly.FromDateTime(DateTime.Now.AddMonths(-6));
-
-                //var consultasPorMes = await _context.Consultas
-                //    .Where(c => c.FechaConsulta >= ultimos6Meses) // filtrar por fecha.
-                //    .GroupBy(c => new { c.FechaConsulta.Year, c.FechaConsulta.Month }) // agrupar por año y mes.
-                //    .Select(g => new // asignar los resultados en un objeto anonimo.
-                //    {
-                //        Mes = new DateTime(g.Key.Year, g.Key.Month, 1).ToString("yyyy-MM"), // etiqueta mas legible.
-                //        Cantidad = g.Count() // contar los elementos en cada grupo para obtener el total mensual.
-                //    })
-                //    .OrderBy(x => x.Mes) // ordenar por mes, asi el grafico tiene el orden cronologico.
-                //    .ToListAsync();
 
                 var consultas = await _context.Consultas
                     .Where(c => c.FechaConsulta >= ultimos6Meses) // filtrar por fecha.
@@ -88,6 +77,116 @@ namespace sistemaVeterinario.Controllers
                 return StatusCode(500, respuestaError);
             }
         }
+
+        // Metodo para obtener los datos del dashboard de veterinario.
+        [Authorize(Roles = "Veterinari@")]
+        public async Task<IActionResult> ObtenerVetDashboardData()
+        {
+            try
+            {
+                // Obtener el ID del usuario 'Veterinari@' autenticado.
+                var userID = User.FindFirstValue(ClaimTypes.NameIdentifier);
+
+                if (string.IsNullOrEmpty(userID))
+                {
+                    return Unauthorized(new { error = "Usuario no autenticado." });
+                }
+
+                var veterinarioID = int.Parse(userID);
+                var hoy = DateOnly.FromDateTime(DateTime.Now);
+
+                // Consultar el dia de HOY para el veterinario autenticado.
+                var consultasHoy = await _context.Consultas
+                    .Where(c => c.IdUsuario == veterinarioID && c.FechaConsulta == hoy)
+                    .Include(c => c.IdMascotaNavigation)
+                    .Include(c => c.IdEstadoConsultaNavigation)
+                    .OrderBy(c => c.FechaConsulta)
+                    .Select(c => new
+                    {
+                        c.IdConsulta,
+                        NombreMascota = c.IdMascotaNavigation.Nombre,
+                        FechaConsulta = c.FechaConsulta,
+                        Motivo = c.Motivo,
+                        Estado = c.IdEstadoConsultaNavigation.NombreEstado
+                    })
+                    .ToListAsync();
+
+                // Conteo de consultas pendientes y en progreso.
+                var consultasPendientesHoy = consultasHoy.Count(c => c.Estado == "Pendiente");
+                var consultasEnProgresoHoy = consultasHoy.Count(c => c.Estado == "En Progreso");
+
+                // Obtener ultimos 5 pacientes atendidos por el veterinario.
+                var ultimosPacientesData = await _context.Consultas
+                    .Where(c => c.IdUsuario == veterinarioID && c.IdEstadoConsultaNavigation.NombreEstado == "Finalizada")
+                    .OrderByDescending(c => c.FechaConsulta)
+                    .Include(c => c.IdMascotaNavigation)
+                    .Select(c => new
+                    {
+                        c.IdMascota,
+                        NombreMascota = c.IdMascotaNavigation.Nombre,
+                        c.FechaConsulta,
+                    })
+                    .Distinct() // no repetir mascotas que tuvieran varias consultas recientes.
+                    .Take(5)
+                    .ToListAsync();
+
+                // Formatear la fecha
+                var ultimosPacientes = ultimosPacientesData
+                    .Select(p => new
+                    {
+                        p.IdMascota,
+                        p.NombreMascota,
+                        FechaAtencion = p.FechaConsulta.ToString("dd-MM-yyyy")
+                    })
+                    .ToList();
+
+                // Obtener todos los diagnosticos realizados por el veterinario.
+                var diagnosticos = await _context.Consultas
+                    .Where(c => c.IdUsuario == veterinarioID && !string.IsNullOrEmpty(c.Diagnostico))
+                    .Select(c => c.Diagnostico)
+                    .ToListAsync();
+
+                // Obtener los diagnosticos mas comunes (Top 5).
+                // Agrupar y contar ocurrencias de cada diagnostico.
+                var diagnosticosComunes = diagnosticos
+                    .GroupBy(d => d)
+                    .Select(g => new
+                    {
+                        Diagnostico = g.Key,
+                        Cantidad = g.Count()
+                    })
+                    .OrderByDescending(x => x.Cantidad)
+                    .Take(5)
+                    .ToList();
+
+                // Crear objeto para enviar como objeto JSON.
+                var data = new
+                {
+                    consultasHoy,
+                    consultasPendientesHoy,
+                    consultasEnProgresoHoy,
+                    ultimosPacientes,
+                    diagnosticosComunes
+                };
+
+                return Ok(data);
+            }
+            catch (Exception ex)
+            {
+                var respuestaError = new
+                {
+                    error = "Ocurrio un error inesperado al procesar la solicitud."
+#if DEBUG
+                    // Esta linea solo se ejecuta en modo DEBUG.
+                    // Recomendado para evitar mostrar o exponer detalles internos...
+                    ,
+                    message = ex.Message
+#endif
+                };
+
+                return StatusCode(500, respuestaError);
+            }
+            }
 
         public IActionResult Privacy()
         {

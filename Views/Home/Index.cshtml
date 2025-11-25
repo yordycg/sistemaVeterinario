@@ -4,13 +4,15 @@
 
 @if (User.IsInRole("Admin"))
 {
+    <h1 class="display-4">Bienvenido, Admin</h1>
     <partial name="_AdminDashboard" />
 }
-else if (User.IsInRole("Veterinario"))
+else if (User.IsInRole("Veterinari@"))
 {
     // TODO: Renderizar la vista parcial del veterinario: <partial name="_VetDashboard" />
     <h1 class="display-4">Bienvenido, Veterinario</h1>
-    <p>El dashboard para veterinarios está en construcción.</p>
+    @* <p>El dashboard para veterinarios está en construcción.</p> *@
+    <partial name="_VetDashboard" />
 }
 else if (User.IsInRole("Recepcionista"))
 {
