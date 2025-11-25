@@ -9,16 +9,15 @@
 }
 else if (User.IsInRole("Veterinari@"))
 {
-    // TODO: Renderizar la vista parcial del veterinario: <partial name="_VetDashboard" />
-    <h1 class="display-4">Bienvenido, Veterinario</h1>
+    <h1 class="display-4">Bienvenid@@, Veterinari@@</h1>
     @* <p>El dashboard para veterinarios está en construcción.</p> *@
     <partial name="_VetDashboard" />
 }
 else if (User.IsInRole("Recepcionista"))
 {
-    // TODO: Renderizar la vista parcial del recepcionista: <partial name="_RecepDashboard" />
-    <h1 class="display-4">Bienvenido, Recepcionista</h1>
-    <p>El dashboard para recepcionistas está en construcción.</p>
+    <h1 class="display-4">Bienvenid@@, Recepcionista</h1>
+    @* <p>El dashboard para recepcionistas está en construcción.</p> *@
+    <partial name="_RecepDashboard" />
 }
 else
 {

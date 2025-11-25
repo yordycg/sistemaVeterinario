@@ -1,0 +1,214 @@
+<div class="container-fluid">
+
+    <!-- Page Heading -->
+    <div class="d-sm-flex align-items-center justify-content-between mb-4">
+        <h1 class="h3 mb-0 text-gray-800">Dashboard Recepcionista</h1>
+    </div>
+
+    <!-- Content Row -->
+    <div class="row">
+
+        <!-- Nuevos Clientes Registrados Hoy Card -->
+        <div class="col-xl-3 col-md-6 mb-4">
+            <div class="card border-left-primary shadow h-100 py-2">
+                <div class="card-body">
+                    <div class="row no-gutters align-items-center">
+                        <div class="col mr-2">
+                            <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">
+                                Nuevos Clientes (Hoy)
+                            </div>
+                            <div class="h5 mb-0 font-weight-bold text-gray-800" id="nuevosClientesHoy">0</div>
+                        </div>
+                        <div class="col-auto">
+                            <i class="fas fa-users fa-2x text-gray-300"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Nuevas Mascotas Registradas Hoy Card -->
+        <div class="col-xl-3 col-md-6 mb-4">
+            <div class="card border-left-success shadow h-100 py-2">
+                <div class="card-body">
+                    <div class="row no-gutters align-items-center">
+                        <div class="col mr-2">
+                            <div class="text-xs font-weight-bold text-success text-uppercase mb-1">
+                                Nuevas Mascotas (Hoy)
+                            </div>
+                            <div class="h5 mb-0 font-weight-bold text-gray-800" id="nuevasMascotasHoy">0</div>
+                        </div>
+                        <div class="col-auto">
+                            <i class="fas fa-paw fa-2x text-gray-300"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Consultas del Día (Total) Card -->
+        <div class="col-xl-3 col-md-6 mb-4">
+            <div class="card border-left-info shadow h-100 py-2">
+                <div class="card-body">
+                    <div class="row no-gutters align-items-center">
+                        <div class="col mr-2">
+                            <div class="text-xs font-weight-bold text-info text-uppercase mb-1">Consultas del Día</div>
+                            <div class="row no-gutters align-items-center">
+                                <div class="col-auto">
+                                    <div class="h5 mb-0 mr-3 font-weight-bold text-gray-800" id="consultasDelDiaTotal">0</div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-auto">
+                            <i class="fas fa-clipboard-list fa-2x text-gray-300"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Content Row -->
+    <div class="row">
+
+        <!-- Agenda General del Día -->
+        <div class="col-lg-12 mb-4">
+            <div class="card shadow mb-4">
+                <div class="card-header py-3">
+                    <h6 class="m-0 font-weight-bold text-primary">Agenda General del Día</h6>
+                </div>
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table class="table table-bordered" id="agendaGeneralTable" width="100%" cellspacing="0">
+                            <thead>
+                                <tr>
+                                    <th>Hora</th>
+                                    <th>Mascota</th>
+                                    <th>Cliente</th>
+                                    <th>Veterinario</th>
+                                    <th>Motivo</th>
+                                    <th>Estado</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <!-- Data will be loaded here -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Consultas Pendientes de Confirmar -->
+        <div class="col-lg-6 mb-4">
+            <div class="card shadow mb-4">
+                <div class="card-header py-3">
+                    <h6 class="m-0 font-weight-bold text-warning">Consultas Pendientes de Confirmar</h6>
+                </div>
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table class="table table-bordered" id="pendientesConfirmarTable" width="100%" cellspacing="0">
+                            <thead>
+                                <tr>
+                                    <th>Hora</th>
+                                    <th>Mascota</th>
+                                    <th>Cliente</th>
+                                    <th>Contacto</th>
+                                    <th>Veterinario</th>
+                                    <th>Motivo</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <!-- Data will be loaded here -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Consultas Finalizadas Recientes -->
+        <div class="col-lg-6 mb-4">
+            <div class="card shadow mb-4">
+                <div class="card-header py-3">
+                    <h6 class="m-0 font-weight-bold text-success">Consultas Finalizadas Recientes (Últimos 7 días)</h6>
+                </div>
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table class="table table-bordered" id="finalizadasRecientesTable" width="100%" cellspacing="0">
+                            <thead>
+                                <tr>
+                                    <th>Fecha</th>
+                                    <th>Mascota</th>
+                                    <th>Cliente</th>
+                                    <th>Veterinario</th>
+                                    <th>Diagnóstico</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <!-- Data will be loaded here -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+</div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        fetch('/Home/ObtenerRecepcionistaDashboardData')
+            .then(response => response.json())
+            .then(data => {
+                // Update KPI cards
+                document.getElementById('nuevosClientesHoy').innerText = data.nuevosClientesHoy;
+                document.getElementById('nuevasMascotasHoy').innerText = data.nuevasMascotasHoy;
+                document.getElementById('consultasDelDiaTotal').innerText = data.consultasDelDiaTotal;
+
+                // Populate Agenda General del Día table
+                const agendaTableBody = document.querySelector('#agendaGeneralTable tbody');
+                agendaTableBody.innerHTML = '';
+                data.agendaDelDia.forEach(consulta => {
+                    const row = agendaTableBody.insertRow();
+                    row.insertCell().innerText = consulta.horaConsulta;
+                    row.insertCell().innerText = consulta.nombreMascota;
+                    row.insertCell().innerText = consulta.nombreCliente;
+                    row.insertCell().innerText = consulta.nombreVeterinario;
+                    row.insertCell().innerText = consulta.motivo;
+                    row.insertCell().innerText = consulta.estado;
+                });
+
+                // Populate Consultas Pendientes de Confirmar table
+                const pendientesTableBody = document.querySelector('#pendientesConfirmarTable tbody');
+                pendientesTableBody.innerHTML = '';
+                data.consultasPendientesConfirmar.forEach(consulta => {
+                    const row = pendientesTableBody.insertRow();
+                    row.insertCell().innerText = consulta.horaConsulta;
+                    row.insertCell().innerText = consulta.nombreMascota;
+                    row.insertCell().innerText = consulta.nombreCliente;
+                    row.insertCell().innerText = `${consulta.telefonoCliente || 'N/A'} / ${consulta.emailCliente || 'N/A'}`;
+                    row.insertCell().innerText = consulta.nombreVeterinario;
+                    row.insertCell().innerText = consulta.motivo;
+                });
+
+                // Populate Consultas Finalizadas Recientes table
+                const finalizadasTableBody = document.querySelector('#finalizadasRecientesTable tbody');
+                finalizadasTableBody.innerHTML = '';
+                data.consultasFinalizadasRecientes.forEach(consulta => {
+                    const row = finalizadasTableBody.insertRow();
+                    row.insertCell().innerText = new Date(consulta.fechaConsulta).toLocaleDateString();
+                    row.insertCell().innerText = consulta.nombreMascota;
+                    row.insertCell().innerText = consulta.nombreCliente;
+                    row.insertCell().innerText = consulta.nombreVeterinario;
+                    row.insertCell().innerText = consulta.diagnostico || 'N/A';
+                });
+            })
+            .catch(error => {
+                console.error('Error fetching receptionist dashboard data:', error);
+                // Optionally display an error message on the dashboard
+            });
+    });
+</script>

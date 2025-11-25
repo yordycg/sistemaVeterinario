@@ -152,7 +152,7 @@ namespace sistemaVeterinario.Controllers
             return View(consulta);
         }
 
-        [Authorize(Roles = "Admin, Veterinari@, Secretari@")]
+        [Authorize(Roles = "Admin, Veterinari@, Recepcionista")]
         public async Task<IActionResult> Delete(int id)
         {
             var consulta = await _context.Consultas.FindAsync(id);

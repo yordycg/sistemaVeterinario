@@ -79,7 +79,6 @@ namespace sistemaVeterinario.Controllers
         }
 
         // Metodo para obtener los datos del dashboard de recepcionista.
-        /*
         [Authorize(Roles = "Recepcionista")]
         public async Task<IActionResult> ObtenerRecepcionistaDashboardData()
         {
@@ -104,10 +103,10 @@ namespace sistemaVeterinario.Controllers
                     {
                         c.IdConsulta,
                         NombreMascota = c.IdMascotaNavigation.Nombre,
-                        NombreCliente = c.IdMascotaNavigation.IdClienteNavigation.NombreCompleto,
+                        NombreCliente = c.IdMascotaNavigation.IdClienteNavigation.Nombre,
                         NombreVeterinario = c.IdUsuarioNavigation.Nombre,
                         FechaConsulta = c.FechaConsulta,
-                        HoraConsulta = c.HoraConsulta,
+                        //HoraConsulta = c.HoraConsulta,
                         Motivo = c.Motivo,
                         Estado = c.IdEstadoConsultaNavigation.NombreEstado
                     })
@@ -123,12 +122,12 @@ namespace sistemaVeterinario.Controllers
                     {
                         c.IdConsulta,
                         NombreMascota = c.IdMascotaNavigation.Nombre,
-                        NombreCliente = c.IdMascotaNavigation.IdClienteNavigation.NombreCompleto,
+                        NombreCliente = c.IdMascotaNavigation.IdClienteNavigation.Nombre,
                         TelefonoCliente = c.IdMascotaNavigation.IdClienteNavigation.Telefono,
                         EmailCliente = c.IdMascotaNavigation.IdClienteNavigation.Email,
                         NombreVeterinario = c.IdUsuarioNavigation.Nombre,
                         FechaConsulta = c.FechaConsulta,
-                        HoraConsulta = c.HoraConsulta,
+                        //HoraConsulta = c.HoraConsulta,
                         Motivo = c.Motivo
                     })
                     .ToListAsync();
@@ -144,7 +143,7 @@ namespace sistemaVeterinario.Controllers
                     {
                         c.IdConsulta,
                         NombreMascota = c.IdMascotaNavigation.Nombre,
-                        NombreCliente = c.IdMascotaNavigation.IdClienteNavigation.NombreCompleto,
+                        NombreCliente = c.IdMascotaNavigation.IdClienteNavigation.Nombre,
                         NombreVeterinario = c.IdUsuarioNavigation.Nombre,
                         FechaConsulta = c.FechaConsulta,
                         Motivo = c.Motivo,
@@ -179,7 +178,6 @@ namespace sistemaVeterinario.Controllers
                 return StatusCode(500, respuestaError);
             }
         }
-        */
 
         // Metodo para obtener los datos del dashboard de veterinario.
         [Authorize(Roles = "Veterinari@")]
