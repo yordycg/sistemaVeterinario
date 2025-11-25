@@ -25,7 +25,7 @@ public partial class Usuario
     public string Email { get; set; } = null!;
 
     [Required(ErrorMessage = "La contraseña es obligatoria.")]
-    [StringLength(10, MinimumLength = 8, ErrorMessage = "La contraseña debe tener entre 8 y 10 caracteres.")]
+    [StringLength(255, MinimumLength = 8, ErrorMessage = "La contraseña debe tener entre 8 y 255 caracteres.")]
     public string Password { get; set; } = null!;
 
     [Required]

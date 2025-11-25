@@ -1,4 +1,5 @@
 using sistemaVeterinario.Helpers;
+using BCrypt.Net;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -85,6 +86,9 @@ namespace sistemaVeterinario.Controllers
         {
             if (ModelState.IsValid)
             {
+                // Hashear password antes de guardarla.
+                usuario.Password = BCrypt.Net.BCrypt.HashPassword(usuario.Password);
+
                 _context.Add(usuario);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
@@ -126,6 +130,16 @@ namespace sistemaVeterinario.Controllers
             {
                 try
                 {
+                    // Obtener el usuario existente (DB) para comparar.
+                    // AsNoTracking() -> para evitar problemas de seguimiento de entidades.
+                    var usuarioExistente = await _context.Usuarios.AsNoTracking().FirstOrDefaultAsync(u => u.IdUsuario == id);
+
+                    // Hashear password solo si ha sido modificado.
+                    if (usuarioExistente != null && usuarioExistente.Password != usuario.Password)
+                    {
+                        usuario.Password = BCrypt.Net.BCrypt.HashPassword(usuario.Password);
+                    }
+
                     _context.Update(usuario);
                     await _context.SaveChangesAsync();
                 }

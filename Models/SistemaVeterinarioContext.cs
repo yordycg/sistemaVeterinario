@@ -253,7 +253,7 @@ public partial class SistemaVeterinarioContext : DbContext
                 .IsUnicode(false)
                 .HasColumnName("nombre");
             entity.Property(e => e.Password)
-                .HasMaxLength(10)
+                .HasMaxLength(255)
                 .IsUnicode(false)
                 .HasColumnName("password");
 

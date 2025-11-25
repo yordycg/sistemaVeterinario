@@ -1,3 +1,4 @@
+using BCrypt.Net;
 using System.Diagnostics;
 using System.Security.Claims;
 using System.Threading.Tasks;
@@ -325,11 +326,12 @@ namespace sistemaVeterinario.Controllers
                 return View(new {email, password});
             }
 
-            // Hacer una consulta en la DB para verificar la existencia del usuario.
+            // Hacer una consulta en la DB para verificar la existencia del usuario, solo por email.
             // Include() -> sirve para traer datos de tablas relacionadas, en este caso el rol del usuario.
-            var user = await _context.Usuarios.Include(r => r.IdRolNavigation).FirstOrDefaultAsync(u => u.Email == email && u.Password == password);
+            var user = await _context.Usuarios.Include(r => r.IdRolNavigation).FirstOrDefaultAsync(u => u.Email == email);
 
-            if (user == null)
+            // Verificar que el usuario exista y que la password es correcta usando BCrypt.Verify()
+            if (user == null || !BCrypt.Net.BCrypt.Verify(password, user.Password))
             {
                 ViewBag.Error = "Email y/o password incorrectos.";
                 return View();
