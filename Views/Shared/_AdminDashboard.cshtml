@@ -1,0 +1,243 @@
+@*
+    Views/Shared/_AdminDashboard.cshtml
+    Vista parcial para el dashboard del Administrador.
+*@
+
+<!-- Fila para las tarjetas de KPIs (Key Performance Indicators) -->
+<div class="row">
+
+    <!-- Tarjeta Total Clientes -->
+    <div class="col-xl-3 col-md-6 mb-4">
+        <div class="card border-left-primary shadow h-100 py-2">
+            <div class="card-body">
+                <div class="row no-gutters align-items-center">
+                    <div class="col mr-2">
+                        <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">
+                            Total Clientes</div>
+                        <div id="total-clientes" class="h5 mb-0 font-weight-bold text-gray-800">Cargando...</div>
+                    </div>
+                    <div class="col-auto">
+                        <i class="fas fa-users fa-2x text-gray-300"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Tarjeta Total Mascotas -->
+    <div class="col-xl-3 col-md-6 mb-4">
+        <div class="card border-left-success shadow h-100 py-2">
+            <div class="card-body">
+                <div class="row no-gutters align-items-center">
+                    <div class="col mr-2">
+                        <div class="text-xs font-weight-bold text-success text-uppercase mb-1">
+                            Total Mascotas</div>
+                        <div id="total-mascotas" class="h5 mb-0 font-weight-bold text-gray-800">Cargando...</div>
+                    </div>
+                    <div class="col-auto">
+                        <i class="fas fa-paw fa-2x text-gray-300"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Tarjeta Total Consultas -->
+    <div class="col-xl-3 col-md-6 mb-4">
+        <div class="card border-left-info shadow h-100 py-2">
+            <div class="card-body">
+                <div class="row no-gutters align-items-center">
+                    <div class="col mr-2">
+                        <div class="text-xs font-weight-bold text-info text-uppercase mb-1">Total Consultas
+                        </div>
+                        <div id="total-consultas" class="h5 mb-0 font-weight-bold text-gray-800">Cargando...</div>
+                    </div>
+                    <div class="col-auto">
+                        <i class="fas fa-clipboard-list fa-2x text-gray-300"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Fila para el gráfico de Consultas -->
+<div class="row">
+    <div class="col-12">
+        <div class="card shadow mb-4">
+            <!-- Título del Gráfico -->
+            <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
+                <h6 class="m-0 font-weight-bold text-primary">Consultas en los Últimos 6 Meses</h6>
+            </div>
+            <!-- Cuerpo del Gráfico -->
+            <div class="card-body">
+                <div id="chart-consultas-mes">
+                    <!-- El gráfico de ApexCharts se renderizará aquí -->
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Fila para Opciones de Exportación -->
+<div class="row">
+    <div class="col-12">
+        <div class="card shadow mb-4">
+            <div class="card-header py-3">
+                <h6 class="m-0 font-weight-bold text-primary">Exportar Datos del Sistema</h6>
+            </div>
+            <div class="card-body">
+                <p>Descargar la lista completa de datos de cada entidad del sistema en formato Excel o PDF.</p>
+                <ul class="list-group">
+                    <li class="list-group-item d-flex justify-content-between align-items-center">
+                        Clientes
+                        <span>
+                            <a asp-controller="Clientes" asp-action="ExportToExcel" class="btn btn-sm btn-success">
+                                <i class="bi bi-file-earmark-excel"></i> Excel
+                            </a>
+                            <a asp-controller="Clientes" asp-action="ExportToPdf" class="btn btn-sm btn-danger">
+                                <i class="bi bi-file-earmark-pdf"></i> PDF
+                            </a>
+                        </span>
+                    </li>
+                    <li class="list-group-item d-flex justify-content-between align-items-center">
+                        Consultas
+                        <span>
+                            <a asp-controller="Consultas" asp-action="ExportToExcel" class="btn btn-sm btn-success">
+                                <i class="bi bi-file-earmark-excel"></i> Excel
+                            </a>
+                            <a asp-controller="Consultas" asp-action="ExportToPdf" class="btn btn-sm btn-danger">
+                                <i class="bi bi-file-earmark-pdf"></i> PDF
+                            </a>
+                        </span>
+                    </li>
+                    <li class="list-group-item d-flex justify-content-between align-items-center">
+                        Mascotas
+                        <span>
+                            <a asp-controller="Mascotas" asp-action="ExportToExcel" class="btn btn-sm btn-success">
+                                <i class="bi bi-file-earmark-excel"></i> Excel
+                            </a>
+                            <a asp-controller="Mascotas" asp-action="ExportToPdf" class="btn btn-sm btn-danger">
+                                <i class="bi bi-file-earmark-pdf"></i> PDF
+                            </a>
+                        </span>
+                    </li>
+                    <li class="list-group-item d-flex justify-content-between align-items-center">
+                        Usuarios
+                        <span>
+                            <a asp-controller="Usuarios" asp-action="ExportToExcel" class="btn btn-sm btn-success">
+                                <i class="bi bi-file-earmark-excel"></i> Excel
+                            </a>
+                            <a asp-controller="Usuarios" asp-action="ExportToPdf" class="btn btn-sm btn-danger">
+                                <i class="bi bi-file-earmark-pdf"></i> PDF
+                            </a>
+                        </span>
+                    </li>
+                    <li class="list-group-item d-flex justify-content-between align-items-center">
+                        Roles
+                        <span>
+                            <a asp-controller="Roles" asp-action="ExportToExcel" class="btn btn-sm btn-success">
+                                <i class="bi bi-file-earmark-excel"></i> Excel
+                            </a>
+                            <a asp-controller="Roles" asp-action="ExportToPdf" class="btn btn-sm btn-danger">
+                                <i class="bi bi-file-earmark-pdf"></i> PDF
+                            </a>
+                        </span>
+                    </li>
+                    <li class="list-group-item d-flex justify-content-between align-items-center">
+                        Tratamientos
+                        <span>
+                            <a asp-controller="Tratamientos" asp-action="ExportToExcel" class="btn btn-sm btn-success">
+                                <i class="bi bi-file-earmark-excel"></i> Excel
+                            </a>
+                            <a asp-controller="Tratamientos" asp-action="ExportToPdf" class="btn btn-sm btn-danger">
+                                <i class="bi bi-file-earmark-pdf"></i> PDF
+                            </a>
+                        </span>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Inclusión de la librería ApexCharts desde su CDN -->
+<script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
+
+<script>
+    // Se ejecuta cuando todo el contenido del DOM ha sido cargado.
+    document.addEventListener('DOMContentLoaded', function () {
+
+        // Hacemos una petición al endpoint que creamos en el HomeController.
+        fetch('/Home/ObtenerAdminDashboardData')
+            .then(response => {
+                // Si la respuesta no es 'ok' (ej: error 500), lanzamos un error para que lo capture el .catch()
+                if (!response.ok) {
+                    throw new Error('La respuesta del servidor no fue exitosa.');
+                }
+                // Si la respuesta es 'ok', la convertimos a JSON.
+                return response.json();
+            })
+            .then(data => {
+                // Una vez que tenemos los datos, actualizamos el contenido de las tarjetas.
+                document.getElementById('total-clientes').textContent = data.totalClientes;
+                document.getElementById('total-mascotas').textContent = data.totalMascotas;
+                document.getElementById('total-consultas').textContent = data.totalConsultas;
+
+                // Dibujar el grafico (pasandole los datos de la consulta por mes).
+                renderConsultasChart(data.consultasPorMes);
+            })
+            .catch(error => {
+                // Mostrar el error en caso de algun fallo en el 'fetch' o al pasar a JSON.
+                console.error('Error al obtener los datos para el dashboard:', error);
+                // TODO: Aquí podrías mostrar un mensaje de error en la interfaz de usuario.
+            });
+
+        // Renderizar el grafico usando ApexCharts.
+        function renderConsultasChart(consultasData) {
+            // Necesitamos dos arrays: uno para las etiquetas (meses) y otro para los valores (cantidad).
+            const meses = consultasData.map(item => item.mes);
+            const cantidades = consultasData.map(item => item.cantidad);
+
+            // Opciones de configuración para el gráfico.
+            // Opciones para el gráfico.
+            const options = {
+                chart: {
+                    type: 'bar', // tipo de gráfico: barras
+                    height: 350
+                },
+                series: [{ // los datos que se van a mostrar
+                    name: 'Número de Consultas',
+                    data: cantidades
+                }],
+                xaxis: { // configuración del eje X
+                    categories: meses
+                },
+                plotOptions: {
+                    bar: {
+                        horizontal: false,
+                        borderRadius: 4
+                    }
+                },
+                dataLabels: {
+                    // No mostrar etiquetas de datos encima de las barras.
+                    enabled: false 
+                },
+                tooltip: {
+                    y: {
+                        formatter: function (val) {
+                            return val + " consultas"
+                        }
+                    }
+                }
+            };
+
+            // Creamos una nueva instancia de ApexCharts, le pasamos el contenedor y las opciones.
+            const chart = new ApexCharts(document.querySelector("#chart-consultas-mes"), options);
+            
+            // Renderizamos el gráfico.
+            chart.render();
+        }
+    });
+</script>
+

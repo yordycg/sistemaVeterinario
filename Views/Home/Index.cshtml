@@ -1,8 +1,28 @@
 ﻿@{
-    ViewData["Title"] = "Home Page";
+    ViewData["Title"] = "Dashboard";
 }
 
-<div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://learn.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
-</div>
+@if (User.IsInRole("Admin"))
+{
+    <partial name="_AdminDashboard" />
+}
+else if (User.IsInRole("Veterinario"))
+{
+    // TODO: Renderizar la vista parcial del veterinario: <partial name="_VetDashboard" />
+    <h1 class="display-4">Bienvenido, Veterinario</h1>
+    <p>El dashboard para veterinarios está en construcción.</p>
+}
+else if (User.IsInRole("Recepcionista"))
+{
+    // TODO: Renderizar la vista parcial del recepcionista: <partial name="_RecepDashboard" />
+    <h1 class="display-4">Bienvenido, Recepcionista</h1>
+    <p>El dashboard para recepcionistas está en construcción.</p>
+}
+else
+{
+    // Vista por defecto para otros usuarios o si no se encuentra un rol específico
+    <div class="text-center">
+        <h1 class="display-4">Bienvenido</h1>
+        <p>Bienvenido al sistema de gestión de la clínica veterinaria.</p>
+    </div>
+}

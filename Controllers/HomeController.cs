@@ -28,6 +28,67 @@ namespace sistemaVeterinario.Controllers
             return View();
         }
 
+        //
+        [Authorize(Roles  = "Admin")]
+        public async Task<IActionResult> ObtenerAdminDashboardData()
+        {
+            try
+            {
+                // Obtener conteos totales de los clientes, mascotas y consultas.
+                var totalClientes = await _context.Clientes.CountAsync();
+                var totalMascotas = await _context.Mascotas.CountAsync();
+                var totalConsultas = await _context.Consultas.CountAsync();
+
+                // Crear query para obtener las consultas de las ultimos 6 meses.
+                var ultimos6Meses = DateOnly.FromDateTime(DateTime.Now.AddMonths(-6));
+
+                //var consultasPorMes = await _context.Consultas
+                //    .Where(c => c.FechaConsulta >= ultimos6Meses) // filtrar por fecha.
+                //    .GroupBy(c => new { c.FechaConsulta.Year, c.FechaConsulta.Month }) // agrupar por año y mes.
+                //    .Select(g => new // asignar los resultados en un objeto anonimo.
+                //    {
+                //        Mes = new DateTime(g.Key.Year, g.Key.Month, 1).ToString("yyyy-MM"), // etiqueta mas legible.
+                //        Cantidad = g.Count() // contar los elementos en cada grupo para obtener el total mensual.
+                //    })
+                //    .OrderBy(x => x.Mes) // ordenar por mes, asi el grafico tiene el orden cronologico.
+                //    .ToListAsync();
+
+                var consultas = await _context.Consultas
+                    .Where(c => c.FechaConsulta >= ultimos6Meses) // filtrar por fecha.
+                    .ToListAsync();
+
+                var consultasPorMes = consultas
+                    .GroupBy(c => new { c.FechaConsulta.Year, c.FechaConsulta.Month }) // agrupar por año y mes.
+                    .Select(g => new // asignar los resultados en un objeto anonimo.
+                    {
+                        Mes = new DateTime(g.Key.Year, g.Key.Month, 1).ToString("yyyy-MM"), // etiqueta mas legible.
+                        Cantidad = g.Count() // contar los elementos en cada grupo para obtener el total mensual.
+                    })
+                    .OrderBy(x => x.Mes) // ordenar por mes, asi el grafico tiene el orden cronologico.
+                    .ToList();
+
+                // Crear objeto para enviar como objeto JSON.
+                var data = new { totalClientes, totalMascotas, totalConsultas, consultasPorMes };
+
+                return Ok(data);
+            }
+            catch(Exception ex)
+            {
+                var respuestaError = new
+                {
+                    error = "Ocurrio un error inesperado al procesar la solicitud."
+#if DEBUG
+                    // Esta linea solo se ejecuta en modo DEBUG.
+                    // Recomendado para evitar mostrar o exponer detalles internos...
+                    ,
+                    message = ex.Message
+#endif
+                };
+
+                return StatusCode(500, respuestaError);
+            }
+        }
+
         public IActionResult Privacy()
         {
             return View();
@@ -40,9 +101,9 @@ namespace sistemaVeterinario.Controllers
         }
 
         /**
-         * Metodo que nos permite crear nuestro LOGIN.
-         * - AllowAnonymous -> permite el acceso a este metodo sin necesidad de estar autenticado.
-         */
+        * Metodo que nos permite crear nuestro LOGIN.
+        * - AllowAnonymous -> permite el acceso a este metodo sin necesidad de estar autenticado.
+        */
         [AllowAnonymous]
         public IActionResult Login()
         {
@@ -50,8 +111,8 @@ namespace sistemaVeterinario.Controllers
         }
 
         /**
-         * 
-         */
+        * 
+        */
         [HttpPost]
         public async Task<IActionResult> Login(string email, string password)
         {
@@ -75,10 +136,10 @@ namespace sistemaVeterinario.Controllers
             }
 
             /**
-             * Claims:
-             * - Sirven para almacenar informacion del usuario autenticado.
-             * - Es otra forma aparte de las variables Session y TempData.
-             */
+            * Claims:
+            * - Sirven para almacenar informacion del usuario autenticado.
+            * - Es otra forma aparte de las variables Session y TempData.
+            */
             var claims = new List<Claim>
             {
                 new Claim(ClaimTypes.NameIdentifier, user.IdUsuario.ToString()),
@@ -97,12 +158,12 @@ namespace sistemaVeterinario.Controllers
 
 
             /**
-             * Variable Session:
-             * - Variable temporal que se almacena mientras el usuario este loggeado.
-             * - Para utilizar estas variables se debe configurar en el Program.cs
-             * - SetString() -> permite guardar data en una variable session.
-             * - GetString() -> permite obtener data de una variable session.
-             */
+            * Variable Session:
+            * - Variable temporal que se almacena mientras el usuario este loggeado.
+            * - Para utilizar estas variables se debe configurar en el Program.cs
+            * - SetString() -> permite guardar data en una variable session.
+            * - GetString() -> permite obtener data de una variable session.
+            */
             HttpContext.Session.SetString("nombre", user.Nombre);
 
             // TempData -> permite la comunicacion (data) entre controllers
