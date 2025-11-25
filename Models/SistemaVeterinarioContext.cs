@@ -156,7 +156,6 @@ public partial class SistemaVeterinarioContext : DbContext
             entity.Property(e => e.IdMascota).HasColumnName("id_mascota");
             entity.Property(e => e.Edad).HasColumnName("edad");
             entity.Property(e => e.IdCliente).HasColumnName("id_cliente");
-            entity.Property(e => e.IdEspecie).HasColumnName("id_especie");
             entity.Property(e => e.IdRaza).HasColumnName("id_raza");
             entity.Property(e => e.Nombre)
                 .HasMaxLength(50)
@@ -173,11 +172,6 @@ public partial class SistemaVeterinarioContext : DbContext
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("FK__mascotas__id_cli__4CA06362");
 
-            entity.HasOne(d => d.IdEspecieNavigation).WithMany(p => p.Mascota)
-                .HasForeignKey(d => d.IdEspecie)
-                .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK__mascotas__id_esp__4D94879B");
-
             entity.HasOne(d => d.IdRazaNavigation).WithMany(p => p.Mascota)
                 .HasForeignKey(d => d.IdRaza)
                 .OnDelete(DeleteBehavior.ClientSetNull)
@@ -191,10 +185,16 @@ public partial class SistemaVeterinarioContext : DbContext
             entity.ToTable("razas");
 
             entity.Property(e => e.IdRaza).HasColumnName("id_raza");
+            entity.Property(e => e.IdEspecie).HasColumnName("id_especie");
             entity.Property(e => e.NombreRaza)
                 .HasMaxLength(30)
                 .IsUnicode(false)
                 .HasColumnName("nombre_raza");
+
+            entity.HasOne(d => d.IdEspecieNavigation).WithMany(p => p.Razas)
+                .HasForeignKey(d => d.IdEspecie)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_razas_especies");
         });
 
         modelBuilder.Entity<Role>(entity =>
@@ -285,13 +285,13 @@ public partial class SistemaVeterinarioContext : DbContext
         );
 
         modelBuilder.Entity<Raza>().HasData(
-            new Raza { IdRaza = 1, NombreRaza = "Labrador" },
-            new Raza { IdRaza = 2, NombreRaza = "Poodle" },
-            new Raza { IdRaza = 3, NombreRaza = "Siamés" },
-            new Raza { IdRaza = 4, NombreRaza = "Persa" },
-            new Raza { IdRaza = 5, NombreRaza = "Dorado" },
-            new Raza { IdRaza = 6, NombreRaza = "Cabeza de León" },
-            new Raza { IdRaza = 7, NombreRaza = "Canario" }
+            new Raza { IdRaza = 1, IdEspecie = 1, NombreRaza = "Labrador" },
+            new Raza { IdRaza = 2, IdEspecie = 1, NombreRaza = "Poodle" },
+            new Raza { IdRaza = 3, IdEspecie = 2, NombreRaza = "Siamés" },
+            new Raza { IdRaza = 4, IdEspecie = 2, NombreRaza = "Persa" },
+            new Raza { IdRaza = 5, IdEspecie = 3, NombreRaza = "Dorado" },
+            new Raza { IdRaza = 6, IdEspecie = 4, NombreRaza = "Cabeza de León" },
+            new Raza { IdRaza = 7, IdEspecie = 5, NombreRaza = "Canario" }
         );
 
         modelBuilder.Entity<EstadoConsulta>().HasData(

@@ -47,7 +47,7 @@ namespace sistemaVeterinario.Controllers
                     .ToListAsync();
 
                 var consultasPorMes = consultas
-                    .GroupBy(c => new { c.FechaConsulta.Year, c.FechaConsulta.Month }) // agrupar por a�o y mes.
+                    .GroupBy(c => new { c.FechaConsulta.Year, c.FechaConsulta.Month }) // agrupar por año y mes.
                     .Select(g => new // asignar los resultados en un objeto anonimo.
                     {
                         Mes = new DateTime(g.Key.Year, g.Key.Month, 1).ToString("yyyy-MM"), // etiqueta mas legible.
@@ -77,6 +77,109 @@ namespace sistemaVeterinario.Controllers
                 return StatusCode(500, respuestaError);
             }
         }
+
+        // Metodo para obtener los datos del dashboard de recepcionista.
+        /*
+        [Authorize(Roles = "Recepcionista")]
+        public async Task<IActionResult> ObtenerRecepcionistaDashboardData()
+        {
+            try
+            {
+                var hoy = DateOnly.FromDateTime(DateTime.Now);
+
+                // Tarjetas de Tareas Diarias
+                var nuevosClientesHoy = await _context.Clientes.CountAsync(c => c.FechaRegistro == hoy);
+                var nuevasMascotasHoy = await _context.Mascotas.CountAsync(m => m.FechaRegistro == hoy);
+                var consultasDelDiaTotal = await _context.Consultas.CountAsync(c => c.FechaConsulta == hoy);
+
+                // Agenda General del Día (todas las citas de todos los veterinarios)
+                var agendaDelDia = await _context.Consultas
+                    .Where(c => c.FechaConsulta == hoy)
+                    .Include(c => c.IdMascotaNavigation)
+                        .ThenInclude(m => m.IdClienteNavigation)
+                    .Include(c => c.IdUsuarioNavigation)
+                    .Include(c => c.IdEstadoConsultaNavigation)
+                    .OrderBy(c => c.FechaConsulta)
+                    .Select(c => new
+                    {
+                        c.IdConsulta,
+                        NombreMascota = c.IdMascotaNavigation.Nombre,
+                        NombreCliente = c.IdMascotaNavigation.IdClienteNavigation.NombreCompleto,
+                        NombreVeterinario = c.IdUsuarioNavigation.Nombre,
+                        FechaConsulta = c.FechaConsulta,
+                        HoraConsulta = c.HoraConsulta,
+                        Motivo = c.Motivo,
+                        Estado = c.IdEstadoConsultaNavigation.NombreEstado
+                    })
+                    .ToListAsync();
+
+                // Tabla de "Acciones Requeridas": Consultas Pendientes para confirmar
+                var consultasPendientesConfirmar = await _context.Consultas
+                    .Where(c => c.IdEstadoConsultaNavigation.NombreEstado == "Pendiente")
+                    .Include(c => c.IdMascotaNavigation)
+                        .ThenInclude(m => m.IdClienteNavigation)
+                    .Include(c => c.IdUsuarioNavigation)
+                    .Select(c => new
+                    {
+                        c.IdConsulta,
+                        NombreMascota = c.IdMascotaNavigation.Nombre,
+                        NombreCliente = c.IdMascotaNavigation.IdClienteNavigation.NombreCompleto,
+                        TelefonoCliente = c.IdMascotaNavigation.IdClienteNavigation.Telefono,
+                        EmailCliente = c.IdMascotaNavigation.IdClienteNavigation.Email,
+                        NombreVeterinario = c.IdUsuarioNavigation.Nombre,
+                        FechaConsulta = c.FechaConsulta,
+                        HoraConsulta = c.HoraConsulta,
+                        Motivo = c.Motivo
+                    })
+                    .ToListAsync();
+
+                // Tabla de "Acciones Requeridas": Consultas Finalizadas que podrían requerir agendar un próximo control (últimos 7 días)
+                var hace7Dias = DateOnly.FromDateTime(DateTime.Now.AddDays(-7));
+                var consultasFinalizadasRecientes = await _context.Consultas
+                    .Where(c => c.IdEstadoConsultaNavigation.NombreEstado == "Finalizada" && c.FechaConsulta >= hace7Dias)
+                    .Include(c => c.IdMascotaNavigation)
+                        .ThenInclude(m => m.IdClienteNavigation)
+                    .Include(c => c.IdUsuarioNavigation)
+                    .Select(c => new
+                    {
+                        c.IdConsulta,
+                        NombreMascota = c.IdMascotaNavigation.Nombre,
+                        NombreCliente = c.IdMascotaNavigation.IdClienteNavigation.NombreCompleto,
+                        NombreVeterinario = c.IdUsuarioNavigation.Nombre,
+                        FechaConsulta = c.FechaConsulta,
+                        Motivo = c.Motivo,
+                        Diagnostico = c.Diagnostico
+                    })
+                    .ToListAsync();
+
+
+                var data = new
+                {
+                    nuevosClientesHoy,
+                    nuevasMascotasHoy,
+                    consultasDelDiaTotal,
+                    agendaDelDia,
+                    consultasPendientesConfirmar,
+                    consultasFinalizadasRecientes
+                };
+
+                return Ok(data);
+            }
+            catch (Exception ex)
+            {
+                var respuestaError = new
+                {
+                    error = "Ocurrio un error inesperado al procesar la solicitud."
+#if DEBUG
+                    ,
+                    message = ex.Message
+#endif
+                };
+
+                return StatusCode(500, respuestaError);
+            }
+        }
+        */
 
         // Metodo para obtener los datos del dashboard de veterinario.
         [Authorize(Roles = "Veterinari@")]
@@ -220,7 +323,7 @@ namespace sistemaVeterinario.Controllers
             if (string.IsNullOrEmpty(email) || string.IsNullOrEmpty(password))
             {
                 // ViewBag -> nos permite enviar datos desde el controller a la view.
-                ViewBag.Error = "Por favor, ingrese su correo y contrase�a.";
+                ViewBag.Error = "Por favor, ingrese su correo y contraseña.";
                 return View(new {email, password});
             }
 

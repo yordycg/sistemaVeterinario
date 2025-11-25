@@ -14,9 +14,6 @@ public partial class Mascota
     [Required(ErrorMessage = "Debe seleccionar un dueño.")]
     public int IdCliente { get; set; }
 
-    [Required(ErrorMessage = "Debe seleccionar una especie.")]
-    public int IdEspecie { get; set; }
-
     [Required(ErrorMessage = "Debe seleccionar una raza.")]
     public int IdRaza { get; set; }
 
@@ -30,6 +27,9 @@ public partial class Mascota
     [Range(0, 50, ErrorMessage = "La edad debe ser un número entre 0 y 50.")]
     public int? Edad { get; set; }
 
+    [Required]
+    public DateOnly FechaRegistro { get; set; } = DateOnly.FromDateTime(DateTime.Now);
+
     [NotMapped]
     public string NombreDueño => IdClienteNavigation != null ? $"{Nombre} - {IdClienteNavigation.Run}" : Nombre;
 
@@ -38,9 +38,6 @@ public partial class Mascota
 
     [ValidateNever]
     public virtual Cliente IdClienteNavigation { get; set; } = null!;
-
-    [ValidateNever]
-    public virtual Especy IdEspecieNavigation { get; set; } = null!;
 
     [ValidateNever]
     public virtual Raza IdRazaNavigation { get; set; } = null!;

@@ -28,6 +28,9 @@ public partial class Usuario
     [StringLength(10, MinimumLength = 8, ErrorMessage = "La contraseña debe tener entre 8 y 10 caracteres.")]
     public string Password { get; set; } = null!;
 
+    [Required]
+    public DateOnly FechaRegistro { get; set; } = DateOnly.FromDateTime(DateTime.Now);
+
     [ValidateNever]
     public virtual ICollection<Consulta> Consulta { get; set; } = new List<Consulta>();
 

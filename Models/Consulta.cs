@@ -29,6 +29,9 @@ public partial class Consulta
 
     public string? Diagnostico { get; set; }
 
+    [Required]
+    public DateOnly FechaCreacion { get; set; } = DateOnly.FromDateTime(DateTime.Now);
+
     [NotMapped]
     public string MascotaYFecha => $"{IdMascotaNavigation?.Nombre} - {FechaConsulta.ToString("d")}";
 

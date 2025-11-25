@@ -33,12 +33,17 @@
                         <select asp-for="IdCliente" class ="form-control" asp-items="ViewBag.IdCliente"></select>
                     </div>
                     <div class="form-group mb-3">
-                        <label asp-for="IdEspecie" class="control-label"></label>
-                        <select asp-for="IdEspecie" class ="form-control" asp-items="ViewBag.IdEspecie"></select>
+                        <label for="IdEspecie" class="control-label">Especie</label>
+                        <select id="IdEspecie" class="form-control" asp-items="ViewBag.IdEspecie">
+                            <option value="">Seleccione una especie</option>
+                        </select>
                     </div>
                     <div class="form-group mb-3">
                         <label asp-for="IdRaza" class="control-label"></label>
-                        <select asp-for="IdRaza" class ="form-control" asp-items="ViewBag.IdRaza"></select>
+                        <select asp-for="IdRaza" class="form-control" asp-items="ViewBag.IdRaza">
+                            <option value="">Seleccione una raza</option>
+                        </select>
+                        <span asp-validation-for="IdRaza" class="text-danger"></span>
                     </div>
                     <div class="form-group mt-4 text-center">
                         <input type="submit" value="Crear" class="btn btn-success" />
@@ -51,35 +56,33 @@
 </div>
 
 @section Scripts {
-    @* @{await Html.RenderPartialAsync("_ValidationScriptsPartial");} *@
-
-    <script src="~/js/validaciones.js"></script>
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
 
     <script>
-        const formCreateMascota = document.getElementById('formMascota');
-        formCreateMascota.addEventListener('submit', (e) => {
-            validarFormMascota(e);
+        document.getElementById('IdEspecie').addEventListener('change', function () {
+            var especieId = this.value;
+            var razaSelect = document.getElementById('IdRaza');
+            razaSelect.innerHTML = '<option value="">Cargando...</option>';
+
+            if (especieId) {
+                fetch(`/Mascotas/GetRazasByEspecie?especieId=${especieId}`)
+                    .then(response => response.json())
+                    .then(data => {
+                        razaSelect.innerHTML = '<option value="">Seleccione una raza</option>';
+                        data.forEach(function (raza) {
+                            var option = document.createElement('option');
+                            option.value = raza.idRaza;
+                            option.text = raza.nombreRaza;
+                            razaSelect.appendChild(option);
+                        });
+                    })
+                    .catch(error => {
+                        console.error('Error fetching razas:', error);
+                        razaSelect.innerHTML = '<option value="">Error al cargar razas</option>';
+                    });
+            } else {
+                razaSelect.innerHTML = '<option value="">Seleccione una raza</option>';
+            }
         });
-
-        const validarFormMascota = async (evt) => {
-            const inputs = document.querySelectorAll('#formMascota .form-control');
-
-            for (const item of inputs){
-                if (item.value.trim() === ''){
-                    item.classList.add('is-invalid');
-                    document.getElementById(`e-${item.id}`).innerHTML= '<span class="badge bg-danger">Campo Obligatorio!</span>';
-                } else {
-                    item.classList.remove('is-invalid');
-                    document.getElementById(`e-${item.id}`).innerHTML= '';
-
-                    item.classList.add('is-valid');
-                }
-            }
-
-            if (document.querySelectorAll('.is-invalid').length > 0){
-                evt.preventDefault();
-            }
-        };
-
     </script>
 }

@@ -9,5 +9,5 @@ public partial class Especy
 
     public string NombreEspecie { get; set; } = null!;
 
-    public virtual ICollection<Mascota> Mascota { get; set; } = new List<Mascota>();
+    public virtual ICollection<Raza> Razas { get; set; } = new List<Raza>();
 }

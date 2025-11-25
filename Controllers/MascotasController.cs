@@ -38,8 +38,8 @@ namespace sistemaVeterinario.Controllers
             int pagSize = 20;
             var mascotas = _context.Mascotas
                 .Include(m => m.IdClienteNavigation)
-                .Include(m => m.IdEspecieNavigation)
                 .Include(m => m.IdRazaNavigation)
+                    .ThenInclude(r => r.IdEspecieNavigation)
                 .AsQueryable();
 
             if (!string.IsNullOrEmpty(search))
@@ -60,8 +60,8 @@ namespace sistemaVeterinario.Controllers
 
             var mascota = await _context.Mascotas
                 .Include(m => m.IdClienteNavigation)
-                .Include(m => m.IdEspecieNavigation)
                 .Include(m => m.IdRazaNavigation)
+                    .ThenInclude(r => r.IdEspecieNavigation)
                 .FirstOrDefaultAsync(m => m.IdMascota == id);
             if (mascota == null)
             {
@@ -85,17 +85,8 @@ namespace sistemaVeterinario.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("IdMascota,IdCliente,IdEspecie,IdRaza,Nombre,Sexo,Edad")] Mascota mascota)
+        public async Task<IActionResult> Create([Bind("IdMascota,IdCliente,IdRaza,Nombre,Sexo,Edad,FechaRegistro")] Mascota mascota)
         {
-            //if (!ModelState.IsValid) 
-            //{
-            //    var errors = ModelState.Values.SelectMany(v => v.Errors);
-            //    foreach (var error in errors)
-            //    {
-            //        System.Diagnostics.Debug.WriteLine($"ERROR: {error.ErrorMessage}");
-            //    }
-            //}
-
             if (ModelState.IsValid)
             {
                 _context.Add(mascota);
@@ -103,7 +94,6 @@ namespace sistemaVeterinario.Controllers
                 return RedirectToAction(nameof(Index));
             }
             ViewData["IdCliente"] = new SelectList(_context.Clientes, "IdCliente", "RunYNombre", mascota.IdCliente);
-            ViewData["IdEspecie"] = new SelectList(_context.Especies, "IdEspecie", "NombreEspecie", mascota.IdEspecie);
             ViewData["IdRaza"] = new SelectList(_context.Razas, "IdRaza", "NombreRaza", mascota.IdRaza);
             return View(mascota);
         }
@@ -116,14 +106,14 @@ namespace sistemaVeterinario.Controllers
                 return NotFound();
             }
 
-            var mascota = await _context.Mascotas.FindAsync(id);
+            var mascota = await _context.Mascotas.Include(m => m.IdRazaNavigation).FirstOrDefaultAsync(m => m.IdMascota == id);
             if (mascota == null)
             {
                 return NotFound();
             }
             ViewData["IdCliente"] = new SelectList(_context.Clientes, "IdCliente", "RunYNombre", mascota.IdCliente);
-            ViewData["IdEspecie"] = new SelectList(_context.Especies, "IdEspecie", "NombreEspecie", mascota.IdEspecie);
-            ViewData["IdRaza"] = new SelectList(_context.Razas, "IdRaza", "NombreRaza", mascota.IdRaza);
+            ViewData["IdEspecie"] = new SelectList(_context.Especies, "IdEspecie", "NombreEspecie", mascota.IdRazaNavigation.IdEspecie);
+            ViewData["IdRaza"] = new SelectList(_context.Razas.Where(r => r.IdEspecie == mascota.IdRazaNavigation.IdEspecie), "IdRaza", "NombreRaza", mascota.IdRaza);
             return View(mascota);
         }
 
@@ -132,7 +122,7 @@ namespace sistemaVeterinario.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("IdMascota,IdCliente,IdEspecie,IdRaza,Nombre,Sexo,Edad")] Mascota mascota)
+        public async Task<IActionResult> Edit(int id, [Bind("IdMascota,IdCliente,IdRaza,Nombre,Sexo,Edad,FechaRegistro")] Mascota mascota)
         {
             if (id != mascota.IdMascota)
             {
@@ -160,7 +150,6 @@ namespace sistemaVeterinario.Controllers
                 return RedirectToAction(nameof(Index));
             }
             ViewData["IdCliente"] = new SelectList(_context.Clientes, "IdCliente", "RunYNombre", mascota.IdCliente);
-            ViewData["IdEspecie"] = new SelectList(_context.Especies, "IdEspecie", "NombreEspecie", mascota.IdEspecie);
             ViewData["IdRaza"] = new SelectList(_context.Razas, "IdRaza", "NombreRaza", mascota.IdRaza);
             return View(mascota);
         }
@@ -208,8 +197,8 @@ namespace sistemaVeterinario.Controllers
         {
             var consultaMascotas = _context.Mascotas
                 .Include(m => m.IdClienteNavigation)
-                .Include(m => m.IdEspecieNavigation)
                 .Include(m => m.IdRazaNavigation)
+                    .ThenInclude(r => r.IdEspecieNavigation)
                 .AsQueryable();
 
             string nombreArchivo = "Mascotas";
@@ -223,7 +212,7 @@ namespace sistemaVeterinario.Controllers
             var exportData = await consultaMascotas.Select(m => new {
                 Nombre = m.Nombre,
                 Dueño = m.IdClienteNavigation.Nombre,
-                Especie = m.IdEspecieNavigation.NombreEspecie,
+                Especie = m.IdRazaNavigation.IdEspecieNavigation.NombreEspecie,
                 Raza = m.IdRazaNavigation.NombreRaza,
                 m.Sexo,
                 m.Edad
@@ -242,8 +231,8 @@ namespace sistemaVeterinario.Controllers
         {
             var consultaMascotas = _context.Mascotas
                 .Include(m => m.IdClienteNavigation)
-                .Include(m => m.IdEspecieNavigation)
                 .Include(m => m.IdRazaNavigation)
+                    .ThenInclude(r => r.IdEspecieNavigation)
                 .AsQueryable();
 
             string nombreArchivo = "Mascotas";
@@ -257,7 +246,7 @@ namespace sistemaVeterinario.Controllers
             var exportData = await consultaMascotas.Select(m => new {
                 Nombre = m.Nombre,
                 Dueño = m.IdClienteNavigation.Nombre,
-                Especie = m.IdEspecieNavigation.NombreEspecie,
+                Especie = m.IdRazaNavigation.IdEspecieNavigation.NombreEspecie,
                 Raza = m.IdRazaNavigation.NombreRaza,
                 m.Sexo,
                 m.Edad
@@ -270,6 +259,16 @@ namespace sistemaVeterinario.Controllers
                 "application/pdf",
                 $"{nombreArchivo}.pdf"
             );
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> GetRazasByEspecie(int especieId)
+        {
+            var razas = await _context.Razas
+                .Where(r => r.IdEspecie == especieId)
+                .Select(r => new { r.IdRaza, r.NombreRaza })
+                .ToListAsync();
+            return Json(razas);
         }
     }
 }

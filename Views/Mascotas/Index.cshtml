@@ -61,13 +61,13 @@
                             @Html.DisplayFor(modelItem => item.Edad)
                         </td>
                         <td>
-                            @Html.DisplayFor(modelItem => item.IdClienteNavigation.Email)
+                            @Html.DisplayFor(modelItem => item.IdClienteNavigation.RunYNombre)
                         </td>
                         <td>
-                            @Html.DisplayFor(modelItem => item.IdEspecieNavigation.IdEspecie)
+                            @Html.DisplayFor(modelItem => item.IdRazaNavigation.IdEspecieNavigation.NombreEspecie)
                         </td>
                         <td>
-                            @Html.DisplayFor(modelItem => item.IdRazaNavigation.IdRaza)
+                            @Html.DisplayFor(modelItem => item.IdRazaNavigation.NombreRaza)
                         </td>
                         <td class="text-center">
                             <a asp-action="Edit" asp-route-id="@item.IdMascota" class="btn btn-icon-action btn-outline-warning btn-sm"><i class="bi bi-pencil me-0"></i></a>

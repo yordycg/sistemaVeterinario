@@ -21,6 +21,9 @@ public partial class Tratamiento
     [StringLength(100, ErrorMessage = "El medicamento no puede tener más de 100 caracteres.")]
     public string? Medicamento { get; set; }
 
+    [Required]
+    public DateOnly FechaRegistro { get; set; } = DateOnly.FromDateTime(DateTime.Now);
+
     [ValidateNever]
     public virtual Consulta IdConsultaNavigation { get; set; } = null!;
 }
