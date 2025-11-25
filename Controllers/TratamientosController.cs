@@ -36,7 +36,40 @@ namespace sistemaVeterinario.Controllers
             ViewData["filtro"] = search;
 
             int pagSize = 20;
-            var tratamientos = _context.Tratamientos.Include(t => t.IdConsultaNavigation)
+            /*
+             * Carga anticipada (Eager Loading) con Include y ThenInclude:
+             *
+             * El objetivo de esta consulta es cargar una lista de Tratamientos y, para cada uno,
+             * traer toda la información relacionada (Consulta, Mascota y Cliente) en una
+             * única y eficiente consulta a la base de datos.
+             *
+             * 1. .Include(t => t.IdConsultaNavigation):
+             *    - Por cada 'Tratamiento' (t) que se obtiene, este comando le dice a Entity Framework:
+             *      "Incluye también el objeto 'Consulta' completo que está asociado a este tratamiento".
+             *    - Sin esto, `tratamiento.IdConsultaNavigation` sería nulo.
+             *
+             * 2. .ThenInclude(c => c.IdMascotaNavigation):
+             *    - 'ThenInclude' continúa la cadena desde la última entidad incluida. En este caso,
+             *      continúa desde 'Consulta' (c).
+             *    - Le dice: "YA que incluiste la Consulta, AHORA, para cada una de esas consultas,
+             *      incluye también el objeto 'Mascota' asociado".
+             *    - La ruta de datos hasta ahora es: Tratamiento -> Consulta -> Mascota.
+             *
+             * 3. .ThenInclude(m => m.IdClienteNavigation):
+             *    - De nuevo, 'ThenInclude' continúa desde la última entidad incluida, que ahora es
+             *      'Mascota' (m).
+             *    - Le dice: "Y finalmente, para cada una de esas mascotas, incluye también el
+             *      objeto 'Cliente' (el dueño) asociado".
+             *    - La ruta de datos completa es: Tratamiento -> Consulta -> Mascota -> Cliente.
+             *
+             * El resultado es que la variable 'tratamientos' contendrá una lista de todos los
+             * tratamientos, y podrás navegar por toda la cadena de objetos (ej: `tratamiento.IdConsultaNavigation.IdMascotaNavigation.IdClienteNavigation.Nombre`)
+             * sin provocar nuevas consultas a la base de datos, lo que es muy eficiente.
+             */
+            var tratamientos = _context.Tratamientos
+                .Include(t => t.IdConsultaNavigation)
+                    .ThenInclude(c => c.IdMascotaNavigation)
+                        .ThenInclude(m => m.IdClienteNavigation)
                 .AsQueryable();
 
             if (!string.IsNullOrEmpty(search))

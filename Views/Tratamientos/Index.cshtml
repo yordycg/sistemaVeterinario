@@ -28,13 +28,22 @@
                 <thead class="table-dark text-center">
                     <tr>
                         <th>
+                           Mascota
+                        </th>
+                        <th>
+                            Dueño
+                        </th>
+                        <th>
+                            RUT Dueño
+                        </th>
+                        <th>
+                            Fecha Consulta
+                        </th>
+                        <th>
                            Medicamento
                         </th>
                         <th>
                             Descripcion
-                        </th>
-                        <th>
-                            Consulta
                         </th>
                         <th>Acciones</th>
                     </tr>
@@ -43,13 +52,22 @@
 @foreach (var item in Model) {
                     <tr id="tratamiento-@item.IdTratamiento">
                         <td>
+                            @Html.DisplayFor(modelItem => item.IdConsultaNavigation.IdMascotaNavigation.Nombre)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.IdConsultaNavigation.IdMascotaNavigation.IdClienteNavigation.Nombre)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.IdConsultaNavigation.IdMascotaNavigation.IdClienteNavigation.Run)
+                        </td>
+                        <td>
+                            @item.IdConsultaNavigation.FechaConsulta.ToString("dd-MM-yyyy")
+                        </td>
+                        <td>
                             @Html.DisplayFor(modelItem => item.Medicamento)
                         </td>
                         <td>
                             @Html.DisplayFor(modelItem => item.Descripcion)
-                        </td>
-                        <td>
-                            @Html.DisplayFor(modelItem => item.IdConsultaNavigation.MascotaYFecha)
                         </td>
                         <td class="text-center">
                             <a asp-action="Edit" asp-route-id="@item.IdTratamiento" class="btn btn-icon-action btn-outline-warning btn-sm"><i class="bi bi-pencil me-0"></i></a>
