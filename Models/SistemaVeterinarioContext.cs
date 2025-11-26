@@ -273,7 +273,10 @@ public partial class SistemaVeterinarioContext : DbContext
 
         modelBuilder.Entity<EstadoUsuario>().HasData(
             new EstadoUsuario { IdEstadoUsuario = 1, NombreEstado = "Activo" },
-            new EstadoUsuario { IdEstadoUsuario = 2, NombreEstado = "Inactivo" }
+            new EstadoUsuario { IdEstadoUsuario = 2, NombreEstado = "Inactivo" },
+            new EstadoUsuario { IdEstadoUsuario = 3, NombreEstado = "Pendiente de Activación" }, // confirmacion de un correo.
+            new EstadoUsuario { IdEstadoUsuario = 4, NombreEstado = "Bloqueado" }, // por admin.
+            new EstadoUsuario { IdEstadoUsuario = 5, NombreEstado = "Suspendido" } // intentos fallidos al ingresar al sistema.
         );
 
         modelBuilder.Entity<Especy>().HasData(
@@ -281,17 +284,29 @@ public partial class SistemaVeterinarioContext : DbContext
             new Especy { IdEspecie = 2, NombreEspecie = "Gato" },
             new Especy { IdEspecie = 3, NombreEspecie = "Hámster" },
             new Especy { IdEspecie = 4, NombreEspecie = "Conejo" },
-            new Especy { IdEspecie = 5, NombreEspecie = "Ave" }
+            new Especy { IdEspecie = 5, NombreEspecie = "Ave" },
+            new Especy { IdEspecie = 6, NombreEspecie = "Tortuga" },
+            new Especy { IdEspecie = 7, NombreEspecie = "Pez" }
         );
 
         modelBuilder.Entity<Raza>().HasData(
             new Raza { IdRaza = 1, IdEspecie = 1, NombreRaza = "Labrador" },
             new Raza { IdRaza = 2, IdEspecie = 1, NombreRaza = "Poodle" },
+            new Raza { IdRaza = 8, IdEspecie = 1, NombreRaza = "Pastor Alemán" }, 
             new Raza { IdRaza = 3, IdEspecie = 2, NombreRaza = "Siamés" },
             new Raza { IdRaza = 4, IdEspecie = 2, NombreRaza = "Persa" },
+            new Raza { IdRaza = 9, IdEspecie = 2, NombreRaza = "Maine Coon" }, 
             new Raza { IdRaza = 5, IdEspecie = 3, NombreRaza = "Dorado" },
             new Raza { IdRaza = 6, IdEspecie = 4, NombreRaza = "Cabeza de León" },
-            new Raza { IdRaza = 7, IdEspecie = 5, NombreRaza = "Canario" }
+            new Raza { IdRaza = 7, IdEspecie = 5, NombreRaza = "Canario" },
+            new Raza { IdRaza = 10, IdEspecie = 6, NombreRaza = "Tortuga de Tierra" }, 
+            new Raza { IdRaza = 11, IdEspecie = 7, NombreRaza = "Goldfish" } 
+        );
+
+        modelBuilder.Entity<Role>().HasData(
+            new Role { IdRol = 1, NombreRol = "Admin" },
+            new Role { IdRol = 2, NombreRol = "Veterinari@" },
+            new Role { IdRol = 3, NombreRol = "Recepcionista" }
         );
 
         modelBuilder.Entity<EstadoConsulta>().HasData(
