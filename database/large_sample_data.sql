@@ -1,5 +1,5 @@
 -- SQL Script para Limpiar y Rellenar un Gran Volumen de Datos de Ejemplo
--- Versión 2, Post-SoftDelete
+-- Versión 3, Final, Post-SoftDelete
 -- Este script asume que la estructura de la base de datos y los datos estáticos ya han sido aplicados.
 -- El usuario admin (ID 1) ya está sembrado por migración.
 
@@ -99,64 +99,64 @@ SET IDENTITY_INSERT mascotas OFF;
 -- Datos para Consultas (25)
 -- ===============================================
 SET IDENTITY_INSERT consultas ON;
-INSERT INTO consultas (id_consulta, id_mascota, id_usuario, id_estado_consulta, fecha_consulta, motivo, diagnostico, FechaCreacion) VALUES
-(1, 1, 2, 3, '2024-01-10', 'Control anual', 'Todo en orden', '2024-01-09'),
-(2, 2, 3, 1, '2024-01-12', 'Vacunación', NULL, '2024-01-11'),
-(3, 3, 8, 2, '2024-01-15', 'Revisión por tos', 'Posible resfriado', '2024-01-14'),
-(4, 4, 9, 3, '2024-02-18', 'Chequeo general', 'Perro sano', '2024-02-17'),
-(5, 5, 2, 1, '2024-02-20', 'Consulta rutinaria', NULL, '2024-02-19'),
-(6, 6, 3, 3, '2024-03-10', 'Herida en pata', 'Corte superficial, desinfectado', '2024-03-09'),
-(7, 7, 8, 1, '2024-03-12', 'Alergia', NULL, '2024-03-11'),
-(8, 8, 9, 2, '2024-03-15', 'Desparasitación', 'Se aplica pipeta', '2024-03-14'),
-(9, 9, 2, 3, '2024-04-18', 'Control de peso', 'Peso ideal', '2024-04-17'),
-(10, 10, 3, 1, '2024-04-20', 'Problemas digestivos', NULL, '2024-04-19'),
-(11, 11, 8, 3, '2024-05-10', 'Cambio de agua', 'Chequeo general de pez', '2024-05-09'),
-(12, 12, 9, 1, '2024-05-12', 'Vacuna anual', NULL, '2024-05-11'),
-(13, 13, 2, 2, '2024-05-15', 'Cojera', 'Esguince leve', '2024-05-14'),
-(14, 14, 3, 3, '2024-06-18', 'Corte de uñas', 'Realizado sin problemas', '2024-06-17'),
-(15, 15, 8, 1, '2024-06-20', 'Revisión ocular', NULL, '2024-06-19'),
-(16, 16, 9, 3, '2024-07-10', 'Control de alergia', 'Mejora notable', '2024-07-09'),
-(17, 17, 2, 1, '2024-07-12', 'Examen de sangre', NULL, '2024-07-11'),
-(18, 18, 3, 2, '2024-07-15', 'Dieta', 'Ajuste de dieta', '2024-07-14'),
-(19, 19, 8, 3, '2024-08-18', 'Revisión de alas', 'Plumas en buen estado', '2024-08-17'),
-(20, 20, 9, 1, '2024-08-20', 'Problema de piel', NULL, '2024-08-19'),
-(21, 21, 2, 3, '2024-09-10', 'Limpieza de caparazón', 'Realizada', '2024-09-09'),
-(22, 22, 3, 1, '2024-09-12', 'Chequeo de escamas', NULL, '2024-09-11'),
-(23, 23, 8, 2, '2024-09-15', 'Vacuna antirrábica', 'Aplicada', '2024-09-14'),
-(24, 24, 9, 3, '2024-10-18', 'Control post-operatorio', 'Recuperación excelente', '2024-10-17'),
-(25, 25, 2, 1, '2024-10-20', 'Consulta por comportamiento', NULL, '2024-10-19');
+INSERT INTO consultas (id_consulta, id_mascota, id_usuario, id_estado_consulta, fecha_consulta, motivo, diagnostico, FechaCreacion, EsActivo) VALUES
+(1, 1, 2, 3, '2024-01-10', 'Control anual', 'Todo en orden', '2024-01-09', 1),
+(2, 2, 3, 1, '2024-01-12', 'Vacunación', NULL, '2024-01-11', 1),
+(3, 3, 8, 2, '2024-01-15', 'Revisión por tos', 'Posible resfriado', '2024-01-14', 1),
+(4, 4, 9, 3, '2024-02-18', 'Chequeo general', 'Perro sano', '2024-02-17', 1),
+(5, 5, 2, 1, '2024-02-20', 'Consulta rutinaria', NULL, '2024-02-19', 1),
+(6, 6, 3, 3, '2024-03-10', 'Herida en pata', 'Corte superficial, desinfectado', '2024-03-09', 1),
+(7, 7, 8, 1, '2024-03-12', 'Alergia', NULL, '2024-03-11', 1),
+(8, 8, 9, 2, '2024-03-15', 'Desparasitación', 'Se aplica pipeta', '2024-03-14', 1),
+(9, 9, 2, 3, '2024-04-18', 'Control de peso', 'Peso ideal', '2024-04-17', 1),
+(10, 10, 3, 1, '2024-04-20', 'Problemas digestivos', NULL, '2024-04-19', 1),
+(11, 11, 8, 3, '2024-05-10', 'Cambio de agua', 'Chequeo general de pez', '2024-05-09', 1),
+(12, 12, 9, 1, '2024-05-12', 'Vacuna anual', NULL, '2024-05-11', 1),
+(13, 13, 2, 2, '2024-05-15', 'Cojera', 'Esguince leve', '2024-05-14', 1),
+(14, 14, 3, 3, '2024-06-18', 'Corte de uñas', 'Realizado sin problemas', '2024-06-17', 1),
+(15, 15, 8, 1, '2024-06-20', 'Revisión ocular', NULL, '2024-06-19', 1),
+(16, 16, 9, 3, '2024-07-10', 'Control de alergia', 'Mejora notable', '2024-07-09', 1),
+(17, 17, 2, 1, '2024-07-12', 'Examen de sangre', NULL, '2024-07-11', 1),
+(18, 18, 3, 2, '2024-07-15', 'Dieta', 'Ajuste de dieta', '2024-07-14', 1),
+(19, 19, 8, 3, '2024-08-18', 'Revisión de alas', 'Plumas en buen estado', '2024-08-17', 1),
+(20, 20, 9, 1, '2024-08-20', 'Problema de piel', NULL, '2024-08-19', 1),
+(21, 21, 2, 3, '2024-09-10', 'Limpieza de caparazón', 'Realizada', '2024-09-09', 1),
+(22, 22, 3, 1, '2024-09-12', 'Chequeo de escamas', NULL, '2024-09-11', 1),
+(23, 23, 8, 2, '2024-09-15', 'Vacuna antirrábica', 'Aplicada', '2024-09-14', 1),
+(24, 24, 9, 3, '2024-10-18', 'Control post-operatorio', 'Recuperación excelente', '2024-10-17', 1),
+(25, 25, 2, 1, '2024-10-20', 'Consulta por comportamiento', NULL, '2024-10-19', 1);
 SET IDENTITY_INSERT consultas OFF;
 
 -- ===============================================
 -- Datos para Tratamientos (25)
 -- ===============================================
 SET IDENTITY_INSERT tratamientos ON;
-INSERT INTO tratamientos (id_tratamiento, id_consulta, descripcion, medicamento, FechaRegistro) VALUES
-(1, 1, 'Desparasitación interna', 'Pastilla Milbactor', '2024-01-10'),
-(2, 3, 'Antibiótico para tos', 'Doxiciclina 100mg', '2024-01-15'),
-(3, 3, 'Antiinflamatorio', 'Meloxicam 0.5mg', '2024-01-15'),
-(4, 6, 'Limpieza y sutura', 'Clorhexidina y sutura absorbible', '2024-03-10'),
-(5, 7, 'Antihistamínico', 'Clorfenamina', '2024-03-12'),
-(6, 8, 'Pipeta antipulgas', 'Frontline Plus', '2024-03-15'),
-(7, 10, 'Probióticos', 'Fortiflora', '2024-04-20'),
-(8, 13, 'Reposo y antiinflamatorio', 'Carprofeno 25mg', '2024-05-15'),
-(9, 14, 'Ninguno', 'Solo corte de uñas', '2024-06-18'),
-(10, 15, 'Gotas oftálmicas', 'Tobramicina', '2024-06-20'),
-(11, 16, 'Continuar antihistamínico', 'Clorfenamina', '2024-07-10'),
-(12, 18, 'Cambio de pienso', 'Pienso hipoalergénico', '2024-07-15'),
-(13, 19, 'Suplemento vitamínico', 'Vitaminas para aves', '2024-08-18'),
-(14, 20, 'Champú medicado', 'Champú con ketoconazol', '2024-08-20'),
-(15, 21, 'Ninguno', 'Limpieza manual', '2024-09-10'),
-(16, 23, 'Ninguno', 'Solo aplicación de vacuna', '2024-09-15'),
-(17, 24, 'Analgésicos post-operatorios', 'Tramadol', '2024-10-18'),
-(18, 2, 'Vacuna Triple Felina', 'Leucogen', '2024-01-12'),
-(19, 4, 'Ninguno', 'Chequeo general', '2024-02-18'),
-(20, 5, 'Suplemento de calcio', 'Calcio para reptiles', '2024-02-20'),
-(21, 9, 'Ninguno', 'Control de peso', '2024-04-18'),
-(22, 11, 'Acondicionador de agua', 'Prime Seachem', '2024-05-10'),
-(23, 12, 'Vacuna Óctuple Canina', 'Canigen MHA2PPi/L', '2024-05-12'),
-(24, 17, 'Ninguno', 'Toma de muestra de sangre', '2024-07-12'),
-(25, 25, 'Terapia de comportamiento', 'Adaptil', '2024-10-20');
+INSERT INTO tratamientos (id_tratamiento, id_consulta, descripcion, medicamento, FechaRegistro, EsActivo) VALUES
+(1, 1, 'Desparasitación interna', 'Pastilla Milbactor', '2024-01-10', 1),
+(2, 3, 'Antibiótico para tos', 'Doxiciclina 100mg', '2024-01-15', 1),
+(3, 3, 'Antiinflamatorio', 'Meloxicam 0.5mg', '2024-01-15', 1),
+(4, 6, 'Limpieza y sutura', 'Clorhexidina y sutura absorbible', '2024-03-10', 1),
+(5, 7, 'Antihistamínico', 'Clorfenamina', '2024-03-12', 1),
+(6, 8, 'Pipeta antipulgas', 'Frontline Plus', '2024-03-15', 1),
+(7, 10, 'Probióticos', 'Fortiflora', '2024-04-20', 1),
+(8, 13, 'Reposo y antiinflamatorio', 'Carprofeno 25mg', '2024-05-15', 1),
+(9, 14, 'Ninguno', 'Solo corte de uñas', '2024-06-18', 1),
+(10, 15, 'Gotas oftálmicas', 'Tobramicina', '2024-06-20', 1),
+(11, 16, 'Continuar antihistamínico', 'Clorfenamina', '2024-07-10', 1),
+(12, 18, 'Cambio de pienso', 'Pienso hipoalergénico', '2024-07-15', 1),
+(13, 19, 'Suplemento vitamínico', 'Vitaminas para aves', '2024-08-18', 1),
+(14, 20, 'Champú medicado', 'Champú con ketoconazol', '2024-08-20', 1),
+(15, 21, 'Ninguno', 'Limpieza manual', '2024-09-10', 1),
+(16, 23, 'Ninguno', 'Solo aplicación de vacuna', '2024-09-15', 1),
+(17, 24, 'Analgésicos post-operatorios', 'Tramadol', '2024-10-18', 1),
+(18, 2, 'Vacuna Triple Felina', 'Leucogen', '2024-01-12', 1),
+(19, 4, 'Ninguno', 'Chequeo general', '2024-02-18', 1),
+(20, 5, 'Suplemento de calcio', 'Calcio para reptiles', '2024-02-20', 1),
+(21, 9, 'Ninguno', 'Control de peso', '2024-04-18', 1),
+(22, 11, 'Acondicionador de agua', 'Prime Seachem', '2024-05-10', 1),
+(23, 12, 'Vacuna Óctuple Canina', 'Canigen MHA2PPi/L', '2024-05-12', 1),
+(24, 17, 'Ninguno', 'Toma de muestra de sangre', '2024-07-12', 1),
+(25, 25, 'Terapia de comportamiento', 'Adaptil', '2024-10-20', 1);
 SET IDENTITY_INSERT tratamientos OFF;
 
 
