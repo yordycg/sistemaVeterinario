@@ -1,222 +1,85 @@
 ﻿<!DOCTYPE html>
 <html lang="en">
-    <script>
-        (function() {
-            const storedTheme = localStorage.getItem('theme');
-            if (storedTheme) {
-                document.documentElement.setAttribute('data-bs-theme', storedTheme);
-            }
-        })();
-    </script>
 <head>
-    <!-- Meta Tags -->
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="Modern Bootstrap 5 Admin Template - Clean, responsive dashboard">
-    <meta name="keywords" content="bootstrap, admin, dashboard, template, modern, responsive">
-    <meta name="author" content="Bootstrap Admin Template">
-    
-    <!-- Open Graph Meta Tags -->
-    <meta property="og:title" content="Modern Bootstrap Admin Template">
-    <meta property="og:description" content="Clean and modern admin dashboard template built with Bootstrap 5">
-    <meta property="og:type" content="website">
-    
-    <!-- Favicon -->
-    <link rel="icon" type="image/svg+xml" href="~/favicon.svg">
-    <link rel="icon" type="image/png" href="~/favicon.png">
-    
-    <!-- Preconnect to external domains -->
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    
-    <!-- Fonts -->
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    
-    <!-- Title -->
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>@ViewData["Title"] - sistemaVeterinario</title>
-    
-    <!-- Theme Color -->
-    <meta name="theme-color" content="#6366f1">
-    
-    <!-- PWA Manifest -->
-    <!-- <link rel="manifest" href="~/assets/manifest-DTaoG9pG.json"> --> <!-- Not needed for MVC -->
 
-    <!-- Template CSS -->
-    <link rel="stylesheet" crossorigin href="~/css/template.css" asp-append-version="true">
-    <!-- Project Specific CSS -->
-    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
-    <link rel="stylesheet" href="~/sistemaVeterinario.styles.css" asp-append-version="true" />
+    <!-- Bootstrap CDN -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+
     <!-- Bootstrap Icons CDN -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    
+    <!-- Commented out original styles -->
+    <!-- <link rel="stylesheet" crossorigin href="~/css/template.css" asp-append-version="true"> -->
+    <!-- <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" /> -->
+    <!-- <link rel="stylesheet" href="~/sistemaVeterinario.styles.css" asp-append-version="true" /> -->
 </head>
-
-<body data-page="dashboard" class="admin-layout">
-    <!-- Loading Screen -->
-    <div id="loading-screen" class="loading-screen">
-        <div class="loading-spinner">
-            <div class="spinner-border text-primary" role="status">
-                <span class="visually-hidden">Loading...</span>
-            </div>
-        </div>
-    </div>
-
-    <!-- Main Wrapper -->
-    <div class="admin-wrapper" id="admin-wrapper">
-        
-        <!-- Header -->
-        <header class="admin-header">
-            <nav class="navbar navbar-expand-lg navbar-light bg-white border-bottom">
-                <div class="container-fluid">
-                    <!-- Logo/Brand -->
-                    <a class="navbar-brand d-flex align-items-center" asp-controller="Home" asp-action="Index">
-                        @* <img src="data:image/svg+xml,%3csvg%20width='32'%20height='32'%20viewBox='0%200%2032%2032'%20fill='none'%20xmlns='http://www.w3.org/2000/svg'%3e%3c!--%20Background%20circle%20for%20the%20M%20--%3e%3ccircle%20cx='16'%20cy='16'%20r='16'%20fill='url(%23logoGradient)'/%3e%3c!--%20Centered%20Letter%20M%20--%3e%3cpath%20d='M10%2024V8h2.5l2.5%206.5L17.5%208H20v16h-2V12.5L16.5%2020h-1L14%2012.5V24H10z'%20fill='white'%20font-weight='700'/%3e%3c!--%20Gradient%20definition%20--%3e%3cdefs%3e%3clinearGradient%20id='logoGradient'%20x1='0%25'%20y1='0%25'%20x2='100%25'%20y2='100%25'%3e%3cstop%20offset='0%25'%20style='stop-color:%236366f1;stop-opacity:1'%20/%3e%3cstop%20offset='100%25'%20style='stop-color:%238b5cf6;stop-opacity:1'%20/%3e%3c/linearGradient%3e%3c/defs%3e%3c/svg%3e" alt="Logo" height="32" class="d-inline-block align-text-top me-2"> *@
-                        <h1 class="h4 mb-0 fw-bold text-primary">Sistema Veterinario</h1>
-                    </a>
-
-                    <!-- Search Bar (Simplified for MVC) -->
-                    <div class="search-container flex-grow-1 mx-4">
-                        <div class="position-relative">
-                            <input type="search" 
-                                   class="form-control" 
-                                   placeholder="Buscar..."
-                                   aria-label="Search">
-                            <i class="bi bi-search position-absolute top-50 end-0 translate-middle-y me-3"></i>
-                        </div>
-                    </div>
-
-                    <!-- Right Side Icons (Simplified for MVC) -->
-                    <div class="navbar-nav flex-row">
-                        <!-- Theme Toggle -->
-                        <div x-data="themeSwitch">
-                            <button class="btn btn-outline-secondary me-2" 
-                                    type="button" 
-                                    @@click="toggle()"
-                                    data-bs-toggle="tooltip"
-                                    data-bs-placement="bottom"
-                                    title="Toggle theme">
-                                <i class="bi bi-sun-fill" x-show="currentTheme === 'light'"></i>
-                                <i class="bi bi-moon-fill" x-show="currentTheme === 'dark'"></i>
-                            </button>
-                        </div>
-
-                        <!-- Fullscreen Toggle -->
-                        <button class="btn btn-outline-secondary me-2" 
-                                type="button" 
-                                data-fullscreen-toggle
-                                data-bs-toggle="tooltip"
-                                data-bs-placement="bottom"
-                                title="Toggle fullscreen">
-                            <i class="bi bi-arrows-fullscreen icon-hover"></i>
-                        </button>
-
-                        <!-- User Menu -->
-                        <div class="dropdown">
-                            <button class="btn btn-outline-secondary d-flex align-items-center" 
-                                    type="button" 
-                                    data-bs-toggle="dropdown" 
-                                    aria-expanded="false">
-                                <img src="data:image/svg+xml,%3csvg%20width='32'%20height='32'%20viewBox='0%200%2032%2032'%20fill='none'%20xmlns='http://www.w3.org/2000/svg'%3e%3c!--%20Background%20circle%20--%3e%3ccircle%20cx='16'%20cy='16'%20r='16'%20fill='url(%23avatarGradient)'/%3e%3c!--%20Person%20silhouette%20--%3e%3cg%20fill='white'%20opacity='0.9'%3e%3c!--%20Head%20--%3e%3ccircle%20cx='16'%20cy='12'%20r='5'/%3e%3c!--%20Body%20--%3e%3cpath%20d='M16%2018c-5.5%200-10%202.5-10%207v1h20v-1c0-4.5-4.5-7-10-7z'/%3e%3c/g%3e%3c!--%20Subtle%20border%20--%3e%3ccircle%20cx='16'%20cy='16'%20r='15.5'%20fill='none'%20stroke='rgba(255,255,255,0.2)'%20stroke-width='1'/%3e%3c!--%20Gradient%20definition%20--%3e%3cdefs%3e%3clinearGradient%20id='avatarGradient'%20x1='0%25'%20y1='0%25'%20x2='100%25'%20y2='100%25'%3e%3cstop%20offset='0%25'%20style='stop-color:%236b7280;stop-opacity:1'%20/%3e%3cstop%20offset='100%25'%20style='stop-color:%234b5563;stop-opacity:1'%20/%3e%3c/linearGradient%3e%3c/defs%3e%3c/svg%3e" 
-                                     alt="User Avatar" 
-                                     width="24" 
-                                     height="24" 
-                                     class="rounded-circle me-2">
-                                <span class="d-none d-md-inline">Usuario</span>
-                                <i class="bi bi-chevron-down ms-1"></i>
-                            </button>
-                            <ul class="dropdown-menu dropdown-menu-end">
+<body>
+    <header>
+        <nav class="navbar navbar-expand-lg navbar-light bg-white border-bottom shadow-sm">
+            <div class="container-fluid">
+                <a class="navbar-brand fw-bold text-primary" asp-controller="Home" asp-action="Index">Sistema Veterinario</a>
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" aria-controls="navbarSupportedContent"
+                        aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="navbar-collapse collapse d-lg-inline-flex justify-content-between">
+                    <ul class="navbar-nav flex-grow-1">
+                        <!-- Simplified nav items for pure Bootstrap -->
+                    </ul>
+                    <ul class="navbar-nav">
+                        <li class="nav-item dropdown">
+                             <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                <i class="bi bi-person-circle"></i> Usuario
+                              </a>
+                            <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
                                 <li><a class="dropdown-item" href="#"><i class="bi bi-person me-2"></i>Perfil</a></li>
                                 <li><a class="dropdown-item" href="#"><i class="bi bi-gear me-2"></i>Configuración</a></li>
                                 <li><hr class="dropdown-divider"></li>
-
-                                <!--
-                                    Configurar cerrar sesion:
-                                    * asp-action -> especificamos el metodo de accion a invocar.
-                                    * asp-controller -> especificamos el controlador donde se encuentra el metodo de accion.
-                                -->
                                 <li><a class="dropdown-item" asp-action="Logout" asp-controller="Home"><i class="bi bi-box-arrow-right me-2"></i>Cerrar Sesión</a></li>
                             </ul>
-                        </div>
-                    </div>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </nav>
+    </header>
+
+    <div class="container-fluid">
+        <div class="row">
+            <!-- Sidebar -->
+            <nav id="sidebarMenu" class="col-md-3 col-lg-2 d-md-block bg-light sidebar collapse">
+                <div class="position-sticky pt-3">
+                    @Html.Partial("_LateralMenu")
                 </div>
             </nav>
-        </header>
 
-        <!-- Sidebar -->
-        @Html.Partial("_LateralMenu")
-
-        <!-- Floating Hamburger Menu -->
-        <button class="hamburger-menu" 
-                type="button" 
-                data-sidebar-toggle
-                aria-label="Toggle sidebar">
-            <i class="bi bi-list"></i>
-        </button>
-
-        <!-- Main Content -->
-        <main class="admin-main">
-            <div class="container-fluid p-4 p-lg-5">
-                @RenderBody()
-            </div>
-        </main>
-
-        <!-- Placeholder for template.js chart initialization -->
-        <div id="storageStatusChart" style="display: none;"></div>
-
-        <!-- Footer -->
-        <footer class="admin-footer">
-            <div class="container-fluid">
-                <div class="row">
-                    <div class="col-md-6">
-                        <p class="mb-0 text-muted">© 2025 Sistema Veterinario</p>
-                    </div>
-                    <div class="col-md-6 text-md-end">
-                        <p class="mb-0 text-muted">Built with Bootstrap 5</p>
-                    </div>
+            <!-- Main Content -->
+            <main class="col-md-9 ms-sm-auto col-lg-10 px-md-4">
+                <div class="pt-3 pb-2 mb-3 border-bottom">
+                    <h1 class="h2">@ViewData["Title"]</h1>
                 </div>
-            </div>
-        </footer>
-        </div> <!-- /.admin-wrapper -->
+                @RenderBody()
+            </main>
+        </div>
     </div>
 
-    <!-- Toast Container -->
-    <div aria-live="polite" aria-atomic="true" class="position-fixed top-0 end-0 p-3" style="z-index: 11">
-        <div id="toast-container"></div>
-    </div>
+    <footer class="border-top footer text-muted">
+        <div class="container-fluid text-center">
+            &copy; 2025 - sistemaVeterinario
+        </div>
+    </footer>
 
-    <!-- Scripts -->
-    <script type="module" crossorigin src="~/js/template.js" asp-append-version="true"></script>
+    <!-- Bootstrap JS Bundle -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
+    
+    <!-- Commented out original scripts -->
+    <!-- <script type="module" crossorigin src="~/js/template.js" asp-append-version="true"></script> -->
     <script src="~/js/sweetalert2.js" asp-append-version="true"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>
-    <script>
-      document.addEventListener('DOMContentLoaded', () => {
-        const toggleButton = document.querySelector('[data-sidebar-toggle]');
-        const wrapper = document.getElementById('admin-wrapper');
 
-        if (toggleButton && wrapper) {
-          // Set initial state from localStorage
-          const isCollapsed = localStorage.getItem('sidebar-collapsed') === 'true';
-          if (isCollapsed) {
-            wrapper.classList.add('sidebar-collapsed');
-            toggleButton.classList.add('is-active');
-          }
-
-          // Attach click listener
-          toggleButton.addEventListener('click', () => {
-            const isCurrentlyCollapsed = wrapper.classList.contains('sidebar-collapsed');
-            
-            if (isCurrentlyCollapsed) {
-              wrapper.classList.remove('sidebar-collapsed');
-              toggleButton.classList.remove('is-active');
-              localStorage.setItem('sidebar-collapsed', 'false');
-            } else {
-              wrapper.classList.add('sidebar-collapsed');
-              toggleButton.classList.add('is-active');
-              localStorage.setItem('sidebar-collapsed', 'true');
-            }
-          });
-        }
-      });
-    </script>
     @await RenderSectionAsync("Scripts", required: false)
 </body>
 </html>

@@ -287,14 +287,14 @@ namespace sistemaVeterinario.Controllers
                 c.Telefono,
                 c.Email,
                 c.Direccion,
-                c.EsActivo // Incluir el estado de actividad en el exportado
+                c.EsActivo // incluir el estado de actividad en el exportado
             }).ToListAsync();
 
             var contenidoArchivo = PdfExporter.GenerarPdf(exportarData, $"Reporte de {nombreArchivo}");
 
             return File(
                 contenidoArchivo,
-                "application/pdf", // Tipo para PDF
+                "application/pdf", // tipo para PDF
                 $"{nombreArchivo}.pdf"
             );
         }

@@ -1,76 +1,61 @@
 @{
     var currentController = ViewContext.RouteData.Values["Controller"] as string;
 }
-<aside class="admin-sidebar" id="admin-sidebar">
-    <div class="d-flex flex-column h-100">
-        <div class="sidebar-content flex-grow-1">
-            <nav class="sidebar-nav">
-                <ul class="nav flex-column">
-                    <li class="nav-item">
-                        <a class="nav-link @(currentController == "Home" ? "active" : "")" asp-controller="Home" asp-action="Index">
-                            <i class="bi bi-speedometer2"></i>
-                            <span>Dashboard</span>
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link @(currentController == "Clientes" ? "active" : "")" asp-controller="Clientes" asp-action="Index">
-                            <i class="bi bi-people"></i>
-                            <span>Clientes</span>
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link @(currentController == "Mascotas" ? "active" : "")" asp-controller="Mascotas" asp-action="Index">
-                            <i class="bi bi-github"></i> 
-                            <span>Mascotas</span>
-                        </a>
-                    </li>
-                    @* "Usuarios" y "Roles" solo son accesibles para el ROL "Admin" *@
-                    @* TODO: definir como dejar los botones del sidebar: mostrarlos o ocultarlos... *@
-                    @if (User.IsInRole("Admin"))
-                    {
-                        <li class="nav-item">
-                            <a class="nav-link @(currentController == "Usuarios" ? "active" : "")" asp-controller="Usuarios" asp-action="Index">
-                                <i class="bi bi-person"></i>
-                                <span>Usuarios</span>
-                            </a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link @(currentController == "Roles" ? "active" : "")" asp-controller="Roles" asp-action="Index">
-                                <i class="bi bi-key"></i>
-                                <span>Roles</span>
-                            </a>
-                        </li>
-                    }
-                    <li class="nav-item">
-                        <a class="nav-link @(currentController == "Consultas" ? "active" : "")" asp-controller="Consultas" asp-action="Index">
-                            <i class="bi bi-chat-dots"></i>
-                            <span>Consultas</span>
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link @(currentController == "Tratamientos" ? "active" : "")" asp-controller="Tratamientos" asp-action="Index">
-                            <i class="bi bi-clipboard-plus"></i>
-                            <span>Tratamientos</span>
-                        </a>
-                    </li>
-                </ul>
-            </nav>
-        </div>
-        <div class="sidebar-footer p-3">
-            @* Podemos usar ahora los metodos del user, dentro del claims *@
-            @if (User.IsInRole("Admin"))
-            {
-                <p>Hola, usted es el admin...</p>
-            }
+<ul class="nav nav-pills flex-column mb-auto">
+    <li class="nav-item">
+        <a class="nav-link @(currentController == "Home" ? "active" : "link-dark")" asp-controller="Home" asp-action="Index">
+            <i class="bi bi-speedometer2 me-2"></i>
+            Dashboard
+        </a>
+    </li>
+    <li class="nav-item">
+        <a class="nav-link @(currentController == "Clientes" ? "active" : "link-dark")" asp-controller="Clientes" asp-action="Index">
+            <i class="bi bi-people me-2"></i>
+            Clientes
+        </a>
+    </li>
+    <li class="nav-item">
+        <a class="nav-link @(currentController == "Mascotas" ? "active" : "link-dark")" asp-controller="Mascotas" asp-action="Index">
+            <i class="bi bi-github me-2"></i>
+            Mascotas
+        </a>
+    </li>
+    @if (User.IsInRole("Admin"))
+    {
+        <li class="nav-item">
+            <a class="nav-link @(currentController == "Usuarios" ? "active" : "link-dark")" asp-controller="Usuarios" asp-action="Index">
+                <i class="bi bi-person me-2"></i>
+                Usuarios
+            </a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link @(currentController == "Roles" ? "active" : "link-dark")" asp-controller="Roles" asp-action="Index">
+                <i class="bi bi-key me-2"></i>
+                Roles
+            </a>
+        </li>
+    }
+    <li class="nav-item">
+        <a class="nav-link @(currentController == "Consultas" ? "active" : "link-dark")" asp-controller="Consultas" asp-action="Index">
+            <i class="bi bi-chat-dots me-2"></i>
+            Consultas
+        </a>
+    </li>
+    <li class="nav-item">
+        <a class="nav-link @(currentController == "Tratamientos" ? "active" : "link-dark")" asp-controller="Tratamientos" asp-action="Index">
+            <i class="bi bi-clipboard-plus me-2"></i>
+            Tratamientos
+        </a>
+    </li>
+</ul>
 
-            @if (TempData.Peek("nombre") != null)
-            {
-                <div class="text-center">Bienvenido: @TempData.Peek("nombre")</div>
-            }
-            else
-            {
-                Context.Response.Redirect(Url.Action("Login", "Home"));
-            }
-        </div>
-    </div>
-</aside>
+<hr>
+
+@if (TempData.Peek("nombre") != null)
+{
+    <div class="text-center small">Bienvenido: @TempData.Peek("nombre")</div>
+}
+else
+{
+    Context.Response.Redirect(Url.Action("Login", "Home"));
+}
