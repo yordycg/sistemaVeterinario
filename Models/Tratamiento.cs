@@ -24,6 +24,9 @@ public partial class Tratamiento
     [Required]
     public DateOnly FechaRegistro { get; set; } = DateOnly.FromDateTime(DateTime.Now);
 
+    [Required]
+    public bool EsActivo { get; set; } = true;
+
     [ValidateNever]
     public virtual Consulta IdConsultaNavigation { get; set; } = null!;
 }

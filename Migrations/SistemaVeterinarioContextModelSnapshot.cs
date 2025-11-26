@@ -95,6 +95,9 @@ namespace sistemaVeterinario.Migrations
                         .HasColumnType("text")
                         .HasColumnName("diagnostico");
 
+                    b.Property<bool>("EsActivo")
+                        .HasColumnType("bit");
+
                     b.Property<DateOnly>("FechaConsulta")
                         .HasColumnType("date")
                         .HasColumnName("fecha_consulta");
@@ -480,6 +483,9 @@ namespace sistemaVeterinario.Migrations
                         .IsUnicode(false)
                         .HasColumnType("varchar(255)")
                         .HasColumnName("descripcion");
+
+                    b.Property<bool>("EsActivo")
+                        .HasColumnType("bit");
 
                     b.Property<DateOnly>("FechaRegistro")
                         .HasColumnType("date");

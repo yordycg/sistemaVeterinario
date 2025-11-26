@@ -12,8 +12,8 @@ using sistemaVeterinario.Models;
 namespace sistemaVeterinario.Migrations
 {
     [DbContext(typeof(SistemaVeterinarioContext))]
-    [Migration("20251126015507_AddSoftDeleteFlags")]
-    partial class AddSoftDeleteFlags
+    [Migration("20251126025549_ConsolidateSeedDataAndSoftDelete")]
+    partial class ConsolidateSeedDataAndSoftDelete
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -97,6 +97,9 @@ namespace sistemaVeterinario.Migrations
                     b.Property<string>("Diagnostico")
                         .HasColumnType("text")
                         .HasColumnName("diagnostico");
+
+                    b.Property<bool>("EsActivo")
+                        .HasColumnType("bit");
 
                     b.Property<DateOnly>("FechaConsulta")
                         .HasColumnType("date")
@@ -483,6 +486,9 @@ namespace sistemaVeterinario.Migrations
                         .IsUnicode(false)
                         .HasColumnType("varchar(255)")
                         .HasColumnName("descripcion");
+
+                    b.Property<bool>("EsActivo")
+                        .HasColumnType("bit");
 
                     b.Property<DateOnly>("FechaRegistro")
                         .HasColumnType("date");
