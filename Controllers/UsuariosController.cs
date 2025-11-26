@@ -38,7 +38,7 @@ namespace sistemaVeterinario.Controllers
             ViewData["filtro"] = search;
 
             int pagSize = 20;
-            var usuarios = _context.Usuarios
+            var usuarios = _context.Usuarios.Where(u => u.EsActivo)
                 .Include(u => u.IdEstadoUsuarioNavigation)
                 .Include(u => u.IdRolNavigation)
                 .AsQueryable();
@@ -62,7 +62,7 @@ namespace sistemaVeterinario.Controllers
             var usuario = await _context.Usuarios
                 .Include(u => u.IdEstadoUsuarioNavigation)
                 .Include(u => u.IdRolNavigation)
-                .FirstOrDefaultAsync(m => m.IdUsuario == id);
+                .FirstOrDefaultAsync(m => m.IdUsuario == id && m.EsActivo); // Solo mostrar detalles si está activo
             if (usuario == null)
             {
                 return NotFound();
@@ -82,10 +82,14 @@ namespace sistemaVeterinario.Controllers
         // POST: Usuarios/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("IdUsuario,IdRol,IdEstadoUsuario,Nombre,Email,Password")] Usuario usuario)
+        public async Task<IActionResult> Create([Bind("IdUsuario,IdRol,IdEstadoUsuario,Nombre,Email,Password,FechaRegistro,EsActivo")] Usuario usuario)
         {
             if (ModelState.IsValid)
             {
+                // Asegurar que el nuevo usuario esté activo por defecto y tenga el estado "Activo"
+                usuario.EsActivo = true;
+                usuario.IdEstadoUsuario = 1; // 1 = Activo
+                
                 // Hashear password antes de guardarla.
                 usuario.Password = BCrypt.Net.BCrypt.HashPassword(usuario.Password);
 
@@ -106,7 +110,7 @@ namespace sistemaVeterinario.Controllers
                 return NotFound();
             }
 
-            var usuario = await _context.Usuarios.FindAsync(id);
+            var usuario = await _context.Usuarios.FirstOrDefaultAsync(u => u.IdUsuario == id && u.EsActivo); // Solo editar si está activo
             if (usuario == null)
             {
                 return NotFound();
@@ -119,7 +123,7 @@ namespace sistemaVeterinario.Controllers
         // POST: Usuarios/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("IdUsuario,IdRol,IdEstadoUsuario,Nombre,Email,Password")] Usuario usuario)
+        public async Task<IActionResult> Edit(int id, [Bind("IdUsuario,IdRol,IdEstadoUsuario,Nombre,Email,Password,FechaRegistro,EsActivo")] Usuario usuario)
         {
             if (id != usuario.IdUsuario)
             {
@@ -170,23 +174,19 @@ namespace sistemaVeterinario.Controllers
                 return Json("notfound"); // Usuario no encontrado
             }
 
-            // Verificar si hay consultas asociadas a este usuario
-            var hasAssociatedConsultas = await _context.Consultas.AnyAsync(c => c.IdUsuario == id);
+            // Verificar si hay consultas activas asociadas a este usuario
+            var hasAssociatedConsultas = await _context.Consultas.AnyAsync(c => c.IdUsuario == id && c.EsActivo);
             if (hasAssociatedConsultas)
             {
-                return Json("has_children"); // El usuario tiene consultas asociadas
+                return Json("has_children"); // El usuario tiene consultas activas asociadas
             }
 
             try
             {
-                _context.Usuarios.Remove(usuario);
+                usuario.EsActivo = false; // Marcar como inactivo (soft delete)
+                _context.Update(usuario);
                 await _context.SaveChangesAsync();
                 return Json("ok");
-            }
-            catch (DbUpdateException ex)
-            {
-                // Log the exception
-                return Json("error_db_constraint");
             }
             catch (Exception ex)
             {
@@ -202,11 +202,11 @@ namespace sistemaVeterinario.Controllers
 
             if (id.HasValue)
             {
-                exists = await _context.Usuarios.AnyAsync(u => u.Email == email && u.IdUsuario != id.Value);
+                exists = await _context.Usuarios.AnyAsync(u => u.Email == email && u.IdUsuario != id.Value && u.EsActivo); // Buscar solo entre activos
             }
             else
             {
-                exists = await _context.Usuarios.AnyAsync(u => u.Email == email);
+                exists = await _context.Usuarios.AnyAsync(u => u.Email == email && u.EsActivo); // Buscar solo entre activos
             }
 
             return Json(exists);
@@ -214,12 +214,12 @@ namespace sistemaVeterinario.Controllers
 
         private bool UsuarioExists(int id)
         {
-            return _context.Usuarios.Any(e => e.IdUsuario == id);
+            return _context.Usuarios.Any(e => e.IdUsuario == id && e.EsActivo); // Solo existen si están activos
         }
 
         public async Task<IActionResult> ExportToExcel(string search)
         {
-            var usuariosQuery = _context.Usuarios
+            var usuariosQuery = _context.Usuarios.Where(u => u.EsActivo)
                 .Include(u => u.IdEstadoUsuarioNavigation)
                 .Include(u => u.IdRolNavigation)
                 .AsQueryable();
@@ -236,7 +236,8 @@ namespace sistemaVeterinario.Controllers
                 u.Nombre,
                 u.Email,
                 Rol = u.IdRolNavigation.NombreRol,
-                Estado = u.IdEstadoUsuarioNavigation.NombreEstado
+                Estado = u.IdEstadoUsuarioNavigation.NombreEstado,
+                u.EsActivo // Incluir el estado de actividad en el exportado
             }).ToListAsync();
 
             var contenidoArchivo = ExcelExporter.GenerarExcel(exportData, "Usuarios");
@@ -250,7 +251,7 @@ namespace sistemaVeterinario.Controllers
 
         public async Task<IActionResult> ExportToPdf(string search)
         {
-            var usuariosQuery = _context.Usuarios
+            var usuariosQuery = _context.Usuarios.Where(u => u.EsActivo)
                 .Include(u => u.IdEstadoUsuarioNavigation)
                 .Include(u => u.IdRolNavigation)
                 .AsQueryable();
@@ -267,7 +268,8 @@ namespace sistemaVeterinario.Controllers
                 u.Nombre,
                 u.Email,
                 Rol = u.IdRolNavigation.NombreRol,
-                Estado = u.IdEstadoUsuarioNavigation.NombreEstado
+                Estado = u.IdEstadoUsuarioNavigation.NombreEstado,
+                u.EsActivo // Incluir el estado de actividad en el exportado
             }).ToListAsync();
 
             var contenidoArchivo = PdfExporter.GenerarPdf(exportData, $"Reporte de {nombreArchivo}");

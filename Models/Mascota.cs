@@ -30,6 +30,9 @@ public partial class Mascota
     [Required]
     public DateOnly FechaRegistro { get; set; } = DateOnly.FromDateTime(DateTime.Now);
 
+    [Required]
+    public bool EsActivo { get; set; } = true;
+
     [NotMapped]
     public string NombreDueño => IdClienteNavigation != null ? $"{Nombre} - {IdClienteNavigation.Run}" : Nombre;
 

@@ -36,7 +36,7 @@ namespace sistemaVeterinario.Controllers
             ViewData["filtro"] = search;
 
             int pagSize = 20;
-            var mascotas = _context.Mascotas
+            var mascotas = _context.Mascotas.Where(m => m.EsActivo)
                 .Include(m => m.IdClienteNavigation)
                 .Include(m => m.IdRazaNavigation)
                     .ThenInclude(r => r.IdEspecieNavigation)
@@ -62,7 +62,7 @@ namespace sistemaVeterinario.Controllers
                 .Include(m => m.IdClienteNavigation)
                 .Include(m => m.IdRazaNavigation)
                     .ThenInclude(r => r.IdEspecieNavigation)
-                .FirstOrDefaultAsync(m => m.IdMascota == id);
+                .FirstOrDefaultAsync(m => m.IdMascota == id && m.EsActivo); // Solo mostrar detalles si está activa
             if (mascota == null)
             {
                 return NotFound();
@@ -89,6 +89,7 @@ namespace sistemaVeterinario.Controllers
         {
             if (ModelState.IsValid)
             {
+                mascota.EsActivo = true; // Asegurar que la nueva mascota esté activa por defecto
                 _context.Add(mascota);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
@@ -106,7 +107,7 @@ namespace sistemaVeterinario.Controllers
                 return NotFound();
             }
 
-            var mascota = await _context.Mascotas.Include(m => m.IdRazaNavigation).FirstOrDefaultAsync(m => m.IdMascota == id);
+            var mascota = await _context.Mascotas.Include(m => m.IdRazaNavigation).FirstOrDefaultAsync(m => m.IdMascota == id && m.EsActivo); // Solo editar si está activa
             if (mascota == null)
             {
                 return NotFound();
@@ -122,7 +123,7 @@ namespace sistemaVeterinario.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("IdMascota,IdCliente,IdRaza,Nombre,Sexo,Edad,FechaRegistro")] Mascota mascota)
+        public async Task<IActionResult> Edit(int id, [Bind("IdMascota,IdCliente,IdRaza,Nombre,Sexo,Edad,FechaRegistro,EsActivo")] Mascota mascota)
         {
             if (id != mascota.IdMascota)
             {
@@ -163,23 +164,19 @@ namespace sistemaVeterinario.Controllers
                 return Json("notfound"); // Mascota no encontrada
             }
 
-            // Verificar si hay consultas asociadas a esta mascota
-            var hasAssociatedConsultas = await _context.Consultas.AnyAsync(c => c.IdMascota == id);
+            // Verificar si hay consultas activas asociadas a esta mascota
+            var hasAssociatedConsultas = await _context.Consultas.AnyAsync(c => c.IdMascota == id && c.EsActivo);
             if (hasAssociatedConsultas)
             {
-                return Json("has_children"); // La mascota tiene consultas asociadas
+                return Json("has_children"); // La mascota tiene consultas activas asociadas
             }
 
             try
             {
-                _context.Mascotas.Remove(mascota);
+                mascota.EsActivo = false; // Marcar como inactivo (soft delete)
+                _context.Update(mascota);
                 await _context.SaveChangesAsync();
                 return Json("ok");
-            }
-            catch (DbUpdateException ex)
-            {
-                // Log the exception
-                return Json("error_db_constraint");
             }
             catch (Exception ex)
             {
@@ -190,12 +187,12 @@ namespace sistemaVeterinario.Controllers
 
         private bool MascotaExists(int id)
         {
-            return _context.Mascotas.Any(e => e.IdMascota == id);
+            return _context.Mascotas.Any(e => e.IdMascota == id && e.EsActivo); // Solo existen si están activas
         }
 
         public async Task<IActionResult> ExportToExcel(string search)
         {
-            var consultaMascotas = _context.Mascotas
+            var consultaMascotas = _context.Mascotas.Where(m => m.EsActivo)
                 .Include(m => m.IdClienteNavigation)
                 .Include(m => m.IdRazaNavigation)
                     .ThenInclude(r => r.IdEspecieNavigation)
@@ -215,7 +212,8 @@ namespace sistemaVeterinario.Controllers
                 Especie = m.IdRazaNavigation.IdEspecieNavigation.NombreEspecie,
                 Raza = m.IdRazaNavigation.NombreRaza,
                 m.Sexo,
-                m.Edad
+                m.Edad,
+                m.EsActivo // Incluir el estado de actividad en el exportado
             }).ToListAsync();
 
             var contenidoArchivo = ExcelExporter.GenerarExcel(exportData, "Mascotas");
@@ -229,7 +227,7 @@ namespace sistemaVeterinario.Controllers
 
         public async Task<IActionResult> ExportToPdf(string search)
         {
-            var consultaMascotas = _context.Mascotas
+            var consultaMascotas = _context.Mascotas.Where(m => m.EsActivo)
                 .Include(m => m.IdClienteNavigation)
                 .Include(m => m.IdRazaNavigation)
                     .ThenInclude(r => r.IdEspecieNavigation)
@@ -249,7 +247,8 @@ namespace sistemaVeterinario.Controllers
                 Especie = m.IdRazaNavigation.IdEspecieNavigation.NombreEspecie,
                 Raza = m.IdRazaNavigation.NombreRaza,
                 m.Sexo,
-                m.Edad
+                m.Edad,
+                m.EsActivo // Incluir el estado de actividad en el exportado
             }).ToListAsync();
 
             var contenidoArchivo = PdfExporter.GenerarPdf(exportData, $"Reporte de {nombreArchivo}");

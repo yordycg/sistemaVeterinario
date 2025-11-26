@@ -31,6 +31,9 @@ public partial class Usuario
     [Required]
     public DateOnly FechaRegistro { get; set; } = DateOnly.FromDateTime(DateTime.Now);
 
+    [Required]
+    public bool EsActivo { get; set; } = true;
+
     [ValidateNever]
     public virtual ICollection<Consulta> Consulta { get; set; } = new List<Consulta>();
 

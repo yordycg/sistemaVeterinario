@@ -37,7 +37,7 @@ namespace sistemaVeterinario.Controllers
             ViewData["filtro"] = search;
 
             int pagSize = 20; // 20 es un numero prudente, datos a mostrar por pagina.
-            var clientes = from c in _context.Clientes select c; // traer lista de clientes.
+            var clientes = _context.Clientes.Where(c => c.EsActivo).AsQueryable(); // traer lista de clientes activos.
 
             // Verificar que se haya realizado una busqueda, sino no hacer nada.
             if (!string.IsNullOrEmpty(search))
@@ -58,7 +58,7 @@ namespace sistemaVeterinario.Controllers
             }
 
             var cliente = await _context.Clientes
-                .FirstOrDefaultAsync(m => m.IdCliente == id);
+                .FirstOrDefaultAsync(m => m.IdCliente == id && m.EsActivo); // Solo mostrar detalles si está activo
             if (cliente == null)
             {
                 return NotFound();
@@ -78,12 +78,13 @@ namespace sistemaVeterinario.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("IdCliente,Run,Nombre,Telefono,Email,Direccion")] Cliente cliente)
+        public async Task<IActionResult> Create([Bind("IdCliente,Run,Nombre,Telefono,Email,Direccion,FechaRegistro")] Cliente cliente)
         {
             if (ModelState.IsValid)
             {
                 try
                 {
+                    cliente.EsActivo = true; // Asegurar que el nuevo cliente esté activo por defecto
                     _context.Add(cliente);
                     await _context.SaveChangesAsync();
                     return RedirectToAction(nameof(Index));
@@ -125,7 +126,7 @@ namespace sistemaVeterinario.Controllers
                 return NotFound();
             }
 
-            var cliente = await _context.Clientes.FindAsync(id);
+            var cliente = await _context.Clientes.FirstOrDefaultAsync(c => c.IdCliente == id && c.EsActivo); // Solo editar si está activo
             if (cliente == null)
             {
                 return NotFound();
@@ -138,7 +139,7 @@ namespace sistemaVeterinario.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("IdCliente,Run,Nombre,Telefono,Email,Direccion")] Cliente cliente)
+        public async Task<IActionResult> Edit(int id, [Bind("IdCliente,Run,Nombre,Telefono,Email,Direccion,FechaRegistro,EsActivo")] Cliente cliente)
         {
             if (id != cliente.IdCliente)
             {
@@ -178,32 +179,30 @@ namespace sistemaVeterinario.Controllers
                 return Json("notfound"); // Cliente no encontrado
             }
 
-            // Verificar si hay mascotas asociadas a este cliente
-            var hasAssociatedMascotas = await _context.Mascotas.AnyAsync(m => m.IdCliente == id);
+            // Verificar si hay mascotas activas asociadas a este cliente
+            var hasAssociatedMascotas = await _context.Mascotas.AnyAsync(m => m.IdCliente == id && m.EsActivo);
             if (hasAssociatedMascotas)
             {
-                return Json("has_children");
+                return Json("has_children"); // El cliente tiene mascotas activas asociadas
             }
 
             try
             {
-                _context.Clientes.Remove(cliente);
+                cliente.EsActivo = false; // Marcar como inactivo (soft delete)
+                _context.Update(cliente);
                 await _context.SaveChangesAsync();
                 return Json("ok");
             }
-            catch (DbUpdateException ex)
-            {
-                return Json("error_db_constraint");
-            }
             catch (Exception ex)
             {
+                // Log the exception
                 return Json("error_unexpected");
             }
         }
 
         private bool ClienteExists(int id)
         {
-            return _context.Clientes.Any(e => e.IdCliente == id);
+            return _context.Clientes.Any(e => e.IdCliente == id && e.EsActivo); // Solo existen si están activos
         }
 
         /**
@@ -212,7 +211,7 @@ namespace sistemaVeterinario.Controllers
         [HttpGet]
         public async Task<JsonResult> ClienteRunExists(string run)
         {
-            var exists = await _context.Clientes.AnyAsync(c => c.Run == run);
+            var exists = await _context.Clientes.AnyAsync(c => c.Run == run && c.EsActivo); // Buscar solo entre activos
             return Json(exists);
         }
 
@@ -223,11 +222,11 @@ namespace sistemaVeterinario.Controllers
 
             if (id.HasValue)
             {
-                exists = await _context.Clientes.AnyAsync(c => c.Email == email && c.IdCliente != id.Value);
+                exists = await _context.Clientes.AnyAsync(c => c.Email == email && c.IdCliente != id.Value && c.EsActivo); // Buscar solo entre activos
             }
             else
             {
-                exists = await _context.Clientes.AnyAsync(c => c.Email == email);
+                exists = await _context.Clientes.AnyAsync(c => c.Email == email && c.EsActivo); // Buscar solo entre activos
             }
 
             return Json(exists);
@@ -238,7 +237,7 @@ namespace sistemaVeterinario.Controllers
          */
         public async Task<IActionResult> ExportToExcel(string search)
         {
-            var consultaClientes = from c in _context.Clientes select c;
+            var consultaClientes = _context.Clientes.Where(c => c.EsActivo).AsQueryable(); // Exportar solo clientes activos
             string nombreArchivo = "Clientes";
 
             // Verificar si se realizo una busqueda (filtro), exportar con ese filtro.
@@ -255,7 +254,8 @@ namespace sistemaVeterinario.Controllers
                 c.Nombre,
                 c.Telefono,
                 c.Email,
-                c.Direccion
+                c.Direccion,
+                c.EsActivo // Incluir el estado de actividad en el exportado
             }).ToListAsync();
 
             // Utilizamos el helper, le pasamos la lista de datos y el nombre de la hoja.
@@ -272,7 +272,7 @@ namespace sistemaVeterinario.Controllers
         // GET: Clientes/ExportToPdf
         public async Task<IActionResult> ExportToPdf(string search)
         {
-            var consultaClientes = from c in _context.Clientes select c;
+            var consultaClientes = _context.Clientes.Where(c => c.EsActivo).AsQueryable(); // Exportar solo clientes activos
             string nombreArchivo = "Clientes";
 
             if (!string.IsNullOrEmpty(search))
@@ -286,7 +286,8 @@ namespace sistemaVeterinario.Controllers
                 c.Nombre,
                 c.Telefono,
                 c.Email,
-                c.Direccion
+                c.Direccion,
+                c.EsActivo // Incluir el estado de actividad en el exportado
             }).ToListAsync();
 
             var contenidoArchivo = PdfExporter.GenerarPdf(exportarData, $"Reporte de {nombreArchivo}");

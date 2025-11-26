@@ -29,6 +29,9 @@ public partial class Cliente
     [Required]
     public DateOnly FechaRegistro { get; set; } = DateOnly.FromDateTime(DateTime.Now);
 
+    [Required]
+    public bool EsActivo { get; set; } = true;
+
     public string RunYNombre => $"{Run} | {Nombre}";
 
     public virtual ICollection<Mascota> Mascota { get; set; } = new List<Mascota>();
