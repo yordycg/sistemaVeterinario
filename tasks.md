@@ -2,9 +2,10 @@
 
 > Tracker del rebuild para portfolio, basado en el framework de fases del desarrollador
 > (Fase 0 — Prospección/Cotización — omitida: no es un proyecto a la venta).
-> Trabajo en rama `v2`, merge a `main` en la Fase 7.
+> Fases 1–4 en `main`; rama `v2` para Fase 5 en adelante, merge a `main` al final.
 
 ## Cómo usar
+
 - `[ ]` pendiente · `[x]` completada
 - Tareas accionables en 1–2 horas, numeradas por fase (1.1, 1.2…)
 - Marcar las tareas en el commit/PR que las resuelve
@@ -15,13 +16,14 @@
 
 **Objetivo**: Entender el problema real del dominio veterinario antes de proponer tecnología.
 
-- [ ] 1.1 Identificar el "dolor principal" que resuelve el sistema (proceso manual/ineficiente)
-- [ ] 1.2 Analizar cómo se gestiona hoy el problema sin software
-- [ ] 1.3 Definir los usuarios y su nivel técnico (Admin, Recepcionista, Veterinari@)
-- [ ] 1.4 Definir restricciones (tiempo de estudio disponible, limitaciones técnicas)
-- [ ] 1.5 Determinar los Criterios de Éxito del portfolio
+- [x] 1.1 Identificar el "dolor principal" que resuelve el sistema (proceso manual/ineficiente)
+- [x] 1.2 Analizar cómo se gestiona hoy el problema sin software
+- [x] 1.3 Definir los usuarios y su nivel técnico (Admin, Recepcionista, Veterinari@)
+- [x] 1.4 Definir restricciones (tiempo de estudio disponible, limitaciones técnicas)
+- [x] 1.5 Determinar los Criterios de Éxito del portfolio
 
 ### Preguntas claves
+
 1. ¿Cuál es el problema real que estamos resolviendo? (sin mencionar software).
 2. ¿Qué pasa si NO hacemos este proyecto?
 3. ¿Quién decide el alcance final?
@@ -38,6 +40,7 @@
 - [ ] 2.6 Decidir features nuevas: agregar / quitar / mejorar de lo actual
 
 ### Preguntas claves
+
 1. ¿Cuáles son las 3 funciones indispensables (MVP)?
 2. ¿Qué datos entran al sistema (Inputs) y qué datos salen (Outputs)?
 3. ¿Qué cosas quedan EXCLUIDAS explícitamente de esta versión?
@@ -51,9 +54,10 @@
 - [ ] 3.3 Resolver la doble fuente de verdad de la BD (migraciones vs schema.sql)
 - [ ] 3.4 Decisiones de capas/estructura (MVC plano vs. Services/ViewModels/DTOs)
 - [ ] 3.5 Estructura de carpetas y módulos del proyecto final
-- [ ] 3.6 Generar `docs/fase3-arquitectura.md`
+- [ ] 3.6 Generar `docs/03-arquitectura.md`
 
 ### Preguntas claves
+
 1. ¿Cómo viaja la información desde el origen hasta el destino?
 2. ¿Dónde se almacena la información y qué estructura tiene?
 3. ¿Qué módulos o librerías independientes necesito?
@@ -66,9 +70,10 @@
 - [ ] 4.2 Manejo de Casos de Borde y Errores (datos nulos, BD caída, timeouts)
 - [ ] 4.3 Pseudocódigo de búsqueda/filtros/paginación y exportaciones
 - [ ] 4.4 Revisión socrática del coach sobre el pseudocódigo
-- [ ] 4.5 Generar `docs/fase4-pseudocodigo.md`
+- [ ] 4.5 Generar `docs/04-pseudocodigo.md`
 
 ### Preguntas claves
+
 1. ¿Qué pasa si la BD falla o la conexión se corta a mitad de operación?
 2. ¿Cómo manejo errores sin que el programa se rompa?
 3. ¿Entendería este pseudocódigo dentro de 6 meses?
@@ -91,6 +96,7 @@
 - [ ] 5.12 Commits pequeños y descriptivos a medida que avanzas
 
 ### Preguntas claves
+
 1. ¿Estoy cumpliendo exactamente el pseudocódigo o me estoy desviando a inventar cosas?
 2. ¿Tengo credenciales/claves privadas hardcodeadas en el código fuente?
 
@@ -106,6 +112,7 @@
 - [ ] 6.6 Documentar resultados
 
 ### Preguntas claves
+
 1. ¿Qué pasa si el usuario ingresa un dato inválido?
 2. ¿El programa muestra un error claro o se cae con una excepción incomprensible?
 
@@ -121,6 +128,7 @@
 - [ ] 7.6 Post-entrega: definir la "siguiente fase" (features futuras para el portfolio)
 
 ### Preguntas claves
+
 1. ¿Si alguien toma este repositorio hoy, lo ejecuta en menos de 10 minutos con el `README.md`?
 2. ¿Cumplí todos los criterios de éxito definidos en la Fase 1?
 3. ¿Dejé claro qué sigue después de esta entrega?
