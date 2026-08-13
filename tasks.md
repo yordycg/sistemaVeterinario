@@ -32,12 +32,12 @@
 
 **Objetivo**: Aterrizar el problema en funcionalidades concretas y definir el scope.
 
-- [ ] 2.1 Inventario funcional del proyecto actual (módulos que ya existen)
-- [ ] 2.2 Requerimientos Funcionales (RF): lo que el sistema debe hacer
-- [ ] 2.3 Requerimientos No Funcionales (RNF): seguridad, rendimiento, disponibilidad
-- [ ] 2.4 Historias de usuario: "Como [rol], quiero [acción], para [beneficio]"
-- [ ] 2.5 Definir el Alcance Excluido (Out of Scope)
-- [ ] 2.6 Decidir features nuevas: agregar / quitar / mejorar de lo actual
+- [x] 2.1 Inventario funcional del proyecto actual (módulos que ya existen)
+- [x] 2.2 Requerimientos Funcionales (RF): lo que el sistema debe hacer
+- [x] 2.3 Requerimientos No Funcionales (RNF): seguridad, rendimiento, disponibilidad
+- [x] 2.4 Historias de usuario: "Como [rol], quiero [acción], para [beneficio]"
+- [x] 2.5 Definir el Alcance Excluido (Out of Scope)
+- [x] 2.6 Decidir features nuevas: agregar / quitar / mejorar de lo actual
 
 ### Preguntas claves
 
