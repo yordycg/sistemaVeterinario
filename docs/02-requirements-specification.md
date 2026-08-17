@@ -1,7 +1,9 @@
 # Fase 2 — Especificación de Requerimientos (Sin Código)
 
 **Proyecto**: Sistema Veterinario
+
 **Fecha**: 13-agosto-2026
+
 **Versión del documento**: [v1.0]
 
 ---
