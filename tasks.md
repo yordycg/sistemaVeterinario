@@ -49,12 +49,12 @@
 
 **Objetivo**: Dibujar el mapa del sistema antes de escribir una sola línea de código.
 
-- [ ] 3.1 Diagrama de Flujo / Proceso: camino de los datos de entrada a salida
-- [ ] 3.2 Diseñar el DER / Modelo de Datos (tablas, campos, relaciones) en Mermaid
-- [ ] 3.3 Resolver la doble fuente de verdad de la BD (migraciones vs schema.sql)
-- [ ] 3.4 Decisiones de capas/estructura (MVC plano vs. Services/ViewModels/DTOs)
-- [ ] 3.5 Estructura de carpetas y módulos del proyecto final
-- [ ] 3.6 Generar `docs/03-arquitectura.md`
+- [x] 3.1 Diagrama de Flujo / Proceso: camino de los datos de entrada a salida
+- [x] 3.2 Diseñar el DER / Modelo de Datos (tablas, campos, relaciones) en Mermaid
+- [x] 3.3 Resolver la doble fuente de verdad de la BD (migraciones vs schema.sql)
+- [x] 3.4 Decisiones de capas/estructura (MVC plano vs. Services/ViewModels/DTOs)
+- [x] 3.5 Estructura de carpetas y módulos del proyecto final
+- [x] 3.6 Generar `docs/03-architecture.md`
 
 ### Preguntas claves
 
